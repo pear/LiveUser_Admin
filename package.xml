@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.0a1">
- <name>LiveUser_Admin</name>
- <summary>User authentication and permission management framework</summary>
- <description>LiveUser_Admin is meant to be used with the LiveUser package.
+<package version="1.0">
+  <name>LiveUser_Admin</name>
+  <summary>User authentication and permission management framework</summary>
+  <description>  LiveUser_Admin is meant to be used with the LiveUser package.
   It is composed of all the classes necessary to administrate
   data used by LiveUser.
   
@@ -25,152 +25,36 @@
   
   But it takes no time to write up your own storage container,
   so if you like to use native mysql functions straight, then it's possible
-  to do so in under a hour!
- </description>
- <maintainers>
-  <maintainer>
-   <user>mw21st</user>
-   <name>Markus Wolff</name>
-   <email>mw21st@php.net</email>
-   <role>lead</role>
-  </maintainer>
-  <maintainer>
-   <user>arnaud</user>
-   <name>Arnaud Limbourg</name>
-   <email>arnaud@php.net</email>
-   <role>lead</role>
-  </maintainer>
-  <maintainer>
-   <user>lsmith</user>
-   <name>Lukas Kahwe Smith</name>
-   <email>smith@backendmedia.com</email>
-   <role>lead</role>
-  </maintainer>
-  <maintainer>
-   <user>dufuz</user>
-   <name>Helgi &THORN;ormar</name>
-   <email>dufuz@php.net</email>
-   <role>developer</role>
-  </maintainer>
+  to do so in under a hour!</description>
+  <maintainers>
+    <maintainer>
+      <user>mw21st</user>
+      <name>Markus Wolff</name>
+      <email>mw21st@php.net</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>arnaud</user>
+      <name>Arnaud Limbourg</name>
+      <email>arnaud@php.net</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>lsmith</user>
+      <name>Lukas Kahwe Smith</name>
+      <email>smith@backendmedia.com</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>dufuz</user>
+      <name>Helgi Þormar</name>
+      <email>dufuz@php.net</email>
+      <role>lead</role>
+    </maintainer>
   </maintainers>
- <release>
-  <version>0.2.0</version>
-  <date>2005-02-27</date>
-  <license>LGPL</license>
-  <state>beta</state>
-  <notes>- perm container now also has a default init() method that is called in the factory
-- delete/update now dont require a filter in the id field
-- delete/update now return the number of affected rows
-- use LiveUser::cryptRC4() for rc4 handling
-- added support to be able to query for single values, columns and rows next to
-  fetching multi dimensional arrays ('select' key in params array of get methods)
-- improved error handling in several places to not trigger on empty results
-- sequences are now named after the table they belong to
-- now requiring MDB2-2.0.0beta3
-- if the &quot;force-seq&quot; option is now set to false in the storage config
-  MDB2 will try to use autoincrement if supported by the RDBMS (you will need
-  to add autoincrement to the id fields in the applications, areas, groups,
-  rights, and perm_users tables yourself)
-- example 1 now outputs all queries using an MDB2 debug handler
-- Subgroups now work
-- ImplyRights now work
-- One can now remove groups recursively by passing recursive = true to 
-  removeGroup in Perm Complex container (before it was hardcoded to true,
-  now defaults to false)
-- Tests for SubGroups and ImplyRights up and running
-- getGroup and getRight now work in Perm Complex Container
-- added DB and MDB permission backends
-- Complex container is now fully implemented.
-- addAreaAdmin and removeAreaAdmin where added to the Complex container
-- Admin.php getUser was removed and searchUser was renamed to getUsers and with new params
-- give each example a unique database name
-- moved selectable tables into property so that they can be overwritten
-- fixed autoinit handling in factoray (bug #3133)
-- added missing PEAR error to error stack conversions
-- return false if we previously ensured that the value is false anyways for clarity
-- call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
-  the proper auth container is affected
-- updated the file headers as per the RFC
-  </notes>
-  <deps>
-   <dep type="php" rel="ge" version="4.2.0" optional="no"/>
-   <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
-   <dep type="pkg" rel="ge" version="0.14.0" optional="no">LiveUser</dep>
-   <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
-   <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
-   <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
-   <dep type="pkg" rel="ge" version="2.0.0beta3" optional="yes">MDB2</dep>
-   <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
-   <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
-  </deps>
-  <filelist>
-   <dir name="/" baseinstalldir="/LiveUser/Admin">
-    <dir name="Auth">
-     <file role="php" name="Common.php"/>
-     <file role="php" name="DB.php"/>
-     <file role="php" name="MDB.php"/>
-     <file role="php" name="MDB2.php"/>
-    </dir> <!-- /Auth -->
-    <dir name="docs">
-     <dir name="examples">
-      <dir name="example 1">
-       <file role="doc" name="Application.php"/>
-       <file role="doc" name="Area.php"/>
-       <file role="doc" name="Area_Admin_Areas.php"/>
-       <file role="doc" name="config.inc.php"/>
-       <file role="doc" name="extra_sql.sql"/>
-       <file role="doc" name="Group.php"/>
-       <file role="doc" name="GroupRights.php"/>
-       <file role="doc" name="ImplyRights.php"/>
-       <file role="doc" name="index.php"/>
-       <file role="doc" name="OutputRightsConstants.php"/>
-       <file role="doc" name="Rights.php"/>
-       <file role="doc" name="Subgroups.php"/>
-       <file role="doc" name="User.php"/>
-       <file role="doc" name="UserGroup.php"/>
-       <file role="doc" name="UserRights.php"/>
-      </dir> <!-- /docs/examples/example 1 -->
-      <dir name="example3">
-       <file role="doc" name="area51.php"/>
-       <file role="doc" name="coffeemaker.php"/>
-       <file role="doc" name="conf.php"/>
-       <file role="doc" name="demodata.sql"/>
-       <file role="doc" name="example.php"/>
-       <file role="doc" name="index.html"/>
-       <file role="doc" name="loginscreen.php"/>
-       <file role="doc" name="main.php"/>
-       <file role="doc" name="nav.php"/>
-       <file role="doc" name="testarea.php"/>
-      </dir> <!-- /docs/examples/example3 -->
-      <file role="doc" name="Auth_XML.xml"/>
-      <file role="doc" name="test.php"/>
-     </dir> <!-- /docs/examples -->
-    </dir> <!-- /docs -->
-    <dir name="Perm">
-     <dir name="Storage">
-      <file role="php" name="DB.php"/>
-      <file role="php" name="MDB.php"/>
-      <file role="php" name="MDB2.php"/>
-     </dir> <!-- /Perm/Storage -->
-     <file role="php" name="Complex.php"/>
-     <file role="php" name="Medium.php"/>
-     <file role="php" name="Simple.php"/>
-    </dir> <!-- /Perm -->
-    <dir name="Storage">
-     <file role="php" name="DB.php"/>
-     <file role="php" name="MDB.php"/>
-     <file role="php" name="MDB2.php"/>
-     <file role="php" name="SQL.php"/>
-    </dir> <!-- /Storage -->
-    <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
-    <file role="php" name="Storage.php"/>
-   </dir> <!-- / -->
-  </filelist>
- </release>
- <changelog>
-   <release>
+  <release>
     <version>0.2.0</version>
-    <date>2005-02-27</date>
+    <date>2005-03-14</date>
     <license>LGPL</license>
     <state>beta</state>
     <notes>- perm container now also has a default init() method that is called in the factory
@@ -205,15 +89,129 @@
 - return false if we previously ensured that the value is false anyways for clarity
 - call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
   the proper auth container is affected
-- updated the file headers as per the RFC
-    </notes>
-   </release>
-   <release>
-    <version>0.1.0</version>
-    <date>2004-12-20</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- refactored into a separate package from LiveUser
+- updated the file headers as per the RFC</notes>
+    <deps>
+      <dep type="php" rel="ge" version="4.2.0" optional="no"/>
+      <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
+      <dep type="pkg" rel="ge" version="0.14.0" optional="no">LiveUser</dep>
+      <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
+      <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
+      <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
+      <dep type="pkg" rel="ge" version="2.0.0beta3" optional="yes">MDB2</dep>
+      <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
+      <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
+    </deps>
+    <filelist>
+      <dir baseinstalldir="/LiveUser/Admin" name="/">
+       <dir name="Auth">
+        <file role="php" name="Common.php"/>
+        <file role="php" name="DB.php"/>
+        <file role="php" name="MDB.php"/>
+        <file role="php" name="MDB2.php"/>
+       </dir> <!-- Auth -->
+       <dir name="docs">
+        <dir name="examples">
+         <file role="doc" name="Auth_XML.xml"/>
+         <file role="doc" name="test.php"/>
+         <dir name="example 1">
+          <file role="doc" name="Application.php"/>
+          <file role="doc" name="Area.php"/>
+          <file role="doc" name="Area_Admin_Areas.php"/>
+          <file role="doc" name="config.inc.php"/>
+          <file role="doc" name="extra_sql.sql"/>
+          <file role="doc" name="Group.php"/>
+          <file role="doc" name="GroupRights.php"/>
+          <file role="doc" name="ImplyRights.php"/>
+          <file role="doc" name="index.php"/>
+          <file role="doc" name="OutputRightsConstants.php"/>
+          <file role="doc" name="Rights.php"/>
+          <file role="doc" name="Subgroups.php"/>
+          <file role="doc" name="Translation.php"/>
+          <file role="doc" name="User.php"/>
+          <file role="doc" name="UserGroup.php"/>
+          <file role="doc" name="UserRights.php"/>
+         </dir> <!-- docs/examples/example 1 -->
+         <dir name="example3">
+          <file role="doc" name="area51.php"/>
+          <file role="doc" name="coffeemaker.php"/>
+          <file role="doc" name="conf.php"/>
+          <file role="doc" name="demodata.sql"/>
+          <file role="doc" name="example.php"/>
+          <file role="doc" name="index.html"/>
+          <file role="doc" name="loginscreen.php"/>
+          <file role="doc" name="main.php"/>
+          <file role="doc" name="nav.php"/>
+          <file role="doc" name="testarea.php"/>
+         </dir> <!-- docs/examples/example3 -->
+        </dir> <!-- docs/examples -->
+       </dir> <!-- docs -->
+       <dir name="Perm">
+        <file role="php" name="Complex.php"/>
+        <file role="php" name="Medium.php"/>
+        <file role="php" name="Simple.php"/>
+        <dir name="Storage">
+         <file role="php" name="DB.php"/>
+         <file role="php" name="MDB.php"/>
+         <file role="php" name="MDB2.php"/>
+        </dir> <!-- Perm/Storage -->
+       </dir> <!-- Perm -->
+       <dir name="Storage">
+        <file role="php" name="DB.php"/>
+        <file role="php" name="MDB.php"/>
+        <file role="php" name="MDB2.php"/>
+        <file role="php" name="SQL.php"/>
+       </dir> <!-- Storage -->
+       <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
+       <file role="php" name="Storage.php"/>
+      </dir> <!-- / -->
+    </filelist>
+  </release>
+  <changelog>
+    <release>
+      <version>0.2.0</version>
+      <date>2005-03-14</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- perm container now also has a default init() method that is called in the factory
+- delete/update now dont require a filter in the id field
+- delete/update now return the number of affected rows
+- use LiveUser::cryptRC4() for rc4 handling
+- added support to be able to query for single values, columns and rows next to
+  fetching multi dimensional arrays ('select' key in params array of get methods)
+- improved error handling in several places to not trigger on empty results
+- sequences are now named after the table they belong to
+- now requiring MDB2-2.0.0beta3
+- if the &quot;force-seq&quot; option is now set to false in the storage config
+  MDB2 will try to use autoincrement if supported by the RDBMS (you will need
+  to add autoincrement to the id fields in the applications, areas, groups,
+  rights, and perm_users tables yourself)
+- example 1 now outputs all queries using an MDB2 debug handler
+- Subgroups now work
+- ImplyRights now work
+- One can now remove groups recursively by passing recursive = true to 
+  removeGroup in Perm Complex container (before it was hardcoded to true,
+  now defaults to false)
+- Tests for SubGroups and ImplyRights up and running
+- getGroup and getRight now work in Perm Complex Container
+- added DB and MDB permission backends
+- Complex container is now fully implemented.
+- addAreaAdmin and removeAreaAdmin where added to the Complex container
+- Admin.php getUser was removed and searchUser was renamed to getUsers and with new params
+- give each example a unique database name
+- moved selectable tables into property so that they can be overwritten
+- fixed autoinit handling in factoray (bug #3133)
+- added missing PEAR error to error stack conversions
+- return false if we previously ensured that the value is false anyways for clarity
+- call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
+  the proper auth container is affected
+- updated the file headers as per the RFC</notes>
+    </release>
+    <release>
+      <version>0.1.0</version>
+      <date>2004-12-20</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- refactored into a separate package from LiveUser
 - severe BC breaks in the permission API in order to unify the API
 - added ErrorStack
 - fixed outputRightsConstants() method
@@ -224,16 +222,14 @@
 - sql query builder only joins the necessary tables so the admin API does not
   force the usage of any table (especially the translation table)
 - searchUser() now also fetches perm data
-- the complex container is currently not fully implemented
-    </notes>
-   </release>
-   <release>
-    <version>0.14.0</version>
-    <date>2004-12-11</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- Refactored nto a separate package.
-    </notes>
-   </release>
- </changelog>
+- the complex container is currently not fully implemented</notes>
+    </release>
+    <release>
+      <version>0.14.0</version>
+      <date>2004-12-11</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- Refactored nto a separate package.</notes>
+    </release>
+  </changelog>
 </package>
