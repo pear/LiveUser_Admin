@@ -34,10 +34,11 @@
   </maintainers>
   <release>
     <version>0.1.0</version>
-    <date>2004-12-13</date>
+    <date>2004-12-15</date>
     <license>LGPL</license>
     <state>beta</state>
-    <notes>- Refactored nto a separate package.</notes>
+    <notes>- Refactored into a separate package.
+- severe BC breaks in the permission API</notes>
     <deps>
       <dep type="php" rel="ge" version="4.2.0" optional="no"/>
       <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
@@ -78,6 +79,18 @@
           <file role="doc" name="UserGroup.php"/>
           <file role="doc" name="UserRights.php"/>
          </dir> <!-- docs/examples/example 1 -->
+         <dir name="example3">
+          <file role="doc" name="area51.php"/>
+          <file role="doc" name="coffeemaker.php"/>
+          <file role="doc" name="conf.php"/>
+          <file role="doc" name="demodata.sql"/>
+          <file role="doc" name="example.php"/>
+          <file role="doc" name="index.html"/>
+          <file role="doc" name="loginscreen.php"/>
+          <file role="doc" name="main.php"/>
+          <file role="doc" name="nav.php"/>
+          <file role="doc" name="testarea.php"/>
+         </dir> <!-- docs/examples/example3 -->
         </dir> <!-- docs/examples -->
        </dir> <!-- docs -->
        <dir name="Perm">
@@ -100,10 +113,11 @@
   <changelog>
     <release>
       <version>0.1.0</version>
-      <date>2004-12-13</date>
+      <date>2004-12-15</date>
       <license>LGPL</license>
       <state>beta</state>
-      <notes>- Refactored nto a separate package.</notes>
+      <notes>- Refactored into a separate package.
+- severe BC breaks in the permission API</notes>
     </release>
     <release>
       <version>0.14.0</version>
