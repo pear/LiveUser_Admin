@@ -503,7 +503,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $_rights = array();
         if (is_array($rights)) {
-            foreach ($rights as $key => $value) {
+            foreach ($rights as $value) {
                 $id = $value['right_id'];
                 $_rights[$id] = $value;
 
@@ -545,7 +545,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 (isset($params['filters']['perm_user_id']) || 
                  isset($params['filters']['group_id']))
         ) {
-            $inherited_rights = $this->_getInheritedRights($options);
+            $inherited_rights = $this->_getInheritedRights($params);
 
             if ($inherited_rights === false) {
                 return $inherited_rights;
@@ -575,7 +575,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $result = $this->getRight($params, 'right_implied');
         if ($result === false) {
-            return $false;
+            return false;
         }
 
         $_rights = array();
