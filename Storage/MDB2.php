@@ -122,7 +122,11 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     function query($query)
     {
-        return $this->dbc->query($query);
+        $result = $this->dbc->query($query);
+        if ($result === false) {
+            return false;
+        }
+        return $this->dbc->affectedRows();
     }
 
     function queryOne($query, $type)
