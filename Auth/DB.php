@@ -142,6 +142,11 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
         // Generate new user ID
         if (is_null($authId)) {
             $authId = $this->dbc->nextId($this->authTable, true);
+            if (PEAR::isError($authId)) {
+                $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                    array('container' => 'could not connect: '.$authId->getMessage()));
+                return false;
+            }
         }
 
         // is_active, owner_user_id and owner_group_id are optional
@@ -395,22 +400,30 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
             . $order;
 
         if ($rekey) {
-            $res = $this->dbc->getAssoc($query, false, array(), DB_FETCHMODE_ASSOC);
+            $result = $this->dbc->getAssoc($query, false, array(), DB_FETCHMODE_ASSOC);
         } else {
-            $res = $this->dbc->getAll($query, array(), DB_FETCHMODE_ASSOC);
+            $result = $this->dbc->getAll($query, array(), DB_FETCHMODE_ASSOC);
         }
 
-        foreach ($res as $key => $_user) {
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+
+        foreach ($result as $key => $_user) {
             if (isset($_user['is_active'])) {
                 if ($_user['is_active'] == 'Y') {
-                    $res[$key]['is_active'] = '1';
+                    $result[$key]['is_active'] = '1';
                 } elseif ($_user['is_active'] == 'N') {
-                    $res[$key]['is_active'] = '0';
+                    $result[$key]['is_active'] = '0';
                 }
             }
         }
 
-        return $res;
+        return $result;
     }
 }
 ?>

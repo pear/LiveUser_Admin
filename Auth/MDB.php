@@ -155,6 +155,11 @@ class LiveUser_Admin_Auth_MDB extends LiveUser_Admin_Auth_Common
         // Generate new user ID
         if (is_null($authId)) {
             $authId = $this->dbc->nextId($this->authTable, true);
+            if (PEAR::isError($authId)) {
+                $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                    array('container' => 'could not connect: '.$authId->getMessage()));
+                return false;
+            }
         }
 
         $col = $val = array();
@@ -410,9 +415,17 @@ class LiveUser_Admin_Auth_MDB extends LiveUser_Admin_Auth_Common
             . $where
             . $order;
 
-        $res = $this->dbc->queryAll($query, $types, MDB_FETCHMODE_ASSOC, $rekey);
+        $result = $this->dbc->queryAll($query, $types, MDB_FETCHMODE_ASSOC, $rekey);
 
-        return $res;
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+
+        return $result;
     }
 }
 ?>
