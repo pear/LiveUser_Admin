@@ -114,19 +114,37 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      */
     var $prefix = 'liveuser_';
 
+    /**
+     * Table configuration
+     *
+     * @var    array
+     * @access public
+     */
     var $tables = array();
 
+    /**
+     * All fields with their types
+     *
+     * @var    array
+     * @access public
+     */
     var $fields = array();
 
+    /**
+     * All fields with their alias
+     *
+     * @var    array
+     * @access public
+     */
     var $alias = array();
 
     /**
-     *
+     * Insert data into a table
      *
      *
      * @param string $table
      * @param array $data
-     * @return 
+     * @return mixed false on error, true (or new id) on success
      *
      * @access public
      */
@@ -173,7 +191,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Create the SQL necessary for an insert
      *
      *
      * @param string $table
@@ -192,13 +210,13 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Update data in a table based given filters
      *
      *
      * @param string $table
      * @param array $data
      * @param array $filteres
-     * @return
+     * @return mixed false on error, the affected rows on success
      *
      * @access public
      */
@@ -230,7 +248,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Create the SQL necessary for an update
      *
      *
      * @param string $table
@@ -249,12 +267,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Update from a table based given filters
      *
      *
      * @param string $table
      * @param array $filters
-     * @return 
+     * @return mixed false on error, the affected rows on success
      *
      * @access public
      */
@@ -305,7 +323,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Select data from a set of tables
      *
      *
      * @param array $select
@@ -355,7 +373,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Create the SQL necessary for a select
      *
      *
      * @param array $fields
@@ -412,7 +430,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Create the SQL necessary for a where statement
      *
      *
      * @param array $filters
@@ -472,7 +490,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Find all the tables that need to be joined to be able to select
+     * all requested columns and to be able to filter the joined rows
      *
      *
      * @param array &$fields
@@ -550,8 +569,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
-     *
+     * Recursively find all the tables that need to be joined to be able to select
+     * all requested columns and to be able to filter the joined rows
      *
      * @param string $root_table
      * @param array $filters
