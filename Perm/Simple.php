@@ -356,11 +356,15 @@ class LiveUser_Admin_Perm_Simple
 
         // check if already exists
         $filters = array(
-                       'perm_user_id' => $data['perm_user_id'],
-                       'right_id'     => $data['right_id'],
-                   );
+            'perm_user_id' => $data['perm_user_id'],
+            'right_id'     => $data['right_id'],
+        );
         $count = $this->_storage->selectCount('userrights', 'right_id', $filters);
         if ($count > 0) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'This user with perm id '.$data['perm_user_id'].' has already been granted the right id '.$data['right_id'])
+            );
             return false;
         }
 
