@@ -25,13 +25,26 @@ $liveuserConfig = array(
 $lu =& LiveUser_Admin::factory($liveuserConfig, 'de');
 $lu->setAdminContainers();
 
-$params = array(
+$params_rights = array(
+    'filters' => array(
+        'area_id' => 1,
+    ),
+);
+
+$params_users = array(
     'fields' => array(
         'perm_user_id',
-        'right_define_name',
-        'right_id',
-        'right_level',
-        'name',
+        'perm_type',
+        'auth_container_name',
+    ),
+    'with' => array(
+        'perm_user_id' => array(
+            'fields' => array(
+                'right_id',
+                'right_level',
+                'name',
+            ),
+        ),
     ),
     'filters' => array(
         'perm_type' => 1,
@@ -41,16 +54,24 @@ $params = array(
         'perm_type' => 'DESC',
         'auth_user_id' => 'ASC',
     ),
-    'rekey' => true,
     'limit' => 10,
     'offset' => 0,
 );
 
 echo 'input';
-var_dump($params);
+var_dump($params_rights);
 echo '<hr>';
 echo 'output';
-var_dump($lu->perm->getUser($params));
+var_dump($lu->perm->getRights($params_rights));
+echo '<hr>';
+echo 'underlying query:';
+var_dump($lu->perm->_storage->dbc->last_query);
+echo '<hr>';
+echo 'input';
+var_dump($params_users);
+echo '<hr>';
+echo 'output';
+var_dump($lu->perm->getUser($params_users));
 echo '<hr>';
 echo 'underlying query:';
 var_dump($lu->perm->_storage->dbc->last_query);
