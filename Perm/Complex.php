@@ -904,9 +904,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        unset($params['filters']['perm_user_id']);
         $_rights = array();
         foreach ($result as $row) {
-            $params['filters']['perm_user_id'] = null;
             $params['filters']['group_id'] = $row['group_id'];
             $inherited_rights = $this->getRights($params);
             if ($inherited_rights === false) {
