@@ -215,7 +215,7 @@ class LiveUser_Admin_Perm_Simple
             return $filters;
         }
 
-        $result = $this->revokeUserRight(array('right_id' => $result));
+        $result = $this->revokeUserRight($filters);
         if ($result === false) {
             return false;
         }
@@ -268,7 +268,7 @@ class LiveUser_Admin_Perm_Simple
             return $filters;
         }
 
-        $result = $this->removeRight(array('area_id' => $result));
+        $result = $this->removeRight($filters);
         if ($result === false) {
             return false;
         }
@@ -346,7 +346,7 @@ class LiveUser_Admin_Perm_Simple
             return $filters;
         }
 
-        $result = $this->removeRight(array('application_id' => $result));
+        $result = $this->removeRight($filters);
         if ($result === false) {
             return false;
         }
