@@ -42,7 +42,7 @@ class LiveUser_Admin_Perm_Simple
     function LiveUser_Admin_Perm_Simple(&$confArray)
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
-        $this->_storage = LiveUser::storageFactory($confArray);
+        $this->_storage = LiveUser::storageFactory($confArray, 'LiveUser_Admin_');
         if (is_array($confArray)) {
             foreach ($confArray as $key => $value) {
                 if (isset($this->$key)) {
@@ -76,7 +76,7 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    function getUser($params)
+    function getUser($params = array())
     {
         $selectable_tables = array('perm_users', 'userrights', 'rights');
         $root_table = 'perm_users';
