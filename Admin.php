@@ -146,7 +146,7 @@ class LiveUser_Admin
      * @var    array
      * @access private
      */
-     var $_conf = array();
+     var $_conf = null;
 
     /**
      * Error codes to message mapping array
@@ -243,7 +243,7 @@ class LiveUser_Admin
     {
         $obj = &new LiveUser_Admin;
 
-        if (is_array($conf)) {
+        if (is_array($conf) && !empty($conf)) {
             $obj->_conf = $conf;
             if (isset($obj->_conf['autoInit']) && $obj->_conf['autoInit']) {
                 $obj->setAdminContainers();
@@ -515,7 +515,7 @@ class LiveUser_Admin
      * @access public
      */
     function updateUser($permId, $handle, $password, $optionalFields = array(),
-        $customFields = array(), $type = LIVEUSER_USER_TYPE_ID)
+        $customFields = array(), $type = null)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -543,6 +543,10 @@ class LiveUser_Admin
 
         if ($auth === false) {
             return false;
+        }
+
+        if (is_null($type)) {
+            return true;
         }
 
         $data = array(
@@ -727,6 +731,9 @@ class LiveUser_Admin
      */
     function getErrors()
     {
-        return $this->_stack->getErrors();
+        if (is_object($this->_stack)) {
+            return $this->_stack->getErrors();
+        }
+        return false;
     }
 }
