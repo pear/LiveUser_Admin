@@ -68,6 +68,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function addGroup($data)
     {
         // sanity checks
+        if (isset($data['group_id']) && !is_numeric($data['group_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->insert('groups', $data);
         // notify observer
         return $result;
@@ -84,7 +88,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroup($data, $filters)
     {
         // sanity checks
-        if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
             return false;
         }
 
@@ -103,7 +107,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeGroup($filters)
     {
         // sanity checks
-        if (!isset($filers['group_id']) || !is_numeric($filters['group_id'])) {
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
             return false;
         }
 
@@ -285,11 +289,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 
         $filter = array('right_id' => $filters['right_id']);
         $result = $this->_storage->delete('grouprights', $filter);
-        if (!result) {
+        if (!$result) {
             return false;
         }
         
-        parent::removeRight($filters);
+        return parent::removeRight($filters);
     }
 
     /**

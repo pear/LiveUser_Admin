@@ -164,7 +164,7 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
 
-        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+        if (isset($filters['area_id']) && !is_numeric($filters['area_id'])) {
             return false;
         }
 
@@ -191,11 +191,11 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
 
-        // Check for rights and remove them if they exist for this area
+        // Remove all user assignments to that right
         $filter_check = array('right_id' => $filters['right_id']);
-        $count = $this->_storage->selectOne('userrights', 'right_id', $filter_check, true);
-        if ($count > 0) {
-            $this->_storage->delete('userrights', $filter_check);
+        $result = $this->_storage->delete('userrights', $filter_check);
+        if (!$result) {
+            return false;
         }
 
         $result = $this->_storage->delete('rights', $filters);
@@ -237,7 +237,7 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
 
-        if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+        if (isset($data['application_id']) && !is_numeric($data['application_id'])) {
             return false;
         }
 
@@ -260,16 +260,41 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
         
-        // Check for rights and remove them if they exist for this area
+        // Remove all rights under that area
         $filter_check = array('area_id' => $filters['area_id']);
-        $count = $this->_storage->selectOne('rights', 'area_id', $filter_check, true);
-        if ($count > 0) {
-            $this->_storage->delete('rights', $filter_check);
+        $result = $this->_storage->delete('rights', $filter_check);
+        if (!$result) {
+            return false;
         }
 
         $result = $this->_storage->delete('areas', $filters);
         // notify observer
         return $result;
+    }
+
+    /**
+     * Set current application
+     *
+     * @access public
+     * @param  integer  id of application
+     * @return boolean  always true
+     */
+    function setCurrentApplication($applicationId)
+    {
+        $this->_application = $applicationId;
+
+        return true;
+    }
+
+    /**
+     * Get current application
+     *
+     * @access public
+     * @return string name of the current application
+     */
+    function getCurrentApplication()
+    {
+        return $this->_application;
     }
 
     /**
@@ -321,11 +346,11 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
 
-        // Check for areas and remove them also if they exist
+        // Remove all areas under that application
         $filter_check = array('application_id' => $filters['application_id']);
-        $count = $this->_storage->selectOne('areas', 'application_id', $filter_check, true);
-        if ($count > 0) {
-            $this->_storage->delete('areas', $filter_check);
+        $result = $this->_storage->delete('areas', $filter_check);
+        if (!$result) {
+            return false;
         }
 
         $result = $this->_storage->delete('applications', $filters);
@@ -455,7 +480,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function getUser($params = array())
     {
-        $selectable_tables = array('perm_users', 'userrights', 'rights');
+        $selectable_tables = array('perm_users', 'userrights', 'rights', 'groupusers');
         $root_table = 'perm_users';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
@@ -522,7 +547,7 @@ class LiveUser_Admin_Perm_Simple
     {
         $selectable_tables = array('applications', 'translations');
         $root_table = 'applications';
- 
+
         return $this->_makeGet($params, $root_table, $selectable_tables);
     }
 
