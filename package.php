@@ -27,7 +27,7 @@ $notes = <<<EOT
   rights, and perm_users tables yourself)
 - example 1 now outputs all queries using an MDB2 debug handler
 - Subgroups now work
-- ImplyRights now work (expect for getRights)
+- ImplyRights now work
 - One can now remove groups recursively by passing recursive = true to 
   removeGroup in Perm Complex container (before it was hardcoded to true,
   now defaults to false)
@@ -35,6 +35,7 @@ $notes = <<<EOT
 - getGroup and getRight now work in Perm Complex Container, but getRight only works same
   as the Perm Simple equal (i.e. no advance features yet)
 - added DB and MDB permission backends
+- Complex container is now fully coded.
 EOT;
 
 $description = <<<EOT
