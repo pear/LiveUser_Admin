@@ -56,10 +56,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function removeArea($filters)
     {
         // sanity checks
-        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+        if (!isset($filters[$this->getAlias('area_id')]) || !is_numeric($filters[$this->getAlias('area_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'area_id')
+                array('key' => $this->getAlias('area_id'))
             );
             return false;
         }
@@ -87,21 +87,21 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function _updateImpliedStatus($filters)
     {
         // sanity checks
-        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
 
-         $count = $this->_storage->selectOne('rights_implied', 'right_id', $filters, true);
-         if (!$count) {
+         $count = $this->_storage->selectOne('rights_implied', $this->getAlias('right_id'), $filters, true);
+         if ($count === false) {
              return false;
          }
 
          $data = array();
-         $data['implied'] = (int)$count == '0' ? 'Y' : 'N';
+         $data['implied'] = (bool)$count;
 
         $this->updateRight($data, $filters);
         if (!$result) {
@@ -114,18 +114,18 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function implyRight($data)
     {
         // sanity checks
-        if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
+        if (!isset($data[$this->getAlias('right_id')]) || !is_numeric($data[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
         
-        if (!isset($data['implied_right_id']) || !is_numeric($data['implied_right_id'])) {
+        if (!isset($data[$this->getAlias('implied_right_id')]) || !is_numeric($data[$this->getAlias('implied_right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'implied_right_id')
+                array('key' => $this->getAlias('implied_right_id'))
             );
             return false;
         }
@@ -135,40 +135,40 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
         
-        return $this->_updateImpliedStatus($data['right_id']);
+        return $this->_updateImpliedStatus($data[$this->getAlias('right_id')]);
     }
 
     function unimplyRight($filters)
     {
         // sanity checks
-        if (!is_numeric($filters['right_id'])) {
+        if (!is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
         
-        if (!is_numeric($filters['implied_right_id'])) {
+        if (!is_numeric($filters[$this->getAlias('implied_right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'implied_right_id')
+                array('key' => $this->getAlias('implied_right_id'))
             );
             return false;
         }
 
         $this->_storage->delete('rights_implied', $filters);
 
-        return $this->_updateImpliedStatus($data['right_id']);
+        return $this->_updateImpliedStatus($data[$this->getAlias('right_id')]);
     }
 
     function removeRight($filters)
     {
         // sanity checks
-        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
@@ -182,10 +182,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function removeUser($filters)
     {
         // sanity checks
-        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+        if (!isset($filters[$this->getAlias('perm_user_id')]) || !is_numeric($filters[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }

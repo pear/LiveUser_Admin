@@ -68,10 +68,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function addGroup($data)
     {
         // sanity checks
-        if (isset($data['group_id']) && !is_numeric($data['group_id'])) {
+        if (isset($data[$this->getAlias('group_id')]) && !is_numeric($data[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
@@ -92,10 +92,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroup($data, $filters)
     {
         // sanity checks
-        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+        if (!isset($filters[$this->getAlias('group_id')]) || !is_numeric($filters[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
@@ -115,16 +115,16 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeGroup($filters)
     {
         // sanity checks
-        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+        if (!isset($filters[$this->getAlias('group_id')]) || !is_numeric($filters[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
 
         // Remove users from the group
-        $filter = array('group_id' => $filters['group_id']);
+        $filter = array($this->getAlias('group_id') => $filters[$this->getAlias('group_id')]);
         $result = $this->_storage->delete('groupusers', $filter);
         if (!$result) {
             return false;
@@ -151,32 +151,32 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function grantGroupRight($data)
     {
         // sanity checks
-        if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
+        if (!isset($data[$this->getAlias('group_id')]) || !is_numeric($data[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
 
-        if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
+        if (!isset($data[$this->getAlias('right_id')]) || !is_numeric($data[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
 
-        if (!isset($data['right_level'])) {
-            $data['right_level'] = LIVEUSER_MAX_LEVEL;
+        if (!isset($data[$this->getAlias('right_level')])) {
+            $data[$this->getAlias('right_level')] = LIVEUSER_MAX_LEVEL;
         }
 
         // check if the group has already been granted that right
         $filters = array(
-                       'group_id' => $data['group_id'],
-                       'right_id'     => $data['right_id'],
+                       $this->getAlias('group_id') => $data[$this->getAlias('group_id')],
+                       $this->getAlias('right_id')     => $data[$this->getAlias('right_id')],
                    );
-        $count = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
+        $count = $this->_storage->selectOne('grouprights', $this->getAlias('right_id'), $filters, true);
         if ($count > 0) {
             return true;
         }
@@ -197,26 +197,26 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroupRight($data, $filters)
     {
         // sanity checks
-        if (!isset($data['right_level'])) {
+        if (!isset($data[$this->getAlias('right_level')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'right_level')
+                array('key' => $this->getAlias('right_level'))
             );
             return false;
         }
 
-        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+        if (!isset($filters[$this->getAlias('group_id')]) || !is_numeric($filters[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
 
-        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
@@ -236,18 +236,18 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function revokeGroupRight($filters)
     {
         // sanity checks
-        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+        if (!isset($filters[$this->getAlias('group_id')]) || !is_numeric($filters[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
 
-        if (isset($filters['right_id']) && !is_numeric($filters['right_id'])) {
+        if (isset($filters[$this->getAlias('right_id')]) && !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
@@ -267,28 +267,28 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function addUserToGroup($data)
     {
         // sanity checks
-       if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
+       if (!isset($data[$this->getAlias('group_id')]) || !is_numeric($data[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
 
-        if (!isset($data['perm_user_id']) || !is_numeric($data['perm_user_id'])) {
+        if (!isset($data[$this->getAlias('perm_user_id')]) || !is_numeric($data[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
 
         // check if the userhas already been granted added to that group
         $filters = array(
-                       'perm_user_id' => $data['perm_user_id'],
-                       'group_id'     => $data['group_id'],
+                       $this->getAlias('perm_user_id') => $data[$this->getAlias('perm_user_id')],
+                       $this->getAlias('group_id')     => $data[$this->getAlias('group_id')],
                    );
-        $count = $this->_storage->selectOne('groupusers', 'group_id', $filters, true);
+        $count = $this->_storage->selectOne('groupusers', $this->getAlias('group_id'), $filters, true);
         if ($count > 0) {
             return true;
         }
@@ -308,18 +308,18 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeUserFromGroup($filters)
     {
         // sanity checks
-        if (isset($filters['group_id']) && !is_numeric($filters['group_id'])) {
+        if (isset($filters[$this->getAlias('group_id')]) && !is_numeric($filters[$this->getAlias('group_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'group_id')
+                array('key' => $this->getAlias('group_id'))
             );
             return false;
         }
 
-        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+        if (!isset($filters[$this->getAlias('perm_user_id')]) || !is_numeric($filters[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
@@ -339,15 +339,15 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeRight($filters)
     {
         // sanity checks
-        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
 
-        $filter = array('right_id' => $filters['right_id']);
+        $filter = array($this->getAlias('right_id') => $filters[$this->getAlias('right_id')]);
         $result = $this->_storage->delete('grouprights', $filter);
         if (!$result) {
             return false;

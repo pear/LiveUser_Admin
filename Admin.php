@@ -432,14 +432,17 @@ class LiveUser_Admin
                                   $customFields = array(), $type = LIVEUSER_USER_TYPE_ID)
     {
         if (is_object($this->auth) && is_object($this->perm)) {
-            $authData = $this->perm->getUsers(array('filters' => array('perm_user_id' => $permId), 'fields' => array('auth_user_id')));
+            $authData = $this->perm->getUsers(array(
+                'filters' => array($this->perm->getAlias('perm_user_id') => $permId),
+                'fields' => array($this->perm->getAlias('auth_user_id')))
+             );
 
             if (!$authData) {
                 return $authData;
             }
 
             $authData = reset($authData);
-            $auth = $this->auth->updateUser($authData['auth_user_id'], $handle, $password,
+            $auth = $this->auth->updateUser($authData[$this->perm->getAlias('auth_user_id')], $handle, $password,
                                                              $optionalFields, $customFields);
 
             if (PEAR::isError($auth)) {
@@ -447,9 +450,7 @@ class LiveUser_Admin
             }
 
             $data = array(
-                'auth_user_id' => $authData['auth_user_id'],
-                'auth_container_name' => $this->authContainerName,
-                'perm_type' => $type
+                $this->perm->getAlias('perm_type') => $type
             );
             $filters = array('perm_user_id' => $permId);
             return $this->perm->updateUser($data, $filters);
@@ -471,20 +472,23 @@ class LiveUser_Admin
     function removeUser($permId)
     {
         if (is_object($this->auth) && is_object($this->perm)) {
-            $authData = $this->perm->getUsers(array('filters' => array('perm_user_id' => $permId), 'fields' => array('auth_user_id')));
+            $authData = $this->perm->getUsers(array(
+                'filters' => array($this->perm->getAlias('perm_user_id') => $permId),
+                'fields' => array($this->perm->getAlias('auth_user_id')))
+             );
 
             if (!$authData) {
                 return $authData;
             }
 
             $authData = reset($authData);
-            $result = $this->auth->removeUser($authData['auth_user_id']);
+            $result = $this->auth->removeUser($authData[$this->perm->getAlias('auth_user_id')]);
 
             if (PEAR::isError($result)) {
                 return $result;
             }
 
-            $filters = array('perm_user_id' => $permId);
+            $filters = array($this->perm->getAlias('perm_user_id') => $permId);
             return $this->perm->removeUser($filters);
         }
 
@@ -516,7 +520,7 @@ class LiveUser_Admin
             }
 
             foreach($search as $key => $user) {
-                $permFilter['auth_user_id'] = $user['auth_user_id'];
+                $permFilter[$this->perm->getAlias('auth_user_id')] = $user['auth_user_id'];
                 $permData = $this->perm->getUsers(array('filters' => $permFilter));
                 if (!$permData) {
                     return false;
@@ -544,7 +548,7 @@ class LiveUser_Admin
         $permOptions = array())
     {
         if (is_object($this->auth) && is_object($this->perm)) {
-            $permFilter['perm_user_id'] = $permId;
+            $permFilter[$this->perm->getAlias('perm_user_id')] = $permId;
             $permData = $this->perm->getUsers(array('filters' => $permFilter));
             if (!$permData) {
                 return false;
@@ -556,7 +560,7 @@ class LiveUser_Admin
                 array(
                     'name' => $this->auth->authTableCols['required']['auth_user_id']['name'],
                     'op' => '=',
-                    'value' => $permData['auth_user_id'],
+                    'value' => $permData[$this->perm->getAlias('auth_user_id')],
                     'cond' => 'AND',
                     'type' => $this->auth->authTableCols['required']['auth_user_id']['type'],
                 )

@@ -70,6 +70,7 @@ class LiveUser_Admin_Perm_Simple
         'is_active' => null,
         'owner_user_id' => null,
         'owner_group_id' => null,
+        'implied_right_id' => null,
     );
 
     /**
@@ -89,6 +90,17 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
+     * Get the alias name if available
+     */
+    function getAlias($name)
+    {
+        if (isset($this->field_alias[$name])) {
+            return $this->field_alias[$name];
+        }
+        return $name;
+    }
+
+    /**
      *
      *
      * @access public
@@ -98,24 +110,24 @@ class LiveUser_Admin_Perm_Simple
     function addUser($data)
     {
         // sanity checks
-        if (!isset($data['auth_container_name'])) {
+        if (!isset($data[$this->getAlias('auth_container_name')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'auth_container_name')
+                array('key' => $this->getAlias('auth_container_name'))
             );
             return false;
         }
 
-        if (isset($data['perm_user_id']) && !is_numeric($data['perm_user_id'])) {
+        if (isset($data[$this->getAlias('perm_user_id')]) && !is_numeric($data[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
 
-        if (!isset($data['perm_type'])) {
-            $data['perm_type'] = LIVEUSER_USER_TYPE_ID;
+        if (!isset($data[$this->getAlias('perm_type')])) {
+            $data[$this->getAlias('perm_type')] = LIVEUSER_USER_TYPE_ID;
         }
 
         $result = $this->_storage->insert('perm_users', $data);
@@ -134,10 +146,10 @@ class LiveUser_Admin_Perm_Simple
     function updateUser($data, $filters)
     {
         // sanity checks
-        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+        if (!isset($filters[$this->getAlias('perm_user_id')]) || !is_numeric($filters[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
@@ -157,10 +169,10 @@ class LiveUser_Admin_Perm_Simple
     function removeUser($filters)
     {
         // sanity checks
-        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+        if (!isset($filters[$this->getAlias('perm_user_id')]) || !is_numeric($filters[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
@@ -180,10 +192,10 @@ class LiveUser_Admin_Perm_Simple
     function addRight($data)
     {
         // sanity checks
-        if (!isset($data['area_id']) || !is_numeric($data['area_id'])) {
+        if (!isset($data[$this->getAlias('area_id')]) || !is_numeric($data[$this->getAlias('area_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'area_id')
+                array('key' => $this->getAlias('area_id'))
             );
             return false;
         }
@@ -204,18 +216,18 @@ class LiveUser_Admin_Perm_Simple
     function updateRight($data, $filters)
     {
         // sanity checks
-        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
 
-        if (isset($filters['area_id']) && !is_numeric($filters['area_id'])) {
+        if (isset($filters[$this->getAlias('area_id')]) && !is_numeric($filters[$this->getAlias('area_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'area_id')
+                array('key' => $this->getAlias('area_id'))
             );
             return false;
         }
@@ -235,24 +247,24 @@ class LiveUser_Admin_Perm_Simple
     function removeRight($filters)
     {
         // sanity checks
-        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
 
-        if (isset($filters['area_id']) && !is_numeric($filters['area_id'])) {
+        if (isset($filters[$this->getAlias('area_id')]) && !is_numeric($filters[$this->getAlias('area_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'area_id')
+                array('key' => $this->getAlias('area_id'))
             );
             return false;
         }
 
         // Remove all user assignments to that right
-        $filter_check = array('right_id' => $filters['right_id']);
+        $filter_check = array($this->getAlias('right_id') => $filters[$this->getAlias('right_id')]);
         $result = $this->_storage->delete('userrights', $filter_check);
         if (!$result) {
             return true;
@@ -273,10 +285,10 @@ class LiveUser_Admin_Perm_Simple
     function addArea($data)
     {
         // sanity checks
-        if (!isset($data['application_id']) || !is_numeric($data['application_id'])) {
+        if (!isset($data[$this->getAlias('application_id')]) || !is_numeric($data[$this->getAlias('application_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'application_id')
+                array('key' => $this->getAlias('application_id'))
             );
             return false;
         }
@@ -297,18 +309,18 @@ class LiveUser_Admin_Perm_Simple
     function updateArea($data, $filters)
     {
         // sanity checks
-        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+        if (!isset($filters[$this->getAlias('area_id')]) || !is_numeric($filters[$this->getAlias('area_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'area_id')
+                array('key' => $this->getAlias('area_id'))
             );
             return false;
         }
 
-        if (isset($data['application_id']) && !is_numeric($data['application_id'])) {
+        if (isset($data[$this->getAlias('application_id')]) && !is_numeric($data[$this->getAlias('application_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'application_id')
+                array('key' => $this->getAlias('application_id'))
             );
             return false;
         }
@@ -328,16 +340,16 @@ class LiveUser_Admin_Perm_Simple
     function removeArea($filters)
     {
         // sanity checks
-        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+        if (!isset($filters[$this->getAlias('area_id')]) || !is_numeric($filters[$this->getAlias('area_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'area_id')
+                array('key' => $this->getAlias('area_id'))
             );
             return false;
         }
 
         // Remove all rights under that area
-        $filter_check = array('area_id' => $filters['area_id']);
+        $filter_check = array($this->getAlias('area_id') => $filters[$this->getAlias('area_id')]);
         $result = $this->_storage->delete('rights', $filter_check);
         if (!$result) {
             return false;
@@ -383,10 +395,10 @@ class LiveUser_Admin_Perm_Simple
     function addApplication($data)
     {
         // sanity checks
-        if (isset($data['application_id']) && !is_numeric($data['application_id'])) {
+        if (isset($data[$this->getAlias('application_id')]) && !is_numeric($data[$this->getAlias('application_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'application_id')
+                array('key' => $this->getAlias('application_id'))
             );
             return false;
         }
@@ -407,10 +419,10 @@ class LiveUser_Admin_Perm_Simple
     function updateApplication($data, $filters)
     {
         // sanity checks
-        if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+        if (!isset($filters[$this->getAlias('application_id')]) || !is_numeric($filters[$this->getAlias('application_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'application_id')
+                array('key' => $this->getAlias('application_id'))
             );
             return false;
         }
@@ -430,16 +442,16 @@ class LiveUser_Admin_Perm_Simple
     function removeApplication($filters)
     {
         // sanity checks
-        if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+        if (!isset($filters[$this->getAlias('application_id')]) || !is_numeric($filters[$this->getAlias('application_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'application_id')
+                array('key' => $this->getAlias('application_id'))
             );
             return false;
         }
 
         // Remove all areas under that application
-        $filter_check = array('application_id' => $filters['application_id']);
+        $filter_check = array($this->getAlias('application_id') => $filters[$this->getAlias('application_id')]);
         $result = $this->_storage->delete('areas', $filter_check);
         if (!$result) {
             return false;
@@ -460,32 +472,32 @@ class LiveUser_Admin_Perm_Simple
     function grantUserRight($data)
     {
         // sanity checks
-        if (!isset($data['perm_user_id']) || !is_numeric($data['perm_user_id'])) {
+        if (!isset($data[$this->getAlias('perm_user_id')]) || !is_numeric($data[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
 
-        if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
+        if (!isset($data[$this->getAlias('right_id')]) || !is_numeric($data[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
 
-        if (!isset($data['right_level'])) {
-            $data['right_level'] = LIVEUSER_MAX_LEVEL;
+        if (!isset($data[$this->getAlias('right_level')])) {
+            $data[$this->getAlias('right_level')] = LIVEUSER_MAX_LEVEL;
         }
 
         // check if already exists
         $filters = array(
-                       'perm_user_id' => $data['perm_user_id'],
-                       'right_id'     => $data['right_id'],
+                       $this->getAlias('perm_user_id') => $data[$this->getAlias('perm_user_id')],
+                       $this->getAlias('right_id')     => $data[$this->getAlias('right_id')],
                    );
-        $count = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
+        $count = $this->_storage->selectOne('userrights', $this->getAlias('right_id'), $filters, true);
         if ($count > 0) {
             return false;
         }
@@ -506,26 +518,26 @@ class LiveUser_Admin_Perm_Simple
     function updateUserRight($data, $filters)
     {
         // sanity checks
-        if (!isset($data['right_level'])) {
+        if (!isset($data[$this->getAlias('right_level')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'right_level')
+                array('key' => $this->getAlias('right_level'))
             );
             return false;
         }
 
-        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+        if (!isset($filters[$this->getAlias('perm_user_id')]) || !is_numeric($filters[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
 
-        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
@@ -545,18 +557,18 @@ class LiveUser_Admin_Perm_Simple
     function revokeUserRight($filters)
     {
         // sanity checks
-        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+        if (!isset($filters[$this->getAlias('perm_user_id')]) || !is_numeric($filters[$this->getAlias('perm_user_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'perm_user_id')
+                array('key' => $this->getAlias('perm_user_id'))
             );
             return false;
         }
 
-        if (isset($filters['right_id']) && !is_numeric($filters['right_id'])) {
+        if (isset($filters[$this->getAlias('right_id')]) && !is_numeric($filters[$this->getAlias('right_id')])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => 'right_id')
+                array('key' => $this->getAlias('right_id'))
             );
             return false;
         }
@@ -608,9 +620,9 @@ class LiveUser_Admin_Perm_Simple
         if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
             foreach($params['with'] as $field => $params) {
                 // this is lame and needs to be made more flexible
-                if ($field == 'perm_user_id' || $field == 'group_id') {
+                if ($field == $this->getAlias('perm_user_id') || $field == $this->getAlias('group_id')) {
                     $method = 'getRights';
-                } elseif ($field == 'group_id') {
+                } elseif ($field == $this->getAlias('group_id')) {
                     $method = 'getGroups';
                 } else {
                     break;
@@ -641,9 +653,9 @@ class LiveUser_Admin_Perm_Simple
         if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
             foreach($params['with'] as $field => $params) {
                 // this is lame and needs to be made more flexible
-                if ($field == 'right_id') {
+                if ($field == $this->getAlias('right_id')) {
                     $method = 'getUsers';
-                } elseif ($field == 'group_id') {
+                } elseif ($field == $this->getAlias('group_id')) {
                     $method = 'getGroups';
                 } else {
                     break;
@@ -717,28 +729,28 @@ class LiveUser_Admin_Perm_Simple
     {
         $opt = array();
 
-        $opt['fields'] = array('right_id', 'right_define_name');
+        $opt['fields'] = array($this->getAlias('right_id'), $this->getAlias('right_define_name'));
 
         $naming = LIVEUSER_SECTION_RIGHT;
         if (isset($options['naming'])) {
             $naming = $options['naming'];
             switch ($naming) {
             case LIVEUSER_SECTION_AREA:
-                $opt['fields'][] = 'area_define_name';
+                $opt['fields'][] = $this->getAlias('area_define_name');
                 break;
             case LIVEUSER_SECTION_APPLICATION:
-                $opt['fields'][] = 'application_define_name';
-                $opt['fields'][] = 'area_define_name';
+                $opt['fields'][] = $this->getAlias('application_define_name');
+                $opt['fields'][] = $this->getAlias('area_define_name');
                 break;
             }
         }
 
         if (isset($options['area'])) {
-            $opt['filter']['area_id'] = $options['area'];
+            $opt['filter'][$this->getAlias('area_id')] = $options['area'];
         }
 
         if (isset($options['application'])) {
-            $opt['filter']['application_id'] = $options['application'];
+            $opt['filter'][$this->getAlias('application_id')] = $options['application'];
         }
 
         $prefix = '';
@@ -763,33 +775,35 @@ class LiveUser_Admin_Perm_Simple
         case LIVEUSER_SECTION_APPLICATION:
             if ($rekey) {
                 foreach ($rights as $r) {
-                    $app_name = $prefix . $r['application_define_name'];
-                    $generate[$app_name][$r['area_define_name']][$r['right_define_name']] = $r['right_id'];
+                    $app_name = $prefix . $r[$this->getAlias('application_define_name')];
+                    $area_name = $r[$this->getAlias('area_define_name')];
+                    $generate[$app_name][$area_name][$r[$this->getAlias('right_define_name')]] = $r[$this->getAlias('right_id')];
                 }
             } else {
                 foreach ($rights as $r) {
-                    $key = $prefix . $r['application_define_name'] . '_'
-                        . $r['area_define_name'] . '_' . $r['right_define_name'];
-                    $generate[$key] = $r['right_id'];
+                    $key = $prefix . $r[$this->getAlias('application_define_name')] . '_'
+                        . $r[$this->getAlias('area_define_name')] . '_' . $r[$this->getAlias('right_define_name')];
+                    $generate[$key] = $r[$this->getAlias('right_id')];
                 }
             }
             break;
         case LIVEUSER_SECTION_AREA:
             if ($rekey) {
                 foreach ($rights as $r) {
-                    $generate[$prefix . $r['area_define_name']][$r['right_define_name']] = $r['right_id'];
+                    $area_name = $prefix . $r[$this->getAlias('area_define_name')];
+                    $generate[$area_name][$r[$this->getAlias('right_define_name')]] = $r[$this->getAlias('right_id')];
                 }
             } else {
                 foreach ($rights as $r) {
-                    $key = $prefix . $r['area_define_name'] . '_' . $r['right_define_name'];
-                    $generate[$key] = $r['right_id'];
+                    $key = $prefix . $r[$this->getAlias('area_define_name')] . '_' . $r[$this->getAlias('right_define_name')];
+                    $generate[$key] = $r[$this->getAlias('right_id')];
                 }
             }
             break;
         case LIVEUSER_SECTION_RIGHT:
         default:
             foreach ($rights as $r) {
-                $generate[$prefix . $r['right_define_name']] = $r['right_id'];
+                $generate[$prefix . $r[$this->getAlias('right_define_name')]] = $r[$this->getAlias('right_id')];
             }
             break;
         }
