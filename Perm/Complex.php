@@ -185,8 +185,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function grantUserRight($data)
     {
-        parent::grantUserRight($data);
-        // FIXME
+        $result = parent::grantUserRight($data);
+        if (!$return) {
+            return $return;
+        }
         $this->_updateLevelStatus($data['right_id']);
 
         // Job done ...
@@ -195,8 +197,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function grantGroupRight($data)
     {
-        parent::grantGroupRight($data);
-        // FIXME
+        $return = parent::grantGroupRight($data);
+        if (!$return) {
+            return $return;
+        }
         $this->_updateLevelStatus($data['right_id']);
 
         // Job done ...
