@@ -3,13 +3,13 @@
 <?php
 $groups = $admin->perm->getGroups();
 if  (empty($groups)) {
-    echo 'Run the <b>Group</b> test first<br />';
+    echo 'Run the <strong>Group</strong> test first<br />';
     exit;
 }
 
 $rights = $admin->perm->getRights();
 if  (empty($rights)) {
-    echo 'Run the <b>Right</b> test first<br />';
+    echo 'Run the <strong>Right</strong> test first<br />';
     exit;
 }
 
@@ -26,7 +26,7 @@ for ($i = 0; $i < 20; $i++) {
     if ($granted === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
-        echo 'Group <b>' . $groups[$group]['group_id'] . '</b> was granted the right <b>'.$rights[$right]['right_id'].'</b><br />';
+        echo 'Group <strong>' . $groups[$group]['group_id'] . '</strong> was granted the right <strong>'.$rights[$right]['right_id'].'</strong><br />';
     }
     unset($rights[$right]);
     $rights = array_values($rights);
@@ -56,7 +56,7 @@ $allGroupRights = $admin->perm->getRights($params);
 if ($allGroupRights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    echo '<hr />Here is/are <b>' . count($allGroupRights) . '</b> group right(s) for the group <b>' . $groups[$group]['group_id'] . '</b>:<br />';
+    echo '<hr />Here is/are <strong>' . count($allGroupRights) . '</strong> group right(s) for the group <strong>' . $groups[$group]['group_id'] . '</strong>:<br />';
     Var_Dump::display($allGroupRights);
     echo '<br />';
 }
@@ -73,7 +73,7 @@ if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
-    echo 'Removed the right <b>'.$right.'</b> on group <b>'.$group.'</b><br />';
+    echo 'Removed the right <strong>'.$right.'</strong> on group <strong>'.$group.'</strong><br />';
 }
 
 
@@ -103,7 +103,7 @@ if ($rights_group === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo 'Updated the right level of <b>' . $groups[$group]['group_id'] . '</b><br />';
+        echo 'Updated the right level of <strong>' . $groups[$group]['group_id'] . '</strong><br />';
         $params = array(
             'fields' => array(
                 'right_id'
