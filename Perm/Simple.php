@@ -74,6 +74,18 @@ class LiveUser_Admin_Perm_Simple
     function addUser($data)
     {
         // sanity checks
+        if (!isset($data['auth_container_name'])) {
+            return false;
+        }
+        
+        if (isset($data['perm_user_id']) && !is_numeric($data['perm_user_id'])) {
+            return false;
+        }
+        
+        if (!isset($data['perm_type'])) {
+            $data['perm_type'] = LIVEUSER_USER_TYPE_ID;
+        }
+        
         $result = $this->_storage->insert('perm_users', $data);
         // notify observer
         return $result;
@@ -120,6 +132,10 @@ class LiveUser_Admin_Perm_Simple
     function addRight($data)
     {
         // sanity checks
+        if (!isset($data['area_id'])) {
+            return false;
+        }
+        
         $result = $this->_storage->insert('rights', $data);
         // notify observer
         return $result;
@@ -136,6 +152,10 @@ class LiveUser_Admin_Perm_Simple
     function updateRight($data, $filters)
     {
         // sanity checks
+        if (!isset($data['area_id'])) {
+            return false;
+        }
+        
         $result = $this->_storage->update('rights', $data, $filters);
         // notify observer
         return $result;
@@ -166,6 +186,10 @@ class LiveUser_Admin_Perm_Simple
     function addArea($data)
     {
         // sanity checks
+        if (!isset($data['application_id'])) {
+            return false;
+        }
+        
         $result = $this->_storage->insert('areas', $data);
         // notify observer
         return $result;
@@ -244,6 +268,44 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         $result = $this->_storage->delete('applications', $filters);
+        // notify observer
+        return $result;
+    }
+
+    function grantUserRight($data)
+    {
+        // sanity checks
+        if (!isset($data['perm_user_id'])) {
+            return false;
+        }
+        
+        if (!isset($data['right_id'])) {
+            return false;
+        }
+        // check if already exists
+
+        $data['right_level'] = LIVEUSER_MAX_LEVEL;
+        $result = $this->_storage->insert('userrights', $data);
+        // notify observer
+        return $result;
+    }
+    
+    function updateUserRight($data, $filters)
+    {
+        // sanity checks
+        if (!isset($data['right_level'])) {
+            return false;
+        }
+        
+        $result = $this->_storage->update('userrights', $data, $filters);
+        // notify observer
+        return $result;
+    }
+    
+    function revokeUserRight($filters)
+    {
+        // sanity checks
+        $result = $this->_storage->delete('userrights', $filters);
         // notify observer
         return $result;
     }

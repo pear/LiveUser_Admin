@@ -104,6 +104,79 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         return $result;
     }
 
+    function grantGroupRight($data)
+    {
+        // sanity checks
+        if (!isset($data['group_id'])) {
+            return false;
+        }
+        
+        if (!isset($data['right_id'])) {
+            return false;
+        }
+        // check if already exists
+
+        $data['right_level'] = LIVEUSER_MAX_LEVEL;
+        $result = $this->_storage->insert('grouprights', $data);
+        // notify observer
+        return $result;
+    }
+    
+    function updateGroupRight($data, $filters)
+    {
+        // sanity checks
+        if (!isset($data['right_level'])) {
+            return false;
+        }
+        
+        $result = $this->_storage->update('grouprights', $data, $filters);
+        // notify observer
+        return $result;
+    }
+    
+    function revokeGroupRight($filters)
+    {
+        // sanity checks
+        $result = $this->_storage->delete('grouprights', $filters);
+        // notify observer
+        return $result;
+    }
+
+    function addUserToGroup($data)
+    {
+        // sanity checks
+        if (!isset($data['group_id'])) {
+            return false;
+        }
+        
+        if (!isset($data['perm_user_id'])) {
+            return false;
+        }
+        // check if already in group
+        
+        $result = $this->_storage->insert('groupusers', $data);
+        // notify observer
+        return $result;
+    }
+
+    function removeUserFromGroup($filters)
+    {
+        // sanity checks
+        $result = $this->_storage->delete('groupusers', $filters);
+        // notify observer
+        return $result;
+    }
+
+    function removeRight($filters)
+    {
+        $result = $this->revokeGroupRight($filters);
+        if (!result) {
+            return false;
+        }
+        
+        parent::removeRight($filters);
+    }
+
     /**
      *
      *
