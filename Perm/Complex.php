@@ -655,7 +655,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getGroups($params = array())
     {
         !isset($params['hierarchy']) ? $params['hierarchy'] = false : null;
-        !isset($params['subgroups']) ? $params['subgroups'] = true : null;
+        !isset($params['subgroups']) ? $params['subgroups'] = false : null;
 
         $old_rekey = false;
         if ($params['subgroups']) {
