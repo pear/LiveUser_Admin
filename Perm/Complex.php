@@ -138,11 +138,17 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        $filter = array(
-            'implied_right_id' => $data['implied_right_id'],
-            'right_id' => $data['right_id']
+        $params = array(
+            'fields' => array(
+                'right_id'
+            ),
+            'filters' => array(
+                'implied_right_id' => $data['implied_right_id'],
+                'right_id' => $data['right_id']
+            )
         );
-        $result = $this->_storage->select('one', 'right_implied', 'right_id', $filter);
+
+        $result = $this->getRights($params);
         if ($result === false) {
             return $result;
         }
@@ -173,19 +179,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function unimplyRight($filters)
     {
-         $count = $this->_storage->selectCount('rights_implied', 'right_id', $filters);
-         if ($count === false) {
-             return false;
-         }
-
-         $data = array();
-         $data['implied'] = (bool)$count;
-
-        $this->updateRight($data, $filters);
-        if ($result === false) {
-            return false;
-        }
-
         $this->_storage->delete('right_implied', $filters);
         // notify observer
         return $this->_updateImpliedStatus($filters);
@@ -222,7 +215,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         if ($result === false) {
             return false;
         }
-        parent::removeRight($filters);
+
+        $result = parent::removeRight($filters);
+        if ($result === false) {
+            return false;
+        }
         // notify observer
         return $this->_updateImpliedStatus($filters);
     }
@@ -237,12 +234,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function removeUser($filters)
     {
         $data = array('owner_user_id' => null);
-        $result = $this->updateGroup($data, $filters);
+        $fitler = array('owner_user_id' => $filters['perm_user_id']);
+        $result = $this->updateGroup($data, $filter);
         if ($result === false) {
             return $result;
         }
         // notify observer
-        parent::removeUser($filters);
+        return parent::removeUser($filters);
     }
 
     /**
@@ -257,8 +255,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         !isset($filters['recursive']) ? $filters['recursive'] = false : '';
         if (isset($filters['subgroup_id']) && $filters['recursive']) {
-            $filter = array('group_id' => $filters['subgroup_id']);
-            $result = $this->_storage->select('col', 'group_subgroups', 'group_id', $filter);
+            $param = array(
+                'fields' => array(
+                    'group_id'
+                ),
+                'filters' => array(
+                    'group_id' => $filters['subgroup_id']
+                )
+            );
+            $result = parent::getGroups($param, array('group_subgroups'), 'group_subgroups');
             if ($result == false) {
                 return $result;
             }
@@ -326,14 +331,50 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _updateImpliedStatus($filters)
     {
-         $count = $this->_storage->selectCount('right_implied', 'right_id', $filters);
-         if ($count === false) {
-             return false;
-         }
+        $count = $this->_storage->selectCount('right_implied', 'right_id', $filters);
+        if ($count === false) {
+            return false;
+        }
 
-         $data = array('has_implied' => (bool)$count);
+        if (isset($filters['right_id'])) {
+            $rightId = $filters['right_id'];
+        } elseif (isset($filters['implied_right_id'])) {
+            $params = array(
+                'fields' => array(
+                    'right_id'
+                ),
+                'filters' => array(
+                    'implied_right_id' => $filters['implied_right_id']
+                )
+            );
 
-        $result = $this->updateRight($data, $filters);
+            $result = $this->getRights($params);
+            if ($result === false) {
+                return false;
+            }
+
+            if (empty($result)) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => 'No right implies right id ' . $filters['implied_right_id'])
+                );
+                return false;
+            }
+
+            $rightId = $result['right_id'];
+        } else {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Neither right_id nor implied_right_id were set
+                                in the filter.')
+            );
+            return false;
+        }
+
+        $data = array('has_implied' => (bool)$count);
+        $filter = array('right_id' => $rightId);
+
+        $result = $this->updateRight($data, $filter);
         if ($result === false) {
             return $result;
         }
@@ -363,7 +404,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
              return false;
          }
 
-        $data = array('has_level' => ($usercount + $groupcount > 0));
+        $data = array('has_level' => (bool)($usercount + $groupcount > 0));
         $filter = array('right_id' => $filters['right_id']);
         $this->_storage->update('rights', $data, $filter);
         // notify observer
