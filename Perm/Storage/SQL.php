@@ -104,6 +104,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                 'right_define_name',
             ),
             'joins' => array(
+                'areas' => 'area_id',
                 'userrights' => 'right_id',
                 'grouprights' => 'right_id',
                 'translations' => array(
@@ -145,6 +146,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                 'area_define_name',
             ),
             'joins' => array(
+                'rights' => 'area_id',
                 'applications' => 'application_id',
                 'translations' => array(
                     'area_id' => 'section_id',
@@ -359,11 +361,6 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             $fields = $this->tables[$root_table]['fields'];
         }
 
-        $types = array();
-        foreach ($fields as $field) {
-            $types[] = $this->fields[$field]['type'];
-        }
-
         $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
         if (!$query) {
             $this->_stack->push(
@@ -371,6 +368,11 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                 array('reason' => 'query was not created')
             );
             return false;
+        }
+
+        $types = array();
+        foreach ($fields as $field) {
+            $types[] = $this->fields[$field]['type'];
         }
 
         $this->setLimit($limit, $offset);
