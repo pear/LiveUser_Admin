@@ -88,7 +88,6 @@ if ($users === false) {
 
 $user = array_rand($users);
 
-unset($user);
 echo 'Test fetching auth_user_id AND perm_user_id with PERM getUsers()<br />';
 echo 'Auth<br />';
 $filter = array(array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'value' => $users[$user]['auth_user_id'], 'type' => 'text'));
