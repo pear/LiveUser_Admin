@@ -115,5 +115,10 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
     {
         return $this->dbc->queryOne($query, $type);
     }
+
+    function nextId($seqname, $ondemand)
+    {
+        return $this->dbc->nextId($seqname, $ondemand);
+    }
 }
 ?>
