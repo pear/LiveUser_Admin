@@ -45,7 +45,6 @@ require_once 'LiveUser/Admin/Perm/Simple.php';
  */
 class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 {
-
     /**
      * Constructor
      *
@@ -53,9 +52,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * @param  mixed      configuration array
      * @return void
      */
-    function LiveUser_Perm_Medium(&$confArray)
+    function LiveUser_Admin_Perm_Medium(&$confArray)
     {
-        $this->LiveUser_Perm_Simple($confArray);
+        $this->selectable_tables['getGroups'] = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
+        $this->LiveUser_Admin_Perm_Simple($confArray);
     }
 
     /**
@@ -266,12 +266,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * @param array $params
      * @return
      */
-    function getGroups($params = array(), $extraSelectable = array(), $root_table = null)
+    function getGroups($params = array())
     {
-        $selectable_tables = 
-            array_merge($extraSelectable, 
-                        array('groups', 'groupusers', 'grouprights', 'rights', 'translations'));
-        $root_table = !is_null($root_table) ? $root_table : 'groups';
+        $selectable_tables = $this->selectable_tables['getGroups'];
+        $root_table = reset($selectable_tables);
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
