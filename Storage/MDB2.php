@@ -94,19 +94,6 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     var $force_seq = true;
 
     /**
-     * Constructor
-     *
-     * @param  mixed      configuration array
-     * @return void
-     *
-     * @access protected
-     */
-    function LiveUser_Admin_Storage_MDB2(&$confArray, &$storageConf)
-    {
-        $this->LiveUser_Admin_Storage_SQL($confArray, $storageConf);
-    }
-
-    /**
      *
      * @param array &$storageConf Storage Configuration
      * @return
@@ -115,6 +102,8 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      */
     function init(&$storageConf)
     {
+        parent::init($storageConf);
+
         if (isset($storageConf['connection']) &&
             MDB2::isConnection($storageConf['connection'])
         ) {

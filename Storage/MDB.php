@@ -92,19 +92,6 @@ require_once 'MDB.php';
 class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
 {
     /**
-     * Constructor
-     *
-     * @param  mixed      configuration array
-     * @return void
-     *
-     * @access protected
-     */
-    function LiveUser_Admin_Storage_MDB(&$confArray, &$storageConf)
-    {
-        $this->LiveUser_Admin_Storage_SQL($confArray, $storageConf);
-    }
-
-    /**
      *
      * @param array &$storageConf Storage Configuration
      * @return
@@ -113,6 +100,8 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      */
     function init(&$storageConf)
     {
+        parent::init($storageConf);
+
         if (isset($storageConf['connection']) &&
             MDB::isConnection($storageConf['connection'])
         ) {

@@ -96,12 +96,12 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * @param  mixed      configuration array
      * @return void
      */
-    function LiveUser_Admin_Perm_Medium(&$confArray)
+    function LiveUser_Admin_Perm_Medium()
     {
         $this->selectable_tables['getUsers'][] = 'groupusers';
         $this->selectable_tables['getRights'][] = 'grouprights';
         $this->selectable_tables['getGroups'] = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
-        $this->LiveUser_Admin_Perm_Simple($confArray);
+        $this->LiveUser_Admin_Perm_Simple();
     }
 
     /**

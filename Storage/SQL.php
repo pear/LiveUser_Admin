@@ -121,20 +121,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     var $alias = array();
 
     /**
-     * Constructor
-     *
-     * @param  mixed &$confaArray     configuration array
-     * @param mixed &$storageConf Storage configuration
-     * @return void
-     *
-     * @access protected
-     */
-    function LiveUser_Admin_Storage_SQL(&$confArray, &$storageConf)
-    {
-        $this->LiveUser_Admin_Storage($confArray, $storageConf);
-    }
-
-    /**
      *
      *
      *

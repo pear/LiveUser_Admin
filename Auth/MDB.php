@@ -144,33 +144,35 @@ class LiveUser_Admin_Auth_MDB extends LiveUser_Admin_Auth_Common
         )
     );
 
-    function init(&$connectOptions)
+    function init(&$conf, $containerName)
     {
-       if (is_array($connectOptions)) {
-            foreach ($connectOptions as $key => $value) {
+        parent::init($conf, $containerName);
+
+       if (is_array($conf)) {
+            foreach ($conf as $key => $value) {
                 if (isset($this->$key)) {
                     $this->$key = $value;
                 }
             }
-            if (isset($connectOptions['connection']) &&
-                MDB::isConnection($connectOptions['connection'])
+            if (isset($conf['connection']) &&
+                MDB::isConnection($conf['connection'])
             ) {
-                $this->dbc     = &$connectOptions['connection'];
-            } elseif (isset($connectOptions['dsn'])) {
-                $this->dsn = $connectOptions['dsn'];
+                $this->dbc     = &$conf['connection'];
+            } elseif (isset($conf['dsn'])) {
+                $this->dsn = $conf['dsn'];
                 $function = null;
-                if (isset($connectOptions['function'])) {
-                    $function = $connectOptions['function'];
+                if (isset($conf['function'])) {
+                    $function = $conf['function'];
                 }
                 $options = null;
-                if (isset($connectOptions['options'])) {
-                    $options = $connectOptions['options'];
+                if (isset($conf['options'])) {
+                    $options = $conf['options'];
                 }
                 $options['optimize'] = 'portability';
                 if ($function == 'singleton') {
-                    $this->dbc =& MDB::singleton($connectOptions['dsn'], $options);
+                    $this->dbc =& MDB::singleton($conf['dsn'], $options);
                 } else {
-                    $this->dbc =& MDB::connect($connectOptions['dsn'], $options);
+                    $this->dbc =& MDB::connect($conf['dsn'], $options);
                 }
                 if (PEAR::isError($this->dbc)) {
                     $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
@@ -343,11 +345,11 @@ class LiveUser_Admin_Auth_MDB extends LiveUser_Admin_Auth_Common
             }
         }
 
-        if (count($updateValues)) {
-            $query .= implode(', ', $updateValues);
-        } else {
-            return false;
+        if (empty($updateValues)) {
+            return true;
         }
+
+        $query .= implode(', ', $updateValues);
 
         $query .= ' WHERE
             ' . $this->authTableCols['required']['auth_user_id']['name'] . '='

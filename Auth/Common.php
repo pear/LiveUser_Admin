@@ -111,26 +111,28 @@ class LiveUser_Admin_Auth_Common
      * @var    string
      * @access public
      */
-    var $name = null;
+    var $containerName = null;
 
     /**
      * Class constructor. Feel free to override in backend subclasses.
      *
      * @access protected
      */
-    function LiveUser_Admin_Auth_Common(&$connectOptions, $name = null)
+    function LiveUser_Admin_Auth_Common()
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+    }
 
-        if (is_array($connectOptions)) {
-            foreach ($connectOptions as $key => $value) {
+    function init($conf, $containerName)
+    {
+        $this->containerName = $containerName;
+        if (is_array($conf)) {
+            $keys = array_keys($conf);
+            foreach ($keys as $key) {
                 if (isset($this->$key)) {
-                    $this->$key = $value;
+                    $this->$key =& $conf[$key];
                 }
             }
-        }
-        if (!is_null($name)) {
-            $this->name = $name;
         }
     }
 

@@ -96,12 +96,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      * @access protected
      */
-    function LiveUser_Admin_Perm_Complex(&$confArray)
+    function LiveUser_Admin_Perm_Complex()
     {
         $this->selectable_tables['getRights'][] = 'right_implied';
         $this->selectable_tables['getAreas'][] = 'area_admin_areas';
         $this->selectable_tables['getGroups'][] = 'group_subgroups';
-        $this->LiveUser_Admin_Perm_Medium($confArray);
+        $this->LiveUser_Admin_Perm_Medium();
     }
 
     /**

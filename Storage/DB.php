@@ -92,19 +92,6 @@ require_once 'DB.php';
 class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
 {
     /**
-     * Constructor
-     *
-     * @param  mixed      configuration array
-     * @return void
-     *
-     * @access protected
-     */
-    function LiveUser_Admin_Storage_DB(&$confArray, &$storageConf)
-    {
-        $this->LiveUser_Admin_Storage_SQL($confArray, $storageConf);
-    }
-
-    /**
      *
      * @param array &$storageConf Storage Configuration
      * @return
@@ -113,6 +100,8 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      */
     function init(&$storageConf)
     {
+        parent::init($storageConf);
+
         if (isset($storageConf['connection']) &&
             DB::isConnection($storageConf['connection'])
         ) {

@@ -92,20 +92,23 @@ class LiveUser_Admin_Storage
      * @param  mixed      configuration array
      * @return void
      */
-    function LiveUser_Admin_Storage(&$confArray, &$storageConf)
+    function LiveUser_Admin_Storage()
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+    }
+
+    function init(&$storageConf)
+    {
         if (is_array($storageConf)) {
-            foreach ($storageConf as $key => $value) {
+            $keys = array_keys($storageConf);
+            foreach ($keys as $key) {
                 if (isset($this->$key)) {
-                    if (empty($this->$key) || !is_array($this->$key)) {
-                        $this->$key =& $storageConf[$key];
-                    } else {
-                        $this->$key = array_merge($this->$key, $value);
-                    }
+                    $this->$key =& $storageConf[$key];
                 }
             }
         }
+
+        return true;
     }
 
     /**

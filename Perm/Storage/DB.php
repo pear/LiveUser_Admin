@@ -91,16 +91,9 @@ require_once 'LiveUser/Perm/Storage/SQL.php';
  */
 class LiveUser_Admin_Perm_Storage_DB extends LiveUser_Admin_Storage_DB
 {
-    /**
-     * Constructor
-     *
-     * @access protected
-     * @param  mixed      configuration array
-     * @return void
-     */
-    function LiveUser_Admin_Perm_Storage_DB(&$confArray, &$storageConf)
+    function init(&$storageConf)
     {
-        $this->LiveUser_Admin_Storage_DB($confArray, $storageConf);
+        parent::init($storageConf);
 
         require_once 'LiveUser/Perm/Storage/Globals.php';
         if (empty($this->tables)) {
