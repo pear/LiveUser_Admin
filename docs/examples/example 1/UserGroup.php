@@ -38,6 +38,8 @@ $usersGroup = $admin->perm->getUsers($params);
 if ($usersGroup === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
+} elseif () {
+    echo 'No users were found for the group id <strong>' . $groups[$group]['group_id'] . '</strong>';
 } else {
     echo 'Perm ID\'s of the users in group <b>' . $groups[$group]['group_id'] . '</b><br />';
     Var_Dump::display($usersGroup);
@@ -87,6 +89,8 @@ foreach ($groups as $group) {
     if ($usersGroup === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
+    } elseif (empty($usersGroup)) {
+        echo 'No users were found for the group id <strong>' . $group['group_id'] . '</strong>';
     } else {
         echo 'Perm ID\'s of the users in group <b>' . $group['group_id'] . '</b><br />';
         Var_Dump::display($usersGroup);

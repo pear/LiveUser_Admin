@@ -42,12 +42,33 @@ Var_Dump::displayInit(
 </style>
 <body>
 
-<a href="Application.php">Application</a>    | <a href="Area.php">Area</a> |
-<a href="Group.php">Group</a>                     | <a href="GroupRights.php">GroupRights</a> |
-<a href="ImplyRights.php">ImplyRights</a>  | <a href="User.php">User</a> |
-<a href="Rights.php">Rights</a>                     | <a href="Subgroups.php">Subgroups</a> |
-<a href="UserGroup.php">UserGroup</a>     | <a href="UserRights.php">UserRights</a> |
-<a href="OutputRightsConstants.php">OutputRightsConstants</a><br />
+<form action="?" method="get">
+ <select name="perm">
+<?php
+    foreach ($backends as $backend => $row) {
+       $selected = $perm == $backend ? 'selected="selected"' : '';
+        echo '<option value="'.$backend.'" '.$selected.'>'.$backend.'</option>';
+    }
+?>
+ </select>
+ <input type="submit" id="go" value="Go!" />
+</form>
+<?php
+$qstring = isset($_SERVER['QUERY_STRING']) && !isset($_GET['del']) ? '?'.$_SERVER['QUERY_STRING'] : '';
+
+echo '
+<a href="Application.php'.$qstring.'">Application</a> | 
+<a href="Area.php'.$qstring.'">Area</a> |
+<a href="Group.php'.$qstring.'">Group</a> | 
+<a href="GroupRights.php'.$qstring.'">GroupRights</a> |
+<a href="ImplyRights.php'.$qstring.'">ImplyRights</a> | 
+<a href="User.php'.$qstring.'">User</a> |
+<a href="Rights.php'.$qstring.'">Rights</a> | 
+<a href="Subgroups.php'.$qstring.'">Subgroups</a> |
+<a href="UserGroup.php'.$qstring.'">UserGroup</a> | 
+<a href="UserRights.php'.$qstring.'">UserRights</a> |
+<a href="OutputRightsConstants.php'.$qstring.'">OutputRightsConstants</a><br />';
+?>
 So that these test will run you have to have <a href="http://pear.php.net/package/Var_Dump">Var_Dump</a> installed<br /><br />
 <?php
 if (isset($_GET['del']))  {

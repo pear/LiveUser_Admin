@@ -1,6 +1,7 @@
-<?php require_once 'index.php'; ?>
-<h3>GroupRights</h3>
 <?php
+require_once 'index.php';
+echo '<h3>GroupRights</h3>';
+
 $groups = $admin->perm->getGroups();
 if  (empty($groups)) {
     echo 'Run the <strong>Group</strong> test first<br />';
@@ -55,6 +56,8 @@ $allGroupRights = $admin->perm->getRights($params);
 
 if ($allGroupRights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+} elseif (empty($allGroupRights)) {
+    echo 'Group <stong>' . $groups[$group]['group_id'] . '</strong> had no rights<br />';
 } else {
     echo '<hr />Here is/are <strong>' . count($allGroupRights) . '</strong> group right(s) for the group <strong>' . $groups[$group]['group_id'] . '</strong>:<br />';
     Var_Dump::display($allGroupRights);
@@ -90,6 +93,8 @@ $rights_group = $admin->perm->getRights($params);
 if ($rights_group === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
+} elseif (empty($rights_group)) {
+    echo 'Group <strong>' . $groups[$group]['group_id'] . '</strong> had no rights<br />';
 } else {
     $right = array_rand($rights_group);
     $data = array('right_level' => 2);
@@ -118,6 +123,9 @@ if ($rights_group === false) {
         if ($result === false) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
             print_r($admin->getErrors());
+        } elseif (empty($result)) {
+            echo 'Nothing was found with the right id <strong>' . $rights_group[$right]['right_id'] . '</strong> 
+                  and group id <strong>' . $groups[$group]['group_id']. '</strong><br />';
         } else {
             Var_Dump::display($result);
         }
@@ -143,6 +151,8 @@ echo 'Here are all the group rights after the changes:<br />';
 if ($allGroups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
+} elseif (empty($allGroups)) {
+    echo 'Found no groups<br />';
 } else {
     Var_Dump::display($allGroups);
 }

@@ -1,6 +1,5 @@
 <?php
 error_reporting(E_ALL);
-require_once 'MDB2.php';
 require_once 'LiveUser/Admin.php';
 // Please configure the following file according to your environment
 
@@ -12,24 +11,46 @@ $db_host = 'localhost';
 $db_name = 'liveuser_admin_test_example1';
 
 $dsn = "mysql://$db_user:$db_pass@$db_host/$db_name";
-$options = array(
-    'debug' => true,
-    'debug_handler' => 'echoQuery',
+
+$backends = array(
+    'DB' => array(
+        'options' => array()
+    ), 
+    'MDB' => array(
+        'options' => array()
+    ),
+    'MDB2' => array(
+        'options' => array(
+            'debug' => true,
+            'debug_handler' => 'echoQuery',
+        )
+    )
 );
+
+if (!isset($_GET['perm'])) {
+    $perm = 'MDB2';
+} elseif (isset($backends[$_GET['perm']])) {
+    $perm = strtoupper($_GET['perm']);
+} else {
+    exit('Perm Backend not found.');
+}
+
+require_once $perm.'.php';
 
 function echoQuery(&$db, $scope, $message)
 {
     Var_Dump::display($scope.': '.$message);
 }
 
-$db = MDB2::connect($dsn, $options);
+$dummy = new $perm;
+$db = $dummy->connect($dsn, $backends[$perm]['options']);
 
 if (PEAR::isError($db)) {
     echo $db->getMessage() . ' ' . $db->getUserInfo();
     die();
 }
 
-$db->setFetchMode(MDB2_FETCHMODE_ASSOC);
+$db->setFetchMode($perm.'_FETCHMODE_ASSOC');
 
 $conf =
     array(
@@ -77,9 +98,9 @@ $conf =
             'type'  => 'Complex',
             'alias' => array(),
             'storage' => array(
-                'MDB2' => array(
+                $perm => array(
                     'connection' => $db,
-                    //'dsn' => $dsn,
+                    'dsn' => $dsn,
                     'prefix' => 'liveuser_',
                     'tables' => array(),
                     'fields' => array(),

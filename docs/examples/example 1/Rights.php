@@ -1,11 +1,13 @@
-<?php require_once 'index.php'; ?>
-<h3>Rights</h3>
 <?php
+require_once 'index.php';
+echo '<h3>Rights</h3>';
+
 $areas = $admin->perm->getAreas();
 if  (empty($areas)) {
     echo 'Run the <b>Area</b> test first<br />';
     exit;
 }
+
 // Add
 if ($areas === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
@@ -34,55 +36,61 @@ $rights = $admin->perm->getRights();
 if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
+} elseif (empty($rights)) {
+    echo 'No rights were found, thus we\'ve halted the rest of the test<br />';
 } else {
     echo 'These are our current rights:';
     Var_Dump::display($rights);
     echo '<br />';
-}
 
-// Remove
-$id = array_rand($rights);
-$filters = array('right_id' => $rights[$id]['right_id']);
-$rmRight = $admin->perm->removeRight($filters);
+    // Remove
+    $id = array_rand($rights);
+    $filters = array('right_id' => $rights[$id]['right_id']);
+    $rmRight = $admin->perm->removeRight($filters);
 
-if ($rmRight === false) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-    print_r($admin->getErrors());
-} else {
-    echo '<b>Right_' . $id . '</b> was removed<br />';
-}
-
-// Update
-$id = array_rand($rights);
-$data = array('right_define_name' => 'RIGHT_' . $id . '_UPDATED');
-$filters = array('right_id' => $rights[$id]['right_id']);
-$upRight = $admin->perm->updateRight($data, $filters);
-
-if ($upRight === false) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-    print_r($admin->getErrors());
-} else {
-    echo '<b>Right_'. $id .'</b> was updated<br />';
-    $params = array('filters' => array('right_id' => $rights[$id]['right_id']));
-    $result = $admin->perm->getRights($params);
-
-    if ($result === false) {
+    if ($rmRight === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        Var_Dump::display($result);
+        echo '<b>Right_' . $id . '</b> was removed<br />';
     }
-}
 
-// Get
-$rights = $admin->perm->getRights();
+    // Update
+    $id = array_rand($rights);
+    $data = array('right_define_name' => 'RIGHT_' . $id . '_UPDATED');
+    $filters = array('right_id' => $rights[$id]['right_id']);
+    $upRight = $admin->perm->updateRight($data, $filters);
 
-if ($rights === false) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-    print_r($admin->getErrors());
-} else {
-    echo 'These are our current rights:';
-    Var_Dump::display($rights);
-    echo '<br />';
+    if ($upRight === false) {
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
+    } else {
+        echo '<b>Right_'. $id .'</b> was updated<br />';
+        $params = array('filters' => array('right_id' => $rights[$id]['right_id']));
+        $result = $admin->perm->getRights($params);
+
+        if ($result === false) {
+            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+            print_r($admin->getErrors());
+        } elseif (empty($result)) {
+            echo 'No rights were found<br />';
+        } else {
+            Var_Dump::display($result);
+        }
+    }
+
+    // Get
+    $rights = $admin->perm->getRights();
+
+    if ($rights === false) {
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
+    } elseif (empty($rights)) {
+        echo 'No rights were found<br />';
+    } else {
+        echo 'These are our current rights:';
+        Var_Dump::display($rights);
+        echo '<br />';
+    }
 }
 echo '<hr />';

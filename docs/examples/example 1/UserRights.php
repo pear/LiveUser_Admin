@@ -62,6 +62,8 @@ $user_rights = $admin->perm->getRights($params);
 
 if ($user_rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+} elseif(empty($user_rights)) {
+    echo 'No rights were found for perm user id <strong>' . $users[$user]['perm_user_id'] . '</strong><br />';
 } else {
     $right = array_rand($user_rights);
     $filters = array(
@@ -88,6 +90,9 @@ if ($user_rights === false) {
         if ($result === false) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
             print_r($admin->getErrors());
+        } elseif (empty($result)) {
+            echo 'No result came from searching for right id <strong>' . $user_rights[$right]['right_id'] . '</strong>
+                  and perm user id <strong>' . $users[$user]['perm_user_id'] . '</strong><br />';
         } else {
             Var_Dump::display($result);
         }
@@ -116,6 +121,8 @@ $singleRight = $admin->perm->getRights($params);
 if ($singleRight === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
+} elseif (empty($singleRight)) {
+    echo 'No rights were found for perm user id <strong>' . $users[$user]['perm_user_id'] . '</strong><br />';
 } else {
     echo 'These are the user rights for <strong>' . $users[$user]['name'] . '</strong>:<br />';
     Var_Dump::display($singleRight);
@@ -140,6 +147,8 @@ $rights = $admin->perm->getRights($params);
 if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
+} elseif (empty($rights)) {
+    echo 'No rights were found.<br />';
 } else {
     echo 'Here are all the rights:<br />';
     Var_Dump::display($rights);
