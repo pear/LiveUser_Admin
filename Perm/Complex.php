@@ -72,7 +72,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        $filter = array('subgroup_id' => $filters['subgroup_id']);
+        $filter = array('subgroup_id' => $data['subgroup_id']);
         $result = $this->_storage->selectCount('group_subgroups', 'group_id', $filter);
         if ($result === false) {
             return false;
