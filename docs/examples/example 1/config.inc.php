@@ -55,13 +55,13 @@ $conf =
                 'authTable'     => 'liveuser_users',
                     'authTableCols' => array(
                         'required' => array(
-                            'auth_user_id' => array('type' => 'text',   'name' => 'user_id'),
+                            'auth_user_id' => array('type' => 'text',   'name' => 'auth_user_id'),
                             'handle'       => array('type' => 'text',   'name' => 'handle'),
                             'passwd'       => array('type' => 'text',   'name' => 'passwd'),
                         ),
                         'optional' => array(
                             'is_active'      => array('type' => 'boolean', 'name' => 'is_active'),
-                            'lastlogin'      => array('type' => 'timestamp', 'name' => 'last_login'),
+                            'lastlogin'      => array('type' => 'timestamp', 'name' => 'lastlogin'),
                             'owner_user_id'  => array('type' => 'integer',   'name' => 'owner_user_id'),
                             'owner_group_id' => array('type' => 'integer',   'name' => 'owner_group_id')
                         ),
