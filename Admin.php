@@ -308,7 +308,7 @@ class LiveUser_Admin
      *
      * @access public
      */
-    function setAdminAuthContainer($authName)
+    function &setAdminAuthContainer($authName)
     {
         if (!isset($this->_authContainers[$authName])
             || !is_object($this->_authContainers[$authName])
@@ -332,7 +332,7 @@ class LiveUser_Admin
         }
         $this->authContainerName = $authName;
         $this->auth = &$this->_authContainers[$authName];
-        return true;
+        return $this->auth;
     }
 
     /**
@@ -348,7 +348,7 @@ class LiveUser_Admin
      *
      * @access public
      */
-    function setAdminPermContainer()
+    function &setAdminPermContainer()
     {
         if (!isset($this->_conf['permContainer'])) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -641,8 +641,7 @@ class LiveUser_Admin
 
         $users = array();
         foreach($permUsers as $permData) {
-            $this->setAdminAuthContainer($permData['auth_container_name']);
-            if (!is_object($this->auth)) {
+            if (!$this->setAdminAuthContainer($permData['auth_container_name'])) {
                 $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Auth container could not be set.'));
                 return false;
