@@ -330,7 +330,7 @@ class LiveUser_Admin_Perm_Simple
         $filter_check = array('application_id' => $filters['application_id']);
         $count = $this->_storage->selectCount('areas', 'application_id', $filters);
         if ($count > 0) {
-            $result = $this->removeAreas($filter_check);
+            $result = $this->removeArea($filter_check);
             if ($result === false) {
                 return false;
             }
