@@ -61,9 +61,21 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Storage_MDB2
     {
         $this->LiveUser_Admin_Storage_MDB2($confArray, $storageConf);
 
-        $this->tables = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getTableDefaults(), $this->tables);
-        $this->fields = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getFieldDefaults(), $this->fields);
-        $this->alias = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getAliasDefaults(), $this->alias);
+        if (empty($this->tables)) {
+            $this->tables = LiveUser_Perm_Storage_SQL::getTableDefaults();
+        } else {
+            $this->tables = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getTableDefaults(), $this->tables);
+        }
+        if (empty($this->fields)) {
+            $this->fields = LiveUser_Perm_Storage_SQL::getFieldDefaults();
+        } else {
+            $this->fields = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getFieldDefaults(), $this->fields);
+        }
+        if (empty($this->alias)) {
+            $this->alias = LiveUser_Perm_Storage_SQL::getAliasDefaults();
+        } else {
+            $this->alias = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getAliasDefaults(), $this->alias);
+        }
     }
 }
 ?>
