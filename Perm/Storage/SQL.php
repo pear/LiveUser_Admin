@@ -250,7 +250,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
     function insert($table, $data)
     {
-        if (!isset($data[$this->ids[$table]])) {
+        if (isset($this->ids[$table]) && !isset($data[$this->ids[$table]])) {
             $data[$this->ids[$table]] = $this->dbc->nextId($this->prefix . $table, true);
         }
       
@@ -307,6 +307,27 @@ var_dump('query was not created');
         $query = 'DELETE FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
         return $this->dbc->query($query);
+    }
+
+    function selectOne($table, $field, $filters, $count = false)
+    {
+        if (empty($field)) {
+var_dump('field is missing');
+        }
+
+        if (empty($table)) {
+var_dump('table is missing');
+        }
+
+        $query = 'SELECT ';
+        if ($count) {
+            $query .= 'count(' . $field . ')';
+        } else {
+            $query .= $field;
+        }
+        $query .= "\n" . 'FROM ' . $this->prefix . $table;
+        $query .= $this->createWhere($filters);
+        return $this->queryOne($query);
     }
 
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
