@@ -254,7 +254,7 @@ class LiveUser_Admin
                 $authName,
                 'LiveUser_Admin_'
             );
-            if (!is_object($auth)) {
+            if ($auth === false) {
                 $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Could not create auth container instance'));
                 return false;
