@@ -18,7 +18,7 @@ $liveuserConfig = array(
     ),
     'permContainer' => array(
         'type'  => 'Medium',
-        'stack' => array('MDB2' => array('dsn' => $dsn, 'prefix'     => 'liveuser_')),
+        'storage' => array('MDB2' => array('dsn' => $dsn, 'prefix'     => 'liveuser_')),
     ),
 );
 
