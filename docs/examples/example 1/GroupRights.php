@@ -81,7 +81,7 @@ $filters = array(
 );
 $updated = $admin->perm->updateGroupRight($data, $filters);
 var_dump($updated);
-/*
+
 if (!$updated) {
     echo '<strong>Error</strong><br />';
 } else {
@@ -117,11 +117,14 @@ $params = array(
     ),
     'with' => array(
         'group_id' => array(
-            'group_id',
-            'right_level',
+            'fields' => array(
+                'group_id',
+                'right_level',
+            ),
         ),
     ),
 );
+
 $allGroups = $admin->perm->getRights($params);
 echo 'Here are all the group rights after the changes:<br />';
 if (!$allGroups) {
@@ -129,6 +132,6 @@ if (!$allGroups) {
 } else {
     Var_Dump::display($allGroups);
 }
-echo $admin->perm->_storage->dbc->last_query;*/
+echo $admin->perm->_storage->dbc->last_query;
 echo '<br />';
 echo '<hr />';
