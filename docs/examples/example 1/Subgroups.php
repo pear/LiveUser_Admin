@@ -54,7 +54,7 @@ for ($i = 0; $i < 10; $i++) {
 
 
 echo 'All the groups:<br />';
-$groups = $admin->perm->getGroups();
+$groups = $admin->perm->getGroups(array('subgroups' => true));
 if ($groups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
