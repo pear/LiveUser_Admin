@@ -56,10 +56,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function removeArea($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['area_id']]) || !is_numeric($filters[$this->alias['area_id']])) {
+        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['area_id'])
+                array('key' => 'area_id')
             );
             return false;
         }
@@ -87,15 +87,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function _updateImpliedStatus($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['right_id']]) || !is_numeric($filters[$this->alias['right_id']])) {
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
 
-         $count = $this->_storage->selectOne('rights_implied', $this->alias['right_id'], $filters, true);
+         $count = $this->_storage->selectOne('rights_implied', 'right_id', $filters, true);
          if ($count === false) {
              return false;
          }
@@ -114,18 +114,18 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function implyRight($data)
     {
         // sanity checks
-        if (!isset($data[$this->alias['right_id']]) || !is_numeric($data[$this->alias['right_id']])) {
+        if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
         
-        if (!isset($data[$this->alias['implied_right_id']]) || !is_numeric($data[$this->alias['implied_right_id']])) {
+        if (!isset($data['implied_right_id']) || !is_numeric($data['implied_right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['implied_right_id'])
+                array('key' => 'implied_right_id')
             );
             return false;
         }
@@ -135,40 +135,40 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
         
-        return $this->_updateImpliedStatus($data[$this->alias['right_id']]);
+        return $this->_updateImpliedStatus($data['right_id']);
     }
 
     function unimplyRight($filters)
     {
         // sanity checks
-        if (!is_numeric($filters[$this->alias['right_id']])) {
+        if (!is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
         
-        if (!is_numeric($filters[$this->alias['implied_right_id']])) {
+        if (!is_numeric($filters['implied_right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['implied_right_id'])
+                array('key' => 'implied_right_id')
             );
             return false;
         }
 
         $this->_storage->delete('rights_implied', $filters);
 
-        return $this->_updateImpliedStatus($data[$this->alias['right_id']]);
+        return $this->_updateImpliedStatus($data['right_id']);
     }
 
     function removeRight($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['right_id']]) || !is_numeric($filters[$this->alias['right_id']])) {
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
@@ -182,15 +182,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function removeUser($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['perm_user_id']]) || !is_numeric($filters[$this->alias['perm_user_id']])) {
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['perm_user_id'])
+                array('key' => 'perm_user_id')
             );
             return false;
         }
 
-        $data = array($this->alias['owner_user_id'] => 'NULL');
+        $data = array('owner_user_id' => 'NULL');
         $result = $this->_storage->update('groups', $data, $filters);
         if (!$result) {
             return false;
@@ -202,7 +202,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantUserRight($data)
     {
         parent::grantUserRight($data);
-        $this->_updateLevelStatus($data[$this->alias['right_id']]);
+        $this->_updateLevelStatus($data['right_id']);
 
         // Job done ...
         return true;
@@ -211,7 +211,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantGroupRight($data)
     {
         parent::grantGroupRight($data);
-        $this->_updateLevelStatus($data[$this->alias['right_id']]);
+        $this->_updateLevelStatus($data['right_id']);
 
         // Job done ...
         return true;
@@ -220,15 +220,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function _updateImpliedStatus($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['right_id']]) || !is_numeric($filters[$this->alias['right_id']])) {
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
 
-         $count = $this->_storage->selectOne('rights_implied', $this->alias['right_id'], $filters, true);
+         $count = $this->_storage->selectOne('rights_implied', 'right_id', $filters, true);
          if (!$count) {
              return false;
          }
@@ -247,28 +247,28 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function _updateLevelStatus($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['right_id']]) || !is_numeric($filters[$this->alias['right_id']])) {
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
 
-         $usercount = $this->_storage->selectOne('userrights', $this->alias['right_id'], $filters, true);
+         $usercount = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
          if (!$usercount) {
              return false;
          }
 
-         $grouprcount = $this->_storage->selectOne('grouprights', $this->alias['right_id'], $filters, true);
+         $grouprcount = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
          if (!$groupcount) {
              return false;
          }
 
         $count = $usercount + $groupcount;
         
-        $data = array($this->alias['has_level'] => ($count > 0));
-        $filter = array($this->alias['right_id'] => $filters[$this->alias['right_id']]);
+        $data = array('has_level' => ($count > 0));
+        $filter = array('right_id' => $filters['right_id']);
         $this->_storage->update('rights', $data, $filter);
         
         return true;

@@ -68,10 +68,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function addGroup($data)
     {
         // sanity checks
-        if (isset($data[$this->alias['group_id']]) && !is_numeric($data[$this->alias['group_id']])) {
+        if (isset($data['group_id']) && !is_numeric($data['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
@@ -92,10 +92,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroup($data, $filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['group_id']]) || !is_numeric($filters[$this->alias['group_id']])) {
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
@@ -115,16 +115,16 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeGroup($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['group_id']]) || !is_numeric($filters[$this->alias['group_id']])) {
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
 
         // Remove users from the group
-        $filter = array($this->alias['group_id'] => $filters[$this->alias['group_id']]);
+        $filter = array('group_id' => $filters['group_id']);
         $result = $this->_storage->delete('groupusers', $filter);
         if (!$result) {
             return false;
@@ -151,32 +151,32 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function grantGroupRight($data)
     {
         // sanity checks
-        if (!isset($data[$this->alias['group_id']]) || !is_numeric($data[$this->alias['group_id']])) {
+        if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
 
-        if (!isset($data[$this->alias['right_id']]) || !is_numeric($data[$this->alias['right_id']])) {
+        if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
 
-        if (!isset($data[$this->alias['right_level']])) {
-            $data[$this->alias['right_level']] = LIVEUSER_MAX_LEVEL;
+        if (!isset($data['right_level'])) {
+            $data['right_level'] = LIVEUSER_MAX_LEVEL;
         }
 
         // check if the group has already been granted that right
         $filters = array(
-                       $this->alias['group_id'] => $data[$this->alias['group_id']],
-                       $this->alias['right_id']     => $data[$this->alias['right_id']],
+                       'group_id' => $data['group_id'],
+                       'right_id'     => $data['right_id'],
                    );
-        $count = $this->_storage->selectOne('grouprights', $this->alias['right_id'], $filters, true);
+        $count = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
         if ($count > 0) {
             return true;
         }
@@ -197,26 +197,26 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroupRight($data, $filters)
     {
         // sanity checks
-        if (!isset($data[$this->alias['right_level']])) {
+        if (!isset($data['right_level'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => $this->alias['right_level'])
+                array('key' => 'right_level')
             );
             return false;
         }
 
-        if (!isset($filters[$this->alias['group_id']]) || !is_numeric($filters[$this->alias['group_id']])) {
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
 
-        if (!isset($filters[$this->alias['right_id']]) || !is_numeric($filters[$this->alias['right_id']])) {
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
@@ -236,18 +236,18 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function revokeGroupRight($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['group_id']]) || !is_numeric($filters[$this->alias['group_id']])) {
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
 
-        if (isset($filters[$this->alias['right_id']]) && !is_numeric($filters[$this->alias['right_id']])) {
+        if (isset($filters['right_id']) && !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
@@ -267,28 +267,28 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function addUserToGroup($data)
     {
         // sanity checks
-       if (!isset($data[$this->alias['group_id']]) || !is_numeric($data[$this->alias['group_id']])) {
+       if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
 
-        if (!isset($data[$this->alias['perm_user_id']]) || !is_numeric($data[$this->alias['perm_user_id']])) {
+        if (!isset($data['perm_user_id']) || !is_numeric($data['perm_user_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => $this->alias['perm_user_id'])
+                array('key' => 'perm_user_id')
             );
             return false;
         }
 
         // check if the userhas already been granted added to that group
         $filters = array(
-                       $this->alias['perm_user_id'] => $data[$this->alias['perm_user_id']],
-                       $this->alias['group_id']     => $data[$this->alias['group_id']],
+                       'perm_user_id' => $data['perm_user_id'],
+                       'group_id'     => $data['group_id'],
                    );
-        $count = $this->_storage->selectOne('groupusers', $this->alias['group_id'], $filters, true);
+        $count = $this->_storage->selectOne('groupusers', 'group_id', $filters, true);
         if ($count > 0) {
             return true;
         }
@@ -308,18 +308,18 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeUserFromGroup($filters)
     {
         // sanity checks
-        if (isset($filters[$this->alias['group_id']]) && !is_numeric($filters[$this->alias['group_id']])) {
+        if (isset($filters['group_id']) && !is_numeric($filters['group_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['group_id'])
+                array('key' => 'group_id')
             );
             return false;
         }
 
-        if (!isset($filters[$this->alias['perm_user_id']]) || !is_numeric($filters[$this->alias['perm_user_id']])) {
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['perm_user_id'])
+                array('key' => 'perm_user_id')
             );
             return false;
         }
@@ -339,15 +339,15 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeRight($filters)
     {
         // sanity checks
-        if (!isset($filters[$this->alias['right_id']]) || !is_numeric($filters[$this->alias['right_id']])) {
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                array('key' => $this->alias['right_id'])
+                array('key' => 'right_id')
             );
             return false;
         }
 
-        $filter = array($this->alias['right_id'] => $filters[$this->alias['right_id']]);
+        $filter = array('right_id' => $filters['right_id']);
         $result = $this->_storage->delete('grouprights', $filter);
         if (!$result) {
             return false;

@@ -54,6 +54,8 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Storage_MDB2
 
     var $fields = array();
 
+    var $alias = array();
+
     /**
      * Constructor
      *
@@ -67,6 +69,7 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Storage_MDB2
 
         $this->tables = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getTableDefaults(), $this->tables);
         $this->fields = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getFieldDefaults(), $this->fields);
+        $this->alias = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getAliasDefaults(), $this->alias);
     }
 }
 ?>

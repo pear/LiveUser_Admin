@@ -98,7 +98,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
-            $fields[] = $field;
+            $fields[] = $this->alias[$field];
             $values[] = $this->quote($value, $this->fields[$field]);
         }
 
@@ -137,7 +137,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
-            $fields[] = $field . ' = ' . $this->quote($value, $this->fields[$field]);
+            $fields[] = $this->alias[$field] . ' = ' . $this->quote($value, $this->fields[$field]);
         }
 
         $query = $this->createUpdate($table, $fields, $filters);
@@ -201,10 +201,10 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         $query = 'SELECT ';
         if ($count) {
-            $query .= 'COUNT(' . $field . ')';
+            $query .= 'COUNT(' . $this->alias[$field] . ')';
             $type = 'integer';
         } else {
-            $query .= $field;
+            $query .= $this->alias[$field];
             $type = $this->fields[$field];
         }
         $query .= "\n" . 'FROM ' . $this->prefix . $table;
@@ -290,9 +290,10 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         foreach ($filters as $field => $value) {
             // find type for fields with naming like [tablename].[fieldname]
-            $tmp_field = $field;
             if (preg_match('/^'.$this->prefix.'[^.]+\.(.+)$/', $field, $match)) {
-                $tmp_field = $match[1];
+                $tmp_field = $this->alias[$match[1]];
+            } else {
+                $tmp_field = $this->alias[$field];
             }
             if (!isset($this->fields[$tmp_field])) {
                 $this->_stack->push(
@@ -303,9 +304,13 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             }
             $type = $this->fields[$tmp_field];
             if (is_array($value)) {
-                $where[] = $field.' IN ('.$this->implodeArray($value, $type).')';
+                if (isset($value['value'])) {
+                    $where[] = $tmp_field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
+                } else {
+                    $where[] = $tmp_field.' IN ('.$this->implodeArray($value, $type).')';
+                }
             } else {
-                $where[] = $field.' = '.$this->quote($value, $type);
+                $where[] = $tmp_field.' = '.$this->quote($value, $type);
             }
         }
         foreach ($joinfilters as $field => $value) {
@@ -349,17 +354,17 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 // append table name to all selected fields for this table
                 for ($i = 0, $j = count($fields); $i < $j; $i++) {
                     if ($field == $fields[$i]) {
-                        $fields[$i] = $this->prefix.$table.'.'.$fields[$i];
+                        $fields[$i] = $this->prefix.$table.'.'.$this->alias[$fields[$i]].' AS '.$field;
                     }
                 }
                 // append table name to all filter fields for this table
                 if (isset($filters[$field])) {
-                    $filters[$this->prefix.$table.'.'.$field] = $filters[$field];
+                    $filters[$this->prefix.$table.'.'.$this->alias[$field]] = $filters[$field];
                     unset($filters[$field]);
                 }
                 // append table name to all order by fields for this table
                 if (isset($orders[$field])) {
-                    $orders[$this->prefix.$table.'.'.$field] = $orders[$field];
+                    $orders[$this->prefix.$table.'.'.$this->alias[$field]] = $orders[$field];
                     unset($orders[$field]);
                 }
             }
@@ -415,17 +420,17 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     if (isset($this->tables[$root_table]['fields'][$joinsource])
                         && isset($this->tables[$table]['fields'][$jointarget])
                     ) {
-                        $filters[$this->prefix.$root_table.'.'.$joinsource] =
-                            $this->prefix.$table.'.'.$jointarget;
+                        $filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
+                            $this->prefix.$table.'.'.$this->alias[$jointarget];
                     // target table uses a field in the join and source table
                     // a constant value
                     } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
-                        $filters[$this->prefix.$table.'.'.$jointarget] =
+                        $filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] =
                             $this->quote($joinsource, $this->fields[$jointarget]);
                     // source table uses a field in the join and target table
                     // a constant value
                     } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
-                        $filters[$this->prefix.$root_table.'.'.$joinsource] =
+                        $filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
                             $this->quote($jointarget, $this->fields[$joinsource]);
                     // neither tables uses a field in the join
                     } else {
@@ -472,17 +477,17 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     if (isset($this->tables[$root_table]['fields'][$joinsource])
                         && isset($this->tables[$table]['fields'][$jointarget])
                     ) {
-                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
-                            $this->prefix.$table.'.'.$jointarget;
+                        $tmp_filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
+                            $this->prefix.$table.'.'.$this->alias[$jointarget];
                     // target table uses a field in the join and source table
                     // a constant value
                     } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
-                        $tmp_filters[$this->prefix.$table.'.'.$jointarget] =
+                        $tmp_filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] =
                             $this->quote($joinsource, $this->fields[$jointarget]);
                     // source table uses a field in the join and target table
                     // a constant value
                     } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
-                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
+                        $tmp_filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
                             $this->quote($jointarget, $this->fields[$joinsource]);
                     // neither tables uses a field in the join
                     } else {
