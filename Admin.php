@@ -246,7 +246,7 @@ class LiveUser_Admin
         if (is_array($conf)) {
             $obj->_conf = $conf;
             if (isset($obj->_conf['autoInit']) && $obj->_conf['autoInit']) {
-                $this->setAdminContainers();
+                $obj->setAdminContainers();
             }
         }
 
