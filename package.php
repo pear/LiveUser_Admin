@@ -9,7 +9,7 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.14.0';
+$version = '0.1.0';
 
 $notes = <<<EOT
 - Refactored nto a separate package.
