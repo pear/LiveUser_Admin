@@ -9,16 +9,11 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.2.1';
+$version = '0.2.2';
 
 $notes = <<<EOT
-- typo fix in autoinit option (bug #3844)
-- updated LiveUser dependency to 0.15.0
-- fixed type handling in updateUser()
-- update getErrors() with code from the LiveUser class
-- typo fix in outputRightsConstants() (bug #3897)
-- removed calls to make remove filter on delete of relationship tables (bug #3874)
-- unsetting perm_user_id instead of casting it to null in _getInheritedRights() (bug #3976)
+- delete() now uses findTable() to ensure that only defined table with the proper fields are being used
+- findTable() now only prefixes fields if necessary
 EOT;
 
 $description = <<<EOT
