@@ -25,6 +25,7 @@ $notes = <<<EOT
   MDB2 will try to use autoincrement if supported by the RDBMS (you will need
   to add autoincrement to the id fields in the applications, areas, groups,
   rights, and perm_users tables yourself)
+- example 1 now outputs all queries using an MDB2 debug handler
 EOT;
 
 $description = <<<EOT
