@@ -133,6 +133,9 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
 
     function queryOne($query, $type)
     {
+        if (is_array($type)) {
+            $type = reset($type);
+        }
         $result = $this->dbc->queryOne($query, $type);
         if (PEAR::isError($result)) {
             $this->_stack->push(
@@ -159,6 +162,9 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
 
     function queryCol($query, $type)
     {
+        if (is_array($type)) {
+            $type = reset($type);
+        }
         $result = $this->dbc->queryCol($query, $type);
         if (PEAR::isError($result)) {
             $this->_stack->push(
