@@ -26,8 +26,7 @@
 /**
  * Require parent class definition.
  */
-require_once 'LiveUser/Admin/Perm/Storage/SQL.php';
-require_once 'MDB2.php';
+require_once 'LiveUser/Admin/Storage/MDB2.php';
 
 /**
  * This is a PEAR::MDB2 backend driver for the LiveUser class.
@@ -48,7 +47,7 @@ require_once 'MDB2.php';
  * @package LiveUser
  * @category authentication
  */
-class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
+class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Storage_MDB2
 {
     /**
      * Constructor
@@ -59,76 +58,7 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
      */
     function LiveUser_Admin_Perm_Storage_MDB2(&$confArray, &$storageConf)
     {
-        $this->LiveUser_Admin_Perm_Storage_SQL($confArray, $storageConf);
-        if (isset($storageConf['connection']) &&
-                MDB2::isConnection($storageConf['connection'])
-        ) {
-            $this->dbc = &$storageConf['connection'];
-        } elseif (isset($storageConf['dsn'])) {
-            $this->dsn = $storageConf['dsn'];
-            $function = null;
-            if (isset($storageConf['function'])) {
-                $function = $storageConf['function'];
-            }
-            $options = null;
-            if (isset($storageConf['options'])) {
-                $options = $storageConf['options'];
-            }
-            $options['portability'] = MDB2_PORTABILITY_ALL;
-            if ($function == 'singleton') {
-                $this->dbc =& MDB2::singleton($storageConf['dsn'], $options);
-            } else {
-                $this->dbc =& MDB2::connect($storageConf['dsn'], $options);
-            }
-            if (PEAR::isError($this->dbc)) {
-                $this->_stack->push(
-                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                    array('msg' => 'could not create connection: '.$this->dbc->getMessage())
-                );
-                return false;
-            }
-        }
-    }
-
-    function quote($value, $type)
-    {
-        return $this->dbc->quote($value, $type);
-    }
-
-    function implodeArray($array, $type)
-    {
-        $this->dbc->loadModule('datatype');
-        return $this->dbc->datatype->implodeArray($array, $type);
-    }
-
-    function setLimit($limit, $offset)
-    {
-        return $this->dbc->setLimit($limit, $offset);
-    }
-
-    function query($query)
-    {
-        return $this->dbc->query($query);
-    }
-
-    function queryAll($query, $types, $rekey)
-    {
-        return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
-    }
-
-    function queryOne($query, $type)
-    {
-        return $this->dbc->queryOne($query, $type);
-    }
-
-    function nextId($seqname, $ondemand)
-    {
-        return $this->dbc->nextId($seqname, $ondemand);
-    }
-
-    function disconnect()
-    {
-        return $this->dbc->disconnect();
+        $this->LiveUser_Admin_Storage_MDB2($confArray, $storageConf);
     }
 }
 ?>

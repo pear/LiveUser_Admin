@@ -26,7 +26,7 @@
 /**
  * Require parent class definition.
  */
-require_once 'LiveUser/Admin/Perm/Storage.php';
+require_once 'LiveUser/Admin/Storage.php';
 
 /**
  * This is a PEAR::MDB2 backend driver for the LiveUser class.
@@ -47,7 +47,7 @@ require_once 'LiveUser/Admin/Perm/Storage.php';
  * @package LiveUser
  * @category authentication
  */
-class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
+class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 {
     /**
      * dsn that was connected to
@@ -332,9 +332,9 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
      * @param  mixed      configuration array
      * @return void
      */
-    function LiveUser_Admin_Perm_Storage_SQL(&$confArray, &$storageConf)
+    function LiveUser_Admin_Storage_SQL(&$confArray, &$storageConf)
     {
-        $this->LiveUser_Admin_Perm_Storage($confArray, $storageConf);
+        $this->LiveUser_Admin_Storage($confArray, $storageConf);
     }
 
     function insert($table, $data)

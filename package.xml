@@ -34,7 +34,7 @@
   </maintainers>
   <release>
     <version>0.14.0</version>
-    <date>2004-12-08</date>
+    <date>2004-12-11</date>
     <license>LGPL</license>
     <state>beta</state>
     <notes>- Refactored nto a separate package.</notes>
@@ -84,20 +84,23 @@
         <file role="php" name="Complex.php"/>
         <file role="php" name="Medium.php"/>
         <file role="php" name="Simple.php"/>
-        <file role="php" name="Storage.php"/>
         <dir name="Storage">
          <file role="php" name="MDB2.php"/>
-         <file role="php" name="SQL.php"/>
         </dir> <!-- Perm/Storage -->
        </dir> <!-- Perm -->
+       <dir name="Storage">
+        <file role="php" name="MDB2.php"/>
+        <file role="php" name="SQL.php"/>
+       </dir> <!-- Storage -->
        <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
+       <file role="php" name="Storage.php"/>
       </dir> <!-- / -->
     </filelist>
   </release>
   <changelog>
     <release>
       <version>0.14.0</version>
-      <date>2004-12-08</date>
+      <date>2004-12-11</date>
       <license>LGPL</license>
       <state>beta</state>
       <notes>- Refactored nto a separate package.</notes>

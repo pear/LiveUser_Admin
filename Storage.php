@@ -42,7 +42,7 @@
  * @package LiveUser
  * @category authentication
  */
-class LiveUser_Admin_Perm_Storage
+class LiveUser_Admin_Storage
 {
     /**
      * Constructor
@@ -51,7 +51,7 @@ class LiveUser_Admin_Perm_Storage
      * @param  mixed      configuration array
      * @return void
      */
-    function LiveUser_Admin_Perm_Storage(&$confArray, &$storageConf)
+    function LiveUser_Admin_Storage(&$confArray, &$storageConf)
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
         if (is_array($storageConf)) {
