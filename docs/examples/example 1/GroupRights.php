@@ -26,10 +26,10 @@ for ($i = 0; $i < 20; $i++) {
     if (!$granted) {
         echo '<strong>Error</strong><br />';
     } else {
-        echo $group.' was granted the right <b>'.$right.'</b><br />';
+        echo 'Group <b>' . $group . '</b> was granted the right <b>'.$right.'</b><br />';
     }
 }
-echo '<hr />';
+
 $group = array_rand($groups);
 $params = array(
     'fields' => array(
@@ -48,16 +48,16 @@ $params = array(
     'offset' => 0,
 );
 $allGroupRights = $admin->perm->getRights($params);
-echo '<br />' . $admin->perm->_storage->dbc->last_query;
+
 if (!$allGroupRights) {
     echo '<strong>Error</strong><br />';
 } else {
-    echo '<hr />Here are all the group rights for the group ' . $groups[$group]['group_id'] . ':<br />';
+    echo '<hr />Here is/are ' . count($allGroupRights) . ' group right(s) for the group ' . $groups[$group]['group_id'] . ':<br />';
     Var_Dump::display($allGroupRights);
     echo '<br />';
 }
 
-/*
+
 $right   = array_rand($rights);
 $group = array_rand($groups);
 $filters = array(
@@ -80,7 +80,8 @@ $filters = array(
     'group_id' => $groups[$group]['group_id']
 );
 $updated = $admin->perm->updateGroupRight($data, $filters);
-
+var_dump($updated);
+/*
 if (!$updated) {
     echo '<strong>Error</strong><br />';
 } else {
@@ -101,7 +102,7 @@ if (!$updated) {
             'group_id' => $groups[$group]['group_id']
         )
     );
-    #$result = $admin->perm->getRights($params);
+    $result = $admin->perm->getRights($params);
 
     if (!$result) {
         echo '<strong>Error</strong><br />';
