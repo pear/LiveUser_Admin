@@ -90,4 +90,18 @@ if ($groups === false) {
     Var_Dump::display($groups);
     echo '<br />';
 }
+
+echo 'All the groups with hierarchy mode on:<br />';
+$params = array(
+    'hierarchy' => true,
+    'rekey' => true
+);
+$groups = $admin->perm->getGroups($params);
+if ($groups === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} else {
+    Var_Dump::display($groups);
+    echo '<br />';
+}
 echo '<hr />';
