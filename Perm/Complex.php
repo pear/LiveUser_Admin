@@ -52,6 +52,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $this->selectable_tables['getRights'][] = 'right_implied';
         $this->selectable_tables['getAreas'][] = 'area_admin_areas';
+        $this->selectable_tables['getGroups'][] = 'group_subgroups';
         $this->LiveUser_Admin_Perm_Medium($confArray);
     }
 
@@ -147,7 +148,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             )
         );
 
-        $result = $this->getRights($params);
+        $result = $this->_getImpliedRight($params);
         if ($result === false) {
             return false;
         }
@@ -385,7 +386,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     /**
      *
      *
-     * @access public
+     * @access private
      * @param array $params
      * @return
      */
@@ -393,6 +394,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $selectable_tables = array('group_subgroups');
         $root_table = 'group_subgroups';
+
+        $data = $this->_makeGet($params, $root_table, $selectable_tables);
+        return $data;
+    }
+
+    /**
+     *
+     *
+     * @access private
+     * @param array $params
+     * @return
+     */
+    function _getImpliedRight($params = array())
+    {
+        $selectable_tables = array('right_implied');
+        $root_table = 'right_implied';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
         return $data;
@@ -542,7 +559,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             ),
             'select' => 'one'
         );
-        $result = parent::getGroups($params, array('group_subgroups'), 'group_subgroups');
+        $result = $this->_getSubGroups($params);
 
         return $result;
     }
@@ -558,13 +575,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         !isset($params['hierarchy']) ? $params['hierarchy'] = false : null;
         !isset($params['subgroups']) ? $params['subgroups'] = true : null;
-        $old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
 
         if ($params['subgroups']) {
+            $old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
             $params['rekey'] = true;
         }
 
-        $_groups = $this->_getSubGroups($param);
+        $_groups = parent::getGroups($params);
         if ($_groups === false) {
             return $_groups;
         }
