@@ -24,7 +24,7 @@ require_once 'LiveUser.php';
  * Simple usage:
  *
  * <code>
- * $admin = new LiveUser_Admin($conf, 'FR');
+ * $admin = new LiveUser_Admin::factory($conf);
  * $found = $admin->getUser(3);
  *
  * if ($found) {
@@ -82,30 +82,9 @@ class LiveUser_Admin
      */
      var $_conf = array();
 
-     /**
-      * Language to be used
-      *
-      * @access public
-      * @var    string
-      */
-     var $lang = '';
-
-    /**
-     * Constructor
-     *
-     * @access protected
-     * @param  array  liveuser conf array
-     * @param  string two letters language code
-     * @return void
-     */
-    function LiveUser_Admin($lang)
+    function &factory($conf)
     {
-        $this->lang = $lang;
-    }
-
-    function &factory($conf, $lang)
-    {
-        $obj = &new LiveUser_Admin($lang);
+        $obj = &new LiveUser_Admin;
 
         if (is_array($conf)) {
             $obj->_conf = $conf;
@@ -118,12 +97,12 @@ class LiveUser_Admin
         return $obj;
     }
 
-    function &singleton($conf, $lang)
+    function &singleton($conf)
     {
         static $instance;
 
         if (!isset($instance)) {
-            $obj = &LiveUser_Admin::factory($conf, $lang);
+            $obj = &LiveUser_Admin::factory($conf);
             $instance =& $obj;
         }
 
@@ -201,7 +180,6 @@ class LiveUser_Admin
         }
 
         $this->perm = &LiveUser::permFactory($this->_conf['permContainer'], 'LiveUser_Admin_');
-#        $this->perm->setCurrentLanguage($this->lang);
         return true;
     }
 
