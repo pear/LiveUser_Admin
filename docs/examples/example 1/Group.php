@@ -3,13 +3,13 @@
 <?php
 // Add
 for ($i = 1; $i < 20; $i++) {
-    $data = array('group_define_name' => 'GROUP' . $i);
+    $data = array('group_define_name' => 'GROUP'.rand());
     $groupAdd = $admin->perm->addGroup($data);
 
     if (!$groupAdd) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
-        echo 'Added group <b>Group'.$i.'</b><br />';
+        echo 'Added group<br />';
     }
 }
 
@@ -33,6 +33,7 @@ if (!$removed) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo $allGroups[$id]['group_id'] . ' was deleted<br />';
+    unset($allGroups[$id]);
 }
 
 // Update
@@ -40,7 +41,7 @@ $id = array_rand($allGroups);
 $filters = array('group_id' => $allGroups[$id]['group_id']);
 $data = array('group_define_name' => 'GROUP_' . $allGroups[$id]['group_id'] . '_UPDATED');
 $updated = $admin->perm->updateGroup($data, $filters);
-echo $admin->perm->_storage->dbc->last_query;
+
 if (!$updated) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {

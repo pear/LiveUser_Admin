@@ -57,7 +57,6 @@ if (!$allGroupRights) {
     echo '<br />';
 }
 
-
 $right   = array_rand($rights);
 $group = array_rand($groups);
 $filters = array(
@@ -80,7 +79,6 @@ $filters = array(
     'group_id' => $groups[$group]['group_id']
 );
 $updated = $admin->perm->updateGroupRight($data, $filters);
-var_dump($updated);
 
 if (!$updated) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
@@ -120,7 +118,7 @@ $params = array(
             'fields' => array(
                 'group_id',
                 'right_level',
-            ),
+            )
         ),
     ),
 );
@@ -132,6 +130,4 @@ if (!$allGroups) {
 } else {
     Var_Dump::display($allGroups);
 }
-echo $admin->perm->_storage->dbc->last_query;
-echo '<br />';
 echo '<hr />';

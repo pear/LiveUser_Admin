@@ -3,14 +3,14 @@
 <?php
 // Add
 for ($i = 1; $i < 4; $i++) {
-    $data = array('application_define_name' => 'APP' . $i);
+    $data = array('application_define_name' => 'APP'.rand());
     $appAdd = $admin->perm->addApplication($data);
 
     if (!$appAdd) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo 'Added application <b>App'.$i.'</b><br />';
+        echo 'Added application<br />';
     }
 }
 
@@ -41,6 +41,7 @@ if (!$removeApp) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'App3 was removed<br />';
+    unset($currentApps[$id]);
 }
 
 // Update

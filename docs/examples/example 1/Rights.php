@@ -16,13 +16,13 @@ foreach ($areas as $row) {
     for ($i = 1; $i < 20; $i++) {
         $data = array(
             'area_id' => $row['area_id'],
-            'right_define_name' => 'RIGHT_' . $row['area_id'] . '_' . $i,
+            'right_define_name' => 'RIGHT_' . $row['area_id'] . '_' . rand(),
         );
         $right_id = $admin->perm->addRight($data);
         if (!$right_id) {
               echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         } else {
-            echo 'Added right <b>Right_'.$row['area_id'].'_'.$i.'</b><br />';
+            echo 'Added right<br />';
         }
     }
 }

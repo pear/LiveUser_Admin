@@ -12,14 +12,14 @@ $id = array_rand($currentApps);
 for ($i = 1; $i < 4; $i++) {
     $data = array(
         'application_id' => $currentApps[$id]['application_id'],
-        'area_define_name' => 'AREA'.$i,
+        'area_define_name' => 'AREA'.rand(),
     );
     $areaAdd  = $admin->perm->addArea($data);
 
     if (!$areaAdd) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
-        echo 'Added area <b>Area'.$i.'</b><br />';
+        echo 'Added area<br />';
     }
 }
 
@@ -43,12 +43,14 @@ if (!$rmArea) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'Area3 was removed<br />';
+    unset($currentAreas[$id]);
 }
 
 // Update
 $id = array_rand($currentApps);
+$id2 = array_rand($currentAreas);
 $data = array(
-    'area_define_name' => 'AREA2_' . $currentAreas[$id]['area_id'] . 'updated',
+    'area_define_name' => 'AREA2_' . $currentAreas[$id2]['area_id'] . 'updated',
     'application_id' => $currentApps[$id]['application_id'],
 );
 

@@ -8,7 +8,7 @@ for ($i = 1; $i < 10; $i++) {
         'email' => 'fleh@example.com'.$i
     );
 
-    $user_id = $admin->addUser('johndoe' . $i, 'dummypass', array(), $custom, null, '1');
+    $user_id = $admin->addUser('johndoe' . rand(), 'dummypass', array(), $custom, null, '1');
     if (!$user_id) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
@@ -29,12 +29,9 @@ if (!$allUsers) {
 }
 
 $i = array_rand($allUsers);
-$removeUser = $allUsers[$i]['perm_user_id'];
-
 // single user
 echo 'This user will be removed:<br />';
-$user = $admin->getUser($removeUser);
-
+$user = $admin->getUser($allUsers[$i]['perm_user_id']);
 if (!$user) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
@@ -43,18 +40,19 @@ if (!$user) {
 }
 
 // Remove
-$removed = $admin->removeUser($removeUser);
+$removed = $admin->removeUser($allUsers[$i]['perm_user_id']);
 
 if (!$removed) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    echo $removeUser.' was deleted<br />';
+    echo $i.' was deleted<br />';
+    unset($allUsers[$i]);
 }
 
 // Update
 $i = array_rand($allUsers);
 $updateUser = $allUsers[$i]['perm_user_id'];
-$updated = $admin->updateUser($updateUser, 'updated_user', 'foo', array(), $custom);
+$updated = $admin->updateUser($updateUser, 'updated_user'.rand(), 'foo', array(), $custom);
 if (!$updated) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
