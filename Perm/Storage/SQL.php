@@ -104,6 +104,24 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             ),
             'joins' => array(
                 'userrights' => 'right_id',
+                'translations' => array(
+                    'right_id' => 'section_id',
+                    LIVEUSER_SECTION_RIGHT => 'section_type',
+                ),
+            ),
+        ),
+        'translations' => array(
+            'fields' => array(
+                'section_id',
+                'section_type',
+                'name',
+                'description',
+            ),
+            'joins' => array(
+                'rights' => array(
+                    'section_id' => 'right_id',
+                    'section_type' => LIVEUSER_SECTION_RIGHT,
+                ),
             ),
         ),
     );
@@ -116,6 +134,10 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         'right_id' => array('type' => 'integer'),
         'right_level' => array('type' => 'integer'),
         'right_define_name' => array('type' => 'text'),
+        'section_id' => array('type' => 'integer'),
+        'section_type' => array('type' => 'integer'),
+        'name' => array('type' => 'text'),
+        'description' => array('type' => 'text'),
     );
 
     /**
@@ -165,7 +187,7 @@ var_dump('no tables were found');
         if (count($tables) > 1) {
             // find join condition
             $joinfilters = array();
-            $return = $this->createJoinFilter($root_table, $joinfilters, $tables, $selectable_tables);
+            $return = $this->createJoinFilter($root_table, $joinfilters, $tables);
             if (!$return) {
 var_dump('joins could not be set');
                 return false;
@@ -242,10 +264,12 @@ var_dump('explicit table does not exist: '.$match[1]);
                     }
                 }
                 if (isset($filters[$field])) {
-                    $filters[$this->prefix.$table.'.'.$field] = $value
+                    $filters[$this->prefix.$table.'.'.$field] = $filters[$field];
+                    unset($filters[$field]);
                 }
                 if (isset($orders[$field])) {
-                    $orders[$this->prefix.$table.'.'.$field] = $value
+                    $orders[$this->prefix.$table.'.'.$field] = $orders[$field];
+                    unset($orders[$field]);
                 }
             }
             $fields_not_yet_linked = array_diff($fields_not_yet_linked, $this->tables[$table]['fields']);
@@ -264,7 +288,7 @@ var_dump($tables);
         return $tables;
     }
 
-    function createJoinFilter($root_table, $filters, $tables)
+    function createJoinFilter($root_table, $filters, $tables, $visited = array())
     {
         if (empty($tables)) {
             return array($filters, null);
@@ -273,32 +297,62 @@ var_dump($tables);
         $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), array_keys($tables));
         foreach ($direct_matches as $table) {
             if (isset($tables[$table])) {
-                $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
-                    $this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table];
-                unset($tables[$table]);
+                if (is_array($this->tables[$root_table]['joins'][$table])) {
+                    foreach ($this->tables[$root_table]['joins'][$table] as $joinsource => $jointarget) {
+                        if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
+                            $filters[$this->prefix.$root_table.'.'.$joinsource] =
+                                $this->prefix.$table.'.'.$jointarget;
+                        } elseif (isset($this->fields[$jointarget])) {
+                            $filters[$this->prefix.$table.'.'.$jointarget] =
+                                $this->quote($joinsource, $this->fields[$jointarget]['type']);
+                        } elseif (isset($this->fields[$joinsource])) {
+                            $filters[$this->prefix.$root_table.'.'.$jointarget] =
+                                $this->quote($jointarget, $this->fields[$joinsource]['type']);
+                        } else {
+var_dump('join structure incorrect, one of the two needs to be a field');
+                            return false;
+                        }
+                    }
+                } else {
+                    $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
+                        $this->prefix.$table.'.'.$this->tables[$root_table]['joins'][$table];
+                }
             }
         }
         if (empty($tables)) {
             return array($filters, null);
         }
-        foreach ($this->tables[$root_table]['joins'] as $table => $field) {
+        foreach ($this->tables[$root_table]['joins'] as $table => $fields) {
             $tmp_filters = $filters;
             $tmp_tables = $tables;
-            if (is_array($this->tables[$root_table]['joins'][$table][$field])) {
-                foreach ($this->tables[$root_table]['joins'][$table][$field] as $joinfield => $value) {
-                    if (isset($this->fields[$joinfield])) {
-                        $filter = $this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table][$joinfield];
+            $tmp_visited = $visited;
+            if (is_array($fields)) {
+                foreach ($fields as $joinsource => $jointarget) {
+                    if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
+                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
+                            $this->prefix.$table.'.'.$jointarget;
+                    } elseif (isset($this->fields[$jointarget])) {
+                        $tmp_filters[$this->prefix.$table.'.'.$jointarget] =
+                            $this->quote($joinsource, $this->fields[$jointarget]['type']);
+                    } elseif (isset($this->fields[$joinsource])) {
+                        $tmp_filters[$this->prefix.$root_table.'.'.$jointarget] =
+                            $this->quote($jointarget, $this->fields[$joinsource]['type']);
                     } else {
-                        $filter = $this->quote($value, $this->fields[$joinfield]['type']);
+var_dump('join structure incorrect, one of the two needs to be a field');
+                        return false;
                     }
-                    $tmp_filters[$this->prefix.$root_table.'.'.$joinfield] = $filter;
                 }
             } else {
-                $tmp_filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
-                    $this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table];
+                $tmp_filters[$this->prefix.$root_table.'.'.$fields] =
+                    $this->prefix.$table.'.'.$fields;
             }
             unset($tmp_tables[$table]);
-            $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables);
+            if (in_array($table, $tmp_visited)) {
+var_dump('infinite recursion detected: '.$table);
+                continue;
+            }
+            $tmp_visited[] = $table;
+            $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $tmp_visited);
             if ($return) {
                 if (!$return[1]) {
                     return $return;
