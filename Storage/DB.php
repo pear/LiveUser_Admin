@@ -75,7 +75,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
                 $options = $storageConf['options'];
             }
             $options['portability'] = DB_PORTABILITY_ALL;
-            $this->dbc =& DB::connect($connectOptions['dsn'], $options);
+            $this->dbc =& DB::connect($storageConf['dsn'], $options);
             if (PEAR::isError($this->dbc)) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
