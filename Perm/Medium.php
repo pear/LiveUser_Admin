@@ -241,8 +241,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
         if (!empty($with) && is_array($data)) {
-            foreach($with as $field => $params) {
-                foreach($data as $key => $row) {
+            foreach ($with as $field => $params) {
+                foreach ($data as $key => $row) {
                     $params['filters'][$field] = $row[$field];
                     $data[$key]['rights'] = $this->getRights($params);
                 }
