@@ -4,8 +4,14 @@ echo '<h3>Translation</h3>';
 
 // Get
 echo 'All the groups:<br />';
-$groups = $admin->perm->getGroups(array('fields' => array('group_id'), 'select' => 'col'));
-if  (empty($groups)) {
+$groups = $admin->perm->getGroups(
+    array(
+        'fields' => array('group_id'),
+        'select' => 'col'
+    )
+);
+
+if (empty($groups)) {
     echo 'Run the <strong>Group</strong> test first<br />';
     exit;
 }

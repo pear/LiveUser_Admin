@@ -636,7 +636,8 @@ class LiveUser_Admin_Perm_Simple
         // ensure that all $with fields are fetched
         $fields = array_merge($fields, array_keys($with));
 
-        return $this->_storage->select($select, $fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+        return $this->_storage->select($select, $fields, $filters, $orders,
+            $rekey, $limit, $offset, $root_table, $selectable_tables);
     }
 
     /**
