@@ -83,6 +83,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
              ),
             'joins' => array(
                 'userrights' => 'perm_user_id',
+                'groupusers' => 'perm_user_id',
             ),
         ),
         'userrights' => array(
@@ -175,6 +176,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             ),
             'joins' => array(
                 'groupusers' => 'group_id',
+                'grouprights' => 'group_id',
                 'translations' => array(
                     'group_id' => 'section_id',
                     LIVEUSER_SECTION_GROUP => 'section_type',
@@ -199,6 +201,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             ),
             'joins' => array(
                 'rights' => 'right_id',
+                'groups' => 'group_id',
             ),
         ),
     );
