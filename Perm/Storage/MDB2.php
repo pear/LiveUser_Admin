@@ -106,6 +106,11 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
         return $this->dbc->setLimit($limit, $offset);
     }
 
+    function query($query)
+    {
+        return $this->dbc->query($query);
+    }
+
     function queryAll($query, $types, $rekey)
     {
         return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
@@ -119,6 +124,11 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
     function nextId($seqname, $ondemand)
     {
         return $this->dbc->nextId($seqname, $ondemand);
+    }
+
+    function disconnect()
+    {
+        return $this->dbc->disconnect();
     }
 }
 ?>
