@@ -58,6 +58,7 @@
         <file role="php" name="MDB2.php"/>
        </dir> <!-- Auth -->
        <dir name="Perm">
+        <file role="php" name="Medium.php"/>
         <file role="php" name="Simple.php"/>
         <file role="php" name="Storage.php"/>
         <dir name="Storage">

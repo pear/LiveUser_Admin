@@ -104,6 +104,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             ),
             'joins' => array(
                 'userrights' => 'right_id',
+                'grouprights' => 'right_id',
                 'translations' => array(
                     'right_id' => 'section_id',
                     LIVEUSER_SECTION_RIGHT => 'section_type',
@@ -122,6 +123,82 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                     'section_id' => 'right_id',
                     'section_type' => LIVEUSER_SECTION_RIGHT,
                 ),
+                'areas' => array(
+                    'section_id' => 'area_id',
+                    'section_type' => LIVEUSER_SECTION_AREA,
+                ),
+                'applications' => array(
+                     'section_id' => 'application_id',
+                     'section_type' => LIVEUSER_SECTION_APPLICATION,
+                ),
+                'groups' => array(
+                    'section_id' => 'group_id',
+                    'section_type' => LIVEUSER_SECTION_GROUP,
+                ),
+            ),
+        ),
+        'areas' => array(
+            'fields' => array(
+                'area_id',
+                'application_id',
+                'area_define_name',
+            ),
+            'joins' => array(
+                'applications' => 'application_id',
+                'translations' => array(
+                    'area_id' => 'section_id',
+                    LIVEUSER_SECTION_AREA => 'section_type',
+                ),
+            ),
+        ),
+        'applications' => array(
+            'fields' => array(
+                'application_id',
+                'application_define_name',
+            ),
+            'joins' => array(
+                'areas' => 'application_id',
+                'translations' => array(
+                    'application_id' => 'section_id',
+                    LIVEUSER_SECTION_APPLICATION => 'section_type',
+                ),
+            ),
+        ),
+        'groups' => array(
+            'fields' => array(
+                'group_id',
+                'group_type',
+                'group_define_name',
+                'is_active',
+                'owner_user_id',
+                'owner_group_id',
+            ),
+            'joins' => array(
+                'groupusers' => 'group_id',
+                'translations' => array(
+                    'group_id' => 'section_id',
+                    LIVEUSER_SECTION_GROUP => 'section_type',
+                ),
+            ),
+        ),
+        'groupusers' => array(
+            'fields' => array(
+                'perm_user_id',
+                'group_id',
+            ),
+            'joins' => array(
+                'groups' => 'group_id',
+                'perm_users' => 'perm_user_id',
+            ),
+        ),
+        'grouprights' => array(
+            'fields' => array(
+                'group_id',
+                'right_id',
+                'right_level',
+            ),
+            'joins' => array(
+                'rights' => 'right_id',
             ),
         ),
     );
@@ -134,11 +211,20 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         'right_id' => array('type' => 'integer'),
         'right_level' => array('type' => 'integer'),
         'area_id' => array('type' => 'integer'),
+        'application_id' => array('type' => 'integer'),
         'right_define_name' => array('type' => 'text'),
+        'area_define_name' => array('type' => 'text'),
+        'application_define_name' => array('type' => 'text'),
         'section_id' => array('type' => 'integer'),
         'section_type' => array('type' => 'integer'),
         'name' => array('type' => 'text'),
         'description' => array('type' => 'text'),
+        'group_id' => array('type' => 'integer'),
+        'group_type' => array('type' => 'integer'),
+        'group_define_name' => array('type' => 'text'),
+        'is_active' => array('type' => 'boolean'),
+        'owner_user_id' => array('type' => 'integer'),
+        'owner_group_id' => array('type' => 'integer'),
     );
 
     /**
@@ -151,6 +237,17 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
     function LiveUser_Admin_Perm_Storage_SQL(&$confArray, &$storageConf)
     {
         $this->LiveUser_Admin_Perm_Storage($confArray, $storageConf);
+    }
+
+    function insert($table, $data)
+    {
+        
+    }
+
+    function createInsert()
+    {
+        $query = 'INSERT INTO '.$table."\n";
+        
     }
 
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)

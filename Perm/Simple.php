@@ -72,7 +72,7 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    function updateUser($data, $id)
+    function updateUser($filters, $data)
     {
         // sanity checks
         $result = $this->_storage->update('perm_user', $data, $filters);
@@ -80,7 +80,7 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    function deleteUser($id)
+    function deleteUser($filters)
     {
         // sanity checks
         $result = $this->_storage->delete('perm_user', $filters);
@@ -88,11 +88,8 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    function getUser($params = array())
+    function _makeGet($params, $root_table, $selectable_tables)
     {
-        $selectable_tables = array('perm_users', 'userrights', 'rights');
-        $root_table = 'perm_users';
-
         $fields = isset($params['fields']) ? $params['fields'] : array();
         $with = isset($params['with']) ? $params['with'] : array();
         $filters = isset($params['filters']) ? $params['filters'] : array();
@@ -104,7 +101,15 @@ class LiveUser_Admin_Perm_Simple
         // ensure that all with fields are fetched
         $fields = array_merge($fields, array_keys($with));
 
-        $data = $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+        return $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+    }
+
+    function getUser($params = array())
+    {
+        $selectable_tables = array('perm_users', 'userrights', 'rights');
+        $root_table = 'perm_users';
+
+        $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
         if (!empty($with) && is_array($data)) {
             foreach($with as $field => $params) {
@@ -119,21 +124,10 @@ class LiveUser_Admin_Perm_Simple
 
     function getRights($params = array())
     {
-        $selectable_tables = array('rights', 'userrights', 'translations');
+        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations');
         $root_table = 'rights';
 
-        $fields = isset($params['fields']) ? $params['fields'] : array();
-        $with = isset($params['with']) ? $params['with'] : array();
-        $filters = isset($params['filters']) ? $params['filters'] : array();
-        $orders = isset($params['orders']) ? $params['orders'] : array();
-        $rekey = isset($params['rekey']) ? $params['rekey'] : false;
-        $limit = isset($params['limit']) ? $params['limit'] : null;
-        $offset = isset($params['offset']) ? $params['offset'] : null;
-
-        // ensure that all with fields are fetched
-        $fields = array_merge($fields, array_keys($with));
-
-        $data = $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+        $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
         if (!empty($with) && is_array($data)) {
             foreach($with as $field => $params) {
@@ -144,6 +138,22 @@ class LiveUser_Admin_Perm_Simple
             }
         }
         return $data;
+    }
+
+    function getAreas($params = array())
+    {
+        $selectable_tables = array('areas', 'applications', 'translations');
+        $root_table = 'areas';
+
+        return $this->_makeGet($params, $root_table, $selectable_tables);        
+    }
+
+    function getApplications($params = array())
+    {
+        $selectable_tables = array('applications', 'translations');
+        $root_table = 'applications';
+ 
+        return $this->_makeGet($params, $root_table, $selectable_tables);
     }
 
     /**
