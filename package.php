@@ -14,6 +14,9 @@ $version = '0.2.1';
 $notes = <<<EOT
 - typo fix in autoinit option (bug #3844)
 - updated LiveUser dependency to 0.15.0
+- fixed type handling in updateUser()
+- update getErrors() with code from the LiveUser class
+- typo fix in outputRightsConstants() (bug #3897)
 EOT;
 
 $description = <<<EOT
