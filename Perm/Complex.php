@@ -132,7 +132,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         $result = $this->_storage->delete('group_subgroup', $filters);
-        return $result;
+        if (!$result) {
+            return $result;
+        }
+        return true;
     }
 
     function removeGroup($filters)
