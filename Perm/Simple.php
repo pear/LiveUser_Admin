@@ -278,9 +278,12 @@ class LiveUser_Admin_Perm_Simple
         if (!isset($data['right_id'])) {
             return false;
         }
+
+        if (!isset($data['right_level'])) {
+            $data['right_level'] = LIVEUSER_MAX_LEVEL;
+        }
         // check if already exists
 
-        $data['right_level'] = LIVEUSER_MAX_LEVEL;
         $result = $this->_storage->insert('userrights', $data);
         // notify observer
         return $result;

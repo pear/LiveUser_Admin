@@ -110,13 +110,16 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         if (!isset($data['group_id']) && !is_numeric($data['group_id'])) {
             return false;
         }
-        
+
         if (!isset($data['right_id']) && !is_numeric($data['right_id'])) {
             return false;
         }
+
+        if (!isset($data['right_level'])) {
+            $data['right_level'] = LIVEUSER_MAX_LEVEL;
+        }
         // check if already exists
 
-        $data['right_level'] = LIVEUSER_MAX_LEVEL;
         $result = $this->_storage->insert('grouprights', $data);
         // notify observer
         return $result;
