@@ -53,8 +53,8 @@ class LiveUser_Admin_Perm_Simple
     var $_storage = null;
 
     var $selectable_tables = array(
-        'getUsers' => array('perm_users', 'userrights', 'rights', 'groupusers'),
-        'getRights' => array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications', 'right_implied'),
+        'getUsers' => array('perm_users', 'userrights', 'rights'),
+        'getRights' => array('rights', 'userrights', 'translations', 'areas', 'applications', 'right_implied'),
         'getAreas' => array('areas', 'applications', 'translations'),
         'getApplications' => array('applications', 'translations'),
         'getTranslations' => array('translations'),
@@ -536,7 +536,7 @@ class LiveUser_Admin_Perm_Simple
      * @param array $params
      * @return
      */
-    function getRights($params = array(), $root_table = null)
+    function getRights($params = array())
     {
         $selectable_tables = $this->selectable_tables['getRights'];
         $root_table = reset($selectable_tables);
