@@ -123,15 +123,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $values[] = $value_quoted;
         }
 
-        $query = $this->createInsert($table, $fields, $values);
-        if ($query === false) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'query was not created')
-            );
-            return false;
-        }
-        $result = $this->query($query);
+        $result = $this->query($this->createInsert($table, $fields, $values));
         if ($result === false) {
             return false;
         }
@@ -172,15 +164,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $fields[] = $this->alias[$field] . ' = ' . $value_quoted;
         }
 
-        $query = $this->createUpdate($table, $fields, $filters);
-        if ($query === false) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'query was not created')
-            );
-            return false;
-        }
-        $result = $this->query($query);
+        $result = $this->query($this->createUpdate($table, $fields, $filters));
         return $result;
     }
 
@@ -232,10 +216,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
         if ($query === false) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'query was not created')
-            );
             return false;
         }
 
