@@ -48,9 +48,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * @param  mixed      configuration array
      * @return void
      */
-    function LiveUser_Perm_Complex(&$confArray)
+    function LiveUser_Admin_Perm_Complex(&$confArray)
     {
-        $this->LiveUser_Perm_Medium($confArray);
+        $this->LiveUser_Admin_Perm_Medium($confArray);
     }
 
     /**
@@ -266,6 +266,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return
+     */
+    function _getSubGroups($params = array())
+    {
+        $selectable_tables = 'group_subgroups';
+        $root_table = 'group_subgroups';
+
+        $data = $this->_makeGet($params, $root_table, $selectable_tables);
+        return $data;
+    }
+
+    /**
      * Removes groups, can remove subgroups recursively if
      * option revursive is passed on as true.
      *
@@ -284,7 +300,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     'group_id' => $filters['group_id']
                 )
             );
-            $result = parent::getGroups($param, array('group_subgroups'), 'group_subgroups');
+            $result = $this->_getSubGroups($param);
             if ($result === false) {
                 return false;
             }
@@ -421,7 +437,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * @param array $params
      * @return array
      */
-    function getGroups($params = array(), $extraSelectable = array(), $root_table = null)
+    function getGroups($params = array())
     {
         !isset($params['hierarchy']) ? $params['hierarchy'] = false : null;
         !isset($params['subgroups']) ? $params['subgroups'] = true : null;
@@ -431,7 +447,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $params['rekey'] = true;
         }
 
-        $_groups = parent::getGroups($params, $extraSelectable, $root_table);
+        $_groups = $this->_getSubGroups($param);
         if ($_groups === false) {
             return $_groups;
         }
@@ -443,7 +459,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     'group_id'
                 )
             );
-            $subgroups = parent::getGroups($param, array('group_subgroups'), 'group_subgroups');
+            $subgroups = $this->_getSubGroups($param);
             if ($subgroups === false) {
                 return $subgroups;
             }
