@@ -7,7 +7,7 @@ for ($i = 1; $i < 20; $i++) {
     $groupAdd = $admin->perm->addGroup($data);
 
     if (!$groupAdd) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         echo 'Added group <b>Group'.$i.'</b><br />';
     }
@@ -18,7 +18,7 @@ echo 'All the groups:<br />';
 $allGroups = $admin->perm->getGroups();
 
 if (!$allGroups) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     Var_Dump::display($allGroups);
     echo '<br />';
@@ -30,7 +30,7 @@ $filters = array('group_id' => $allGroups[$id]['group_id']);
 $removed = $admin->perm->removeGroup($filters);
 
 if (!$removed) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo $allGroups[$id]['group_id'] . ' was deleted<br />';
 }
@@ -42,14 +42,14 @@ $data = array('group_define_name' => 'GROUP_' . $allGroups[$id]['group_id'] . '_
 $updated = $admin->perm->updateGroup($data, $filters);
 echo $admin->perm->_storage->dbc->last_query;
 if (!$updated) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo $allGroups[$id]['group_id'] . ' was updated<br />';
     $params = array('filters' => array('group_id' => $allGroups[$id]['group_id']));
     $group = $admin->perm->getGroups($params);
 
     if (!$group) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         Var_Dump::display($group);
         echo '<br />';
@@ -61,7 +61,7 @@ echo 'All the groups:<br />';
 
 $allGroups = $admin->perm->getGroups();
 if (!$allGroups) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     Var_Dump::display($allGroups);
     echo '<br />';

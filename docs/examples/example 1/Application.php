@@ -7,7 +7,7 @@ for ($i = 1; $i < 4; $i++) {
     $appAdd = $admin->perm->addApplication($data);
 
     if (!$appAdd) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
         echo 'Added application <b>App'.$i.'</b><br />';
@@ -18,7 +18,7 @@ for ($i = 1; $i < 4; $i++) {
 $currentApps = $admin->perm->getApplications();
 
 if (!$currentApps) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
     echo 'These are our current applications:';
@@ -38,7 +38,7 @@ $filters = array('application_id' => $currentApps[$id]['application_id']);
 $removeApp = $admin->perm->removeApplication($filters);
 
 if (!$removeApp) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'App3 was removed<br />';
 }
@@ -50,14 +50,14 @@ $filters = array('application_id' => $currentApps[$id]['application_id']);
 $updateApp = $admin->perm->updateApplication($data, $filters);
 
 if (!$updateApp) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'App2 was updated<br />';
     $params = array('filters' => array('application_id' => $currentApps[$id]['application_id']));
     $result = $admin->perm->getApplications($params);
 
     if (!$result) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         Var_Dump::display($result);
     }
@@ -67,7 +67,7 @@ if (!$updateApp) {
 $currentApps = $admin->perm->getApplications();
 
 if (!$currentApps) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'These are our current applications:';
     Var_Dump::display($currentApps);

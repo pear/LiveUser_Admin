@@ -27,7 +27,7 @@ for ($i = 1; $i < 30; $i++) {
     $granted = $admin->perm->grantUserRight($data);
 
     if (!$granted) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         echo $users[$randUser]['name'].' was granted the right <b>'.$rights[$randRight]['right_id'].'</b><br />';
     }
@@ -42,7 +42,7 @@ $filters = array(
 $revoked = $admin->perm->revokeUserRight($filters);
 
 if (!$revoked) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'The right <b>'.$rights[$randRight]['right_id'].'</b> has been revoked from <b>'.$users[$randUser]['name'].'</b><br />';
 }
@@ -56,7 +56,7 @@ $filters = array(
 $data = array('right_level' => 3);
 $update = $admin->perm->updateUserRight($data, $filters);
 if (!$update) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'The right <b>'.$rights[$randRight]['right_id'].'</b> has been updated to Level 2 for <b>'.$users[$randUser]['name'].'</b><br />';
     $params = array(
@@ -68,7 +68,7 @@ if (!$update) {
     $result = $admin->perm->getRights($params);
 
     if (!$result) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         Var_Dump::display($result);
     }
@@ -94,7 +94,7 @@ $params = array(
 $singleRight = $admin->perm->getRights($params);
 
 if (!$singleRight) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'These are the user rights for <b>'.$users[$randUser]['name'].'</b>:<br />';
     Var_Dump::display($singleRight);
@@ -116,7 +116,7 @@ $params = array(
 );
 $allRights = $admin->perm->getRights($params);
 if (!$allRights) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'Here are all the rights:<br />';
     Var_Dump::display($allRights);

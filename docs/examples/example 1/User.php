@@ -10,7 +10,7 @@ for ($i = 1; $i < 10; $i++) {
 
     $user_id = $admin->addUser('johndoe' . $i, 'dummypass', array(), $custom, null, '1');
     if (!$user_id) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         echo 'Created User Id ' . $user_id . '<br />';
     }
@@ -22,7 +22,7 @@ echo 'All the users:<br />';
 $allUsers = $admin->searchUsers();
 
 if (!$allUsers) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     Var_Dump::display($allUsers);
     echo '<br />';
@@ -36,7 +36,7 @@ echo 'This user will be removed:<br />';
 $user = $admin->getUser($removeUser);
 
 if (!$user) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     Var_Dump::display($user);
     echo '<br />';
@@ -46,7 +46,7 @@ if (!$user) {
 $removed = $admin->removeUser($removeUser);
 
 if (!$removed) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo $removeUser.' was deleted<br />';
 }
@@ -56,13 +56,13 @@ $i = array_rand($allUsers);
 $updateUser = $allUsers[$i]['perm_user_id'];
 $updated = $admin->updateUser($updateUser, 'updated_user', 'foo', array(), $custom);
 if (!$updated) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo $updateUser.' was updated<br />';
     $user = $admin->getUser($updateUser);
 
     if (!$user) {
-        echo '<strong>Error</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         Var_Dump::display($user);
         echo '<br />';
@@ -73,7 +73,7 @@ if (!$updated) {
 echo 'All the users:<br />';
 $allUsers = $admin->searchUsers();
 if (!$allUsers) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     Var_Dump::display($allUsers);
     echo '<br />';
@@ -88,7 +88,7 @@ $filter = array(array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'valu
 $options = array('with_rights' => true);
 $user = $admin->auth->getUsers($filter);
 if (!$user) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     Var_Dump::display($user);
     echo '<br />';
@@ -99,7 +99,7 @@ echo 'Perm<br />';
 $filter = array(array('filters' => array('perm_user_id' => '3')));
 $user = $admin->perm->getUsers($filter);
 if (!$user) {
-    echo '<strong>Error</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     Var_Dump::display($user);
     echo '<br />';
