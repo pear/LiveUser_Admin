@@ -26,11 +26,11 @@ foreach ($groups as $group) {
     }
 }
 // Get users from one group
-$randGroup = array_rand($groups);
+$group = array_rand($groups);
 
 $params = array(
     'filters' => array(
-        'group_id' => $groups[$randGroup]['group_id']
+        'group_id' => $groups[$group]['group_id']
     )
 );
 $usersGroup = $admin->perm->getUsers($params);
@@ -39,17 +39,17 @@ if ($usersGroup === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
-    echo 'Perm ID\'s of the users in group <b>' . $groups[$randGroup]['group_id'] . '</b><br />';
+    echo 'Perm ID\'s of the users in group <b>' . $groups[$group]['group_id'] . '</b><br />';
     Var_Dump::display($usersGroup);
     echo '<br />';
 }
 
 // Remove user from one group
-$randGroup = array_rand($groups);
+$group = array_rand($groups);
 $user = array_rand($users);
 
 $filters = array(
-    'group_id' => $groups[$randGroup]['group_id'],
+    'group_id' => $groups[$group]['group_id'],
     'perm_user_id' => $users[$user]['perm_user_id']
 );
 $removed = $admin->perm->removeUserFromGroup($filters);
@@ -58,7 +58,7 @@ if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
-    echo '<b>' . $users[$user]['name'] . '</b> was removed from group <b>'.$groups[$randGroup]['group_id'].'</b><br />';
+    echo '<b>' . $users[$user]['name'] . '</b> was removed from group <b>'.$groups[$group]['group_id'].'</b><br />';
 }
 
 // Remove user from all his groups
@@ -72,7 +72,7 @@ if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
-    echo '<b>' . $users[$randUser]['name'] . '</b> was removed from <b>ALL</b> his groups<br />';
+    echo '<b>' . $users[$user]['name'] . '</b> was removed from <b>ALL</b> his groups<br />';
 }
 
 // Get users from all groups
