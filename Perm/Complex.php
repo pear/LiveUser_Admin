@@ -203,10 +203,68 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         // needs more sanity checking, check if the perm_id is really perm_type 3 and so on
         // make sure when removing rights or updating them that if the user goes down 
         // below perm_type 3 that a entry from area_admins_areas is removed
+
+        if (!is_numeric($data['area_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'area_id')
+            );
+            return false;
+        }
+
+        if (!is_numeric($data['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'perm_user_id')
+            );
+            return false;
+        }
+
+        $params = array(
+            'fields' => array(
+                'perm_type'
+            ),
+            'filters' => array(
+                'perm_user_id' => $data['perm_user_id']
+            )
+        );
+        $result = parent::getRight($params);
+        if ($result === false) {
+            return $result;
+        }
+
+        if ($result['perm_type'] < 3) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'The user doesn\' have sufficient rights')
+            );
+            return false;
+        }
+
         $result = $this->_storage->insert('area_admins_areas', $data);
 
         // notify observer
         return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
+    function removeAreaAdmin($filters)
+    {
+        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getAreas');
+        if (!$filters) {
+            return $filters;
+        }
+
+        $result = $this->_storage->delete('area_admin_areas', $filters);
+        if ($result === false) {
+            return $result;
+        }
     }
 
     /**
@@ -223,15 +281,54 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return $filters;
         }
 
-        $result = $this->_storage->delete('area_admin_areas', $filters);
+        $result = $this->removeAreaAdmin($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         $result = parent::removeArea($filters);
 
         // notify observer
         return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
+    function updateRight($data, $filters)
+    {
+        if (isset($data['perm_type']) && $data['perm_type']  < 3) {
+            if (!is_numeric($filters['perm_user_id'])) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                    array('key' => 'perm_user_id')
+                );
+                return false;
+            }
+
+            $params = array(
+                'fields' => array(
+                    'perm_type'
+                ),
+                'filters' => array(
+                    'perm_user_id' => $filters['perm_user_id']
+                )
+            );
+            $result = parent::getRight($params);
+            if ($result === false) {
+                return $result;
+            }
+
+            if ($result['perm_type'] > 2) {
+                $this->removeAreaAdmin($params['filters']);
+            }
+        }
+        return parent::updateRight($data, $filters);
     }
 
     /**
