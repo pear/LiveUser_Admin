@@ -22,11 +22,11 @@
  * @package  LiveUser_Admin
  * @category authentication
  */
- 
+
 define('LIVEUSER_GROUP_TYPE_ALL',   1);
 define('LIVEUSER_GROUP_TYPE_ROLE',  2);
 define('LIVEUSER_GROUP_TYPE_USER',  3);
- 
+
  /**
  * Require parent class definition.
  */
@@ -135,7 +135,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         if (!$result) {
             return false;
         }
-        
+
         $result = $this->_storage->delete('groups', $filters);
         // notify observer
         return $result;
@@ -212,7 +212,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
@@ -243,7 +243,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         if (isset($filters['right_id']) && !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
@@ -251,7 +251,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         $result = $this->_storage->delete('grouprights', $filters);
         // notify observer
         return $result;
@@ -274,7 +274,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         if (!isset($data['perm_user_id']) || !is_numeric($data['perm_user_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
@@ -292,7 +292,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         if ($count > 0) {
             return false;
         }
-        
+
         $result = $this->_storage->insert('groupusers', $data);
         // notify observer
         return $result;
@@ -315,7 +315,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
@@ -352,7 +352,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         if (!$result) {
             return false;
         }
-        
+
         return parent::removeRight($filters);
     }
 
