@@ -92,6 +92,13 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     function quote($value, $type)
     {
+        if ($type == 'integer' && !is_numeric($value)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'expected integer value is not numeric: '.$value)
+            );
+            return false;
+        }
         return $this->dbc->quote($value, $type);
     }
 
