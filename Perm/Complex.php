@@ -254,22 +254,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function removeGroup($filters)
     {
         !isset($filters['recursive']) ? $filters['recursive'] = false : '';
-        if (isset($filters['subgroup_id']) && $filters['recursive']) {
+        if ($filters['recursive']) {
             $param = array(
                 'fields' => array(
-                    'group_id'
+                    'subgroup_id'
                 ),
                 'filters' => array(
-                    'group_id' => $filters['subgroup_id']
+                    'group_id' => $filters['group_id']
                 )
             );
             $result = parent::getGroups($param, array('group_subgroups'), 'group_subgroups');
-            if ($result == false) {
-                return $result;
+            if ($result === false) {
+                return false;
             }
 
             foreach ($result as $subGroupId) {
-                $filter = array('group_id' => $subGroupId, 'recursive' => $filters['recursive']);
+                $filter = array('group_id' => $subGroupId['subgroup_id'], 'recursive' => true);
                 $res = $this->removeGroup($filter);
                 if ($res === false) {
                     return $res;
