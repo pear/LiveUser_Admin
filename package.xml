@@ -34,7 +34,7 @@
   </maintainers>
   <release>
     <version>0.14.0</version>
-    <date>2004-11-17</date>
+    <date>2004-12-08</date>
     <license>LGPL</license>
     <state>beta</state>
     <notes>- Refactored nto a separate package.</notes>
@@ -57,7 +57,31 @@
         <file role="php" name="MDB.php"/>
         <file role="php" name="MDB2.php"/>
        </dir> <!-- Auth -->
+       <dir name="docs">
+        <dir name="examples">
+         <file role="doc" name="Auth_XML.xml"/>
+         <file role="doc" name="test.php"/>
+         <dir name="example 1">
+          <file role="doc" name="Application.php"/>
+          <file role="doc" name="Area.php"/>
+          <file role="doc" name="config.inc.php"/>
+          <file role="doc" name="create_db.sql"/>
+          <file role="doc" name="extra_sql.sql"/>
+          <file role="doc" name="Group.php"/>
+          <file role="doc" name="GroupRights.php"/>
+          <file role="doc" name="ImplyRights.php"/>
+          <file role="doc" name="index.php"/>
+          <file role="doc" name="OutputRightsConstants.php"/>
+          <file role="doc" name="Rights.php"/>
+          <file role="doc" name="Subgroups.php"/>
+          <file role="doc" name="User.php"/>
+          <file role="doc" name="UserGroup.php"/>
+          <file role="doc" name="UserRights.php"/>
+         </dir> <!-- docs/examples/example 1 -->
+        </dir> <!-- docs/examples -->
+       </dir> <!-- docs -->
        <dir name="Perm">
+        <file role="php" name="Complex.php"/>
         <file role="php" name="Medium.php"/>
         <file role="php" name="Simple.php"/>
         <file role="php" name="Storage.php"/>
@@ -73,7 +97,7 @@
   <changelog>
     <release>
       <version>0.14.0</version>
-      <date>2004-11-17</date>
+      <date>2004-12-08</date>
       <license>LGPL</license>
       <state>beta</state>
       <notes>- Refactored nto a separate package.</notes>
