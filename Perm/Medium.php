@@ -178,7 +178,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
                    );
         $count = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
         if ($count > 0) {
-            return false;
+            return true;
         }
 
         $result = $this->_storage->insert('grouprights', $data);
@@ -290,7 +290,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
                    );
         $count = $this->_storage->selectOne('groupusers', 'group_id', $filters, true);
         if ($count > 0) {
-            return false;
+            return true;
         }
 
         $result = $this->_storage->insert('groupusers', $data);
