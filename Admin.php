@@ -28,6 +28,7 @@ define('LIVEUSER_ADMIN_ERROR_FILTER',           -2);
 define('LIVEUSER_ADMIN_ERROR_DATA',             -3);
 define('LIVEUSER_ADMIN_ERROR_QUERY_BUILDER',    -4);
 define('LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED', -5);
+define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
 /**#@-*/
 
 /**
@@ -106,6 +107,7 @@ class LiveUser_Admin
         LIVEUSER_ADMIN_ERROR_DATA             => 'There\'s something obscure with the data array, key %key%',
         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER    => 'Couldn\'t create the query, reason: %reason%',
         LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED => 'That given %field1% has already been assigned to %field2%',
+        LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED    => 'This method is not supported'
     );
 
     /**
