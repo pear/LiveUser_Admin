@@ -66,13 +66,13 @@ INSERT INTO liveuser_perm_users (perm_user_id, auth_user_id, perm_type, auth_con
 # Dumping data for table `liveuser_rights`
 #
 
-INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied, has_level) VALUES (1, 1, 'READ_TESTS', 'N', 'N');
-INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied, has_level) VALUES (2, 1, 'WRITE_TESTS', 'N', 'N');
-INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied, has_level) VALUES (3, 2, 'ACCESS', 'N', 'Y');
-INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied, has_level) VALUES (4, 2, 'LAUNCH_ATOMIC_BOMB', 'N', 'N');
-INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied, has_level) VALUES (5, 2, 'FLY_ALIEN_SPACE_CRAFT', 'N', 'N');
-INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied, has_level) VALUES (6, 3, 'MAKE_COFFEE', 'N', 'N');
-INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied, has_level) VALUES (7, 3, 'DRINK_COFFEE', 'N', 'Y');
+INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied) VALUES (1, 1, 'READ_TESTS', 'N');
+INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied) VALUES (2, 1, 'WRITE_TESTS', 'N');
+INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied) VALUES (3, 2, 'ACCESS', 'N');
+INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied) VALUES (4, 2, 'LAUNCH_ATOMIC_BOMB', 'N');
+INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied) VALUES (5, 2, 'FLY_ALIEN_SPACE_CRAFT', 'N');
+INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied) VALUES (6, 3, 'MAKE_COFFEE', 'N');
+INSERT INTO liveuser_rights (right_id, area_id, right_define_name, has_implied) VALUES (7, 3, 'DRINK_COFFEE', 'N');
 
 #
 # Dumping data for table `liveuser_userrights`
