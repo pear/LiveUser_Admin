@@ -509,14 +509,30 @@ class LiveUser_Admin
     }
 
     /**
-    * Finds and gets full userinfo by filtering inside the perm container
+    * Finds and gets full userinfo by filtering inside the given container
     *
     * @access public
     * @param  mixed perm filters (as for getUsers() from the perm container
     * @param  boolean if only one row should be returned
     * @return mixed Array with userinfo if found else error object
     */
-    function getUsersByPerm($permFilter = array(), $first = false)
+    function searchUsers($container = 'perm', $filter = array(), $first = false)
+    {
+        if($container == 'perm') {
+            return $this->_getUsersByPerm($filter, $first);
+        }
+        return $this->_getUsersByAuth($filter, $first);
+    }
+
+    /**
+    * Finds and gets full userinfo by filtering inside the perm container
+    *
+    * @access private
+    * @param  mixed perm filters (as for getUsers() from the perm container
+    * @param  boolean if only one row should be returned
+    * @return mixed Array with userinfo if found else error object
+    */
+    function _getUsersByPerm($permFilter = array(), $first = false)
     {
         if (!is_object($this->perm)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -567,12 +583,12 @@ class LiveUser_Admin
     /**
     * Finds and gets full userinfo by filtering inside the auth container
     *
-    * @access public
+    * @access private
     * @param  mixed auth filters (as for getUsers() from the auth container
     * @param  boolean if only one row should be returned
     * @return mixed Array with userinfo if found else error object
     */
-    function getUsersByAuth($authFilter = array(), $first = false)
+    function _getUsersByAuth($authFilter = array(), $first = false)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
