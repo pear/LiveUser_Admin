@@ -98,7 +98,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function removeGroup($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getUsers');
+        $filters = $this->_makeRemoveFilter($filters, 'group_id', 'getGroups');
         if (!$filters) {
             return $filters;
         }
