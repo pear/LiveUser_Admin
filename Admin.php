@@ -432,8 +432,13 @@ class LiveUser_Admin
                                   $customFields = array(), $type = LIVEUSER_USER_TYPE_ID)
     {
         if (is_object($this->auth) && is_object($this->perm)) {
-            $authData = $this->perm->getAuthUserId($permId);
+            $authData = $this->perm->getUsers(array('filters' => array('perm_user_id' => $permId), 'fields' => array('auth_user_id')));
 
+            if (!$authData) {
+                return $authData;
+            }
+
+            $authData = reset($authData);
             $auth = $this->auth->updateUser($authData['auth_user_id'], $handle, $password,
                                                              $optionalFields, $customFields);
 
@@ -466,12 +471,13 @@ class LiveUser_Admin
     function removeUser($permId)
     {
         if (is_object($this->auth) && is_object($this->perm)) {
-            $authData = $this->perm->getAuthUserId($permId);
+            $authData = $this->perm->getUsers(array('filters' => array('perm_user_id' => $permId), 'fields' => array('auth_user_id')));
 
-            if (PEAR::isError($authData)) {
+            if (!$authData) {
                 return $authData;
             }
 
+            $authData = reset($authData);
             $result = $this->auth->removeUser($authData['auth_user_id']);
 
             if (PEAR::isError($result)) {
