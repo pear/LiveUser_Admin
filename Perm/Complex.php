@@ -273,7 +273,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         $this->_storage->delete('group_subgroups', $filters);
-        parent::removeGroup($filters);
+        return parent::removeGroup($filters);
     }
 
     /**
@@ -369,11 +369,42 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         return true;
     }
 
-    function getParentGroup()
+    /**
+     *
+     *
+     * @access public
+     * @param int $subGroupId
+     * @return
+     */
+    function getParentGroup($subGroupId)
     {
+        if (!is_numeric($subGroupId)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Something wrong with your param, make sure its a 
+                               numeric value and not empty')
+            );
+            return false;
+        }
 
+        $params = array(
+            'fields' => array(
+                'group_id'
+            ),
+            'filters' => array(
+                'subgroup_id' => $subGroupId
+            )
+        );
+        return $this->getGroups($params);
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return array
+     */
     function getGroups($params = array())
     {
         !isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
@@ -435,6 +466,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         return $groups;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return array
+     */
     function getRights($params = array())
     {
         return parent::getRights($params);
