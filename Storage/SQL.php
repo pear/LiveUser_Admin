@@ -91,19 +91,35 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     function insert($table, $data)
     {
-        if (isset($this->tables[$table]['id']) && !isset($data[$this->tables[$table]['id']])) {
-            $data[$this->tables[$table]['id']] = $this->nextId($this->prefix . $table, true);
+        // sanity checks
+        foreach ($this->tables[$table]['fields'] as $field => $required) {
+            if ($required) {
+                if ($required == 'seq' && !isset($data[$field])) {
+                    $data[$field] = $this->nextId($this->prefix . $field, true);
+                }
+                if(!isset($data[$field]) || $data[$field] === '') {
+                    $this->_stack->push(
+                        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                        array('reason' => 'field may not be empty: '.$field)
+                    );
+                    return false;
+                }
+            }
         }
 
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
             $fields[] = $this->alias[$field];
-            $values[] = $this->quote($value, $this->fields[$field]);
+            $value_quoted = $this->quote($value, $this->fields[$field]);
+            if ($value_quoted === false) {
+                return false;
+            }
+            $values[] = $value_quoted;
         }
 
         $query = $this->createInsert($table, $fields, $values);
-        if (!$query) {
+        if ($query === false) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'query was not created')
@@ -118,8 +134,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             );
             return false;
         }
-        if (isset($this->tables[$table]['id'])) {
-            return $data[$this->tables[$table]['id']];
+        if (isset($this->tables[$table]['ids'])) {
+            return $data[$this->tables[$table]['ids']];
         }
         return true;
     }
@@ -134,14 +150,42 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     function update($table, $data, $filters)
     {
+        // sanity checks
+        foreach ($this->tables[$table]['fields'] as $field => $required) {
+            if ($required && isset($data[$field]) && $data[$field] === '') {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => 'field may not be empty: '.$field)
+                );
+                return false;
+            }
+        }
+
+        // id filter checks .. we could actually remove this to be more flexible
+        if (isset($this->tables[$table]['ids'])) {
+            foreach ($this->tables[$table]['ids'] as $field) {
+                if(!isset($filters[$field]) || $filters[$field] === '') {
+                    $this->_stack->push(
+                        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                        array('reason' => 'filter for id field may not be empty: '.$field)
+                    );
+                    return false;
+                }
+            }
+        }
+
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
-            $fields[] = $this->alias[$field] . ' = ' . $this->quote($value, $this->fields[$field]);
+            $value_quoted = $this->quote($value, $this->fields[$field]);
+            if ($value_quoted === false) {
+                return false;
+            }
+            $fields[] = $this->alias[$field] . ' = ' . $value_quoted;
         }
 
         $query = $this->createUpdate($table, $fields, $filters);
-        if (!$query) {
+        if ($query === false) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'query was not created')
@@ -169,6 +213,19 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     function delete($table, $filters)
     {
+        // id filter checks .. we could actually remove this to be more flexible
+        if (isset($this->tables[$table]['ids'])) {
+            foreach ($this->tables[$table]['ids'] as $field) {
+                if(!isset($filters[$field]) || $filters[$field] === '') {
+                    $this->_stack->push(
+                        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                        array('reason' => 'filter for id field may not be empty: '.$field)
+                    );
+                    return false;
+                }
+            }
+        }
+
         $query = 'DELETE FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
 
@@ -243,7 +300,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         }
 
         $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
-        if (!$query) {
+        if ($query === false) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'query was not created')
@@ -332,12 +389,20 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
             if (is_array($value)) {
                 if (isset($value['value'])) {
-                    $where[] = $tmp_field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
+                    $value_quoted = $this->quote($value['value'], $type);
+                    if ($value_quoted === false) {
+                        return false;
+                    }
+                    $where[] = $tmp_field. ' ' . $value['op'] . ' ' .$value_quoted;
                 } else {
                     $where[] = $tmp_field.' IN ('.$this->implodeArray($value, $type).')';
                 }
             } else {
-                $where[] = $tmp_field.' = '.$this->quote($value, $type);
+                $value_quoted = $this->quote($value, $type);
+                if ($value_quoted === false) {
+                    return false;
+                }
+                $where[] = $tmp_field.' = '.$value_quoted;
             }
         }
         foreach ($joinfilters as $field => $value) {
@@ -452,13 +517,19 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     // target table uses a field in the join and source table
                     // a constant value
                     } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
-                        $filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] =
-                            $this->quote($joinsource, $this->fields[$jointarget]);
+                        $value_quoted = $this->quote($joinsource, $this->fields[$jointarget]);
+                        if ($value_quoted === false) {
+                            return false;
+                        }
+                        $filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] = $value_quoted;
                     // source table uses a field in the join and target table
                     // a constant value
                     } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
-                        $filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
-                            $this->quote($jointarget, $this->fields[$joinsource]);
+                        $value_quoted = $this->quote($jointarget, $this->fields[$joinsource]);
+                        if ($value_quoted === false) {
+                            return false;
+                        }
+                        $filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] = $value_quoted;
                     // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
@@ -509,13 +580,19 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     // target table uses a field in the join and source table
                     // a constant value
                     } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
-                        $tmp_filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] =
-                            $this->quote($joinsource, $this->fields[$jointarget]);
+                        $value_quoted = $this->quote($joinsource, $this->fields[$jointarget]);
+                        if ($value_quoted === false) {
+                            return false;
+                        }
+                        $tmp_filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] = $value_quoted;
                     // source table uses a field in the join and target table
                     // a constant value
                     } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
-                        $tmp_filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
-                            $this->quote($jointarget, $this->fields[$joinsource]);
+                        $value_quoted = $this->quote($jointarget, $this->fields[$joinsource]);;
+                        if ($value_quoted === false) {
+                            return false;
+                        }
+                        $tmp_filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] = $value_quoted;
                     // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
