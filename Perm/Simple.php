@@ -23,6 +23,8 @@
  * @category authentication
  */
 
+require_once 'LiveUser/Perm/Simple.php';
+
 /**
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
@@ -36,30 +38,7 @@
  */
 class LiveUser_Admin_Perm_Simple
 {
-    var $alias = array(
-        'perm_user_id' => null,
-        'auth_user_id' => null,
-        'auth_container_name' => null,
-        'perm_type' => null,
-        'right_id' => null,
-        'right_level' => null,
-        'area_id' => null,
-        'application_id' => null,
-        'right_define_name' => null,
-        'area_define_name' => null,
-        'application_define_name' => null,
-        'section_id' => null,
-        'section_type' => null,
-        'name' => null,
-        'description' => null,
-        'group_id' => null,
-        'group_type' => null,
-        'group_define_name' => null,
-        'is_active' => null,
-        'owner_user_id' => null,
-        'owner_group_id' => null,
-        'implied_right_id' => null,
-    );
+    var $alias = array();
 
     /**
      * Class constructor. Feel free to override in backend subclasses.
@@ -79,6 +58,7 @@ class LiveUser_Admin_Perm_Simple
                 }
             }
         }
+        $this->alias = LiveUser::arrayMergeClobber(LiveUser_Perm_Simple::getAliasDefaults(), $this->alias);
     }
 
     /**
