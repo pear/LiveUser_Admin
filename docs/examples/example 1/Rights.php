@@ -8,7 +8,7 @@ if  (empty($currentArea)) {
 }
 // Add
 $areas = $admin->perm->getAreas();
-if (!$areas) {
+if ($areas === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br (>';
 }
 
@@ -19,8 +19,8 @@ foreach ($areas as $row) {
             'right_define_name' => 'RIGHT_' . $row['area_id'] . '_' . rand(),
         );
         $right_id = $admin->perm->addRight($data);
-        if (!$right_id) {
-              echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        if ($right_id === false) {
+              echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
         } else {
             echo 'Added right<br />';
         }
@@ -30,8 +30,8 @@ foreach ($areas as $row) {
 // Get
 $currentRights = $admin->perm->getRights();
 
-if (!$currentRights) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($currentRights === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'These are our current rights:';
     Var_Dump::display($currentRights);
@@ -43,8 +43,8 @@ $id = array_rand($currentRights);
 $filters = array('right_id' => $currentRights[$id]['right_id']);
 $rmRight = $admin->perm->removeRight($filters);
 
-if (!$rmRight) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($rmRight === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'Right_' . $id . ' was removed<br />';
 }
@@ -54,15 +54,15 @@ $id = array_rand($currentRights);
 $data = array('right_define_name' => 'RIGHT_' . $id . '_UPDATED');
 $filters = array('right_id' => $currentRights[$id]['right_id']);
 $upRight = $admin->perm->updateRight($data, $filters);
-if (!$upRight) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($upRight === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'Right_'. $id .' was updated<br />';
     $params = array('filters' => array('right_id' => $currentRights[$id]['right_id']));
     $result = $admin->perm->getRights($params);
 
-    if (!$result) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($result === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         Var_Dump::display($result);
     }
@@ -71,8 +71,8 @@ if (!$upRight) {
 // Get
 $currentRights = $admin->perm->getRights();
 
-if (!$currentRights) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($currentRights === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'These are our current rights:';
     Var_Dump::display($currentRights);

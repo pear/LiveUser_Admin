@@ -9,8 +9,8 @@ for ($i = 1; $i < 10; $i++) {
     );
 
     $user_id = $admin->addUser('johndoe' . rand(), 'dummypass', array(), $custom, null, '1');
-    if (!$user_id) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($user_id === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         echo 'Created User Id ' . $user_id . '<br />';
     }
@@ -21,8 +21,8 @@ for ($i = 1; $i < 10; $i++) {
 echo 'All the users:<br />';
 $allUsers = $admin->searchUsers();
 
-if (!$allUsers) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($allUsers === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($allUsers);
     echo '<br />';
@@ -32,8 +32,8 @@ $i = array_rand($allUsers);
 // single user
 echo 'This user will be removed:<br />';
 $user = $admin->getUser($allUsers[$i]['perm_user_id']);
-if (!$user) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($user === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($user);
     echo '<br />';
@@ -42,8 +42,8 @@ if (!$user) {
 // Remove
 $removed = $admin->removeUser($allUsers[$i]['perm_user_id']);
 
-if (!$removed) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($removed === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo $i.' was deleted<br />';
     unset($allUsers[$i]);
@@ -53,14 +53,14 @@ if (!$removed) {
 $i = array_rand($allUsers);
 $updateUser = $allUsers[$i]['perm_user_id'];
 $updated = $admin->updateUser($updateUser, 'updated_user'.rand(), 'foo', array(), $custom);
-if (!$updated) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($updated === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo $updateUser.' was updated<br />';
     $user = $admin->getUser($updateUser);
 
-    if (!$user) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($user === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         Var_Dump::display($user);
         echo '<br />';
@@ -70,8 +70,8 @@ if (!$updated) {
 // Get
 echo 'All the users:<br />';
 $allUsers = $admin->searchUsers();
-if (!$allUsers) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($allUsers === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($allUsers);
     echo '<br />';
@@ -85,8 +85,8 @@ echo 'Auth<br />';
 $filter = array(array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'value' => $allUsers[$randUser]['auth_user_id'], 'type' => 'text'));
 $options = array('with_rights' => true);
 $user = $admin->auth->getUsers($filter);
-if (!$user) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($user === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($user);
     echo '<br />';
@@ -96,8 +96,8 @@ unset($user);
 echo 'Perm<br />';
 $filter = array(array('filters' => array('perm_user_id' => '3')));
 $user = $admin->perm->getUsers($filter);
-if (!$user) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($user === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($user);
     echo '<br />';

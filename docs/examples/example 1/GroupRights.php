@@ -23,11 +23,13 @@ for ($i = 0; $i < 20; $i++) {
     );
     $granted = $admin->perm->grantGroupRight($data);
 
-    if (!$granted) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($granted === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         echo 'Group <b>' . $group . '</b> was granted the right <b>'.$right.'</b><br />';
     }
+    unset($rights[$right]);
+    $rights = array_values($rights);
 }
 
 $group = array_rand($groups);
@@ -38,7 +40,10 @@ $params = array(
     ),
     'with' => array(
         'group_id' => array(
-            'group_id',
+            'fields' => array(
+                'group_id',
+                'name',
+            ),
         ),
     ),
     'filters' => array(
@@ -49,8 +54,8 @@ $params = array(
 );
 $allGroupRights = $admin->perm->getRights($params);
 
-if (!$allGroupRights) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($allGroupRights === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo '<hr />Here is/are ' . count($allGroupRights) . ' group right(s) for the group ' . $groups[$group]['group_id'] . ':<br />';
     Var_Dump::display($allGroupRights);
@@ -65,8 +70,8 @@ $filters = array(
 );
 $removed = $admin->perm->revokeGroupRight($filters);
 
-if (!$removed) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($removed === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'Removed the right <b>'.$right.'</b> on group <b>'.$group.'</b><br />';
 }
@@ -82,8 +87,8 @@ $params = array(
     )
 );
 $rights_group = $admin->perm->getRights($params);
-if (!$rights_group) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($rights_group === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     $right   = array_rand($rights_group);
     $data = array('right_level' => 2);
@@ -93,20 +98,13 @@ if (!$rights_group) {
     );
     $updated = $admin->perm->updateGroupRight($data, $filters);
 
-    if (!$updated) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($updated === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         echo 'Updated the right level of <b>'.$groups[$group]['group_id'].'</b><br />';
         $params = array(
             'fields' => array(
                 'right_id'
-            ),
-            'with' => array(
-                'group_id' => array(
-                    'fields' => array(
-                        'group_id',
-                    ),
-                ),
             ),
             'filters' => array(
                 'right_id' => $rights_group[$right]['right_id'],
@@ -115,8 +113,8 @@ if (!$rights_group) {
         );
         $result = $admin->perm->getRights($params);
 
-        if (!$result) {
-            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        if ($result === false) {
+            echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
         } else {
             Var_Dump::display($result);
         }
@@ -139,8 +137,8 @@ $params = array(
 
 $allGroups = $admin->perm->getRights($params);
 echo 'Here are all the group rights after the changes:<br />';
-if (!$allGroups) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($allGroups === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($allGroups);
 }

@@ -6,8 +6,8 @@ for ($i = 1; $i < 20; $i++) {
     $data = array('group_define_name' => 'GROUP'.rand());
     $groupAdd = $admin->perm->addGroup($data);
 
-    if (!$groupAdd) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($groupAdd === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         echo 'Added group<br />';
     }
@@ -17,8 +17,8 @@ for ($i = 1; $i < 20; $i++) {
 echo 'All the groups:<br />';
 $allGroups = $admin->perm->getGroups();
 
-if (!$allGroups) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($allGroups === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($allGroups);
     echo '<br />';
@@ -29,8 +29,8 @@ $id = array_rand($allGroups);
 $filters = array('group_id' => $allGroups[$id]['group_id']);
 $removed = $admin->perm->removeGroup($filters);
 
-if (!$removed) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($removed === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo $allGroups[$id]['group_id'] . ' was deleted<br />';
     unset($allGroups[$id]);
@@ -42,15 +42,15 @@ $filters = array('group_id' => $allGroups[$id]['group_id']);
 $data = array('group_define_name' => 'GROUP_' . $allGroups[$id]['group_id'] . '_UPDATED');
 $updated = $admin->perm->updateGroup($data, $filters);
 
-if (!$updated) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($updated === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo $allGroups[$id]['group_id'] . ' was updated<br />';
     $params = array('filters' => array('group_id' => $allGroups[$id]['group_id']));
     $group = $admin->perm->getGroups($params);
 
-    if (!$group) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($group === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         Var_Dump::display($group);
         echo '<br />';
@@ -61,8 +61,8 @@ if (!$updated) {
 echo 'All the groups:<br />';
 
 $allGroups = $admin->perm->getGroups();
-if (!$allGroups) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($allGroups === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     Var_Dump::display($allGroups);
     echo '<br />';

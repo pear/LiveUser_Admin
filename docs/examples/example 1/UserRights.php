@@ -26,11 +26,13 @@ for ($i = 1; $i < 30; $i++) {
     );
     $granted = $admin->perm->grantUserRight($data);
 
-    if (!$granted) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($granted === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         echo $users[$randUser]['name'].' was granted the right <b>'.$rights[$randRight]['right_id'].'</b><br />';
     }
+    unset($rights[$randRight]);
+    $rights = array_values($rights);
 }
 
 $randUser = array_rand($users);
@@ -41,8 +43,8 @@ $filters = array(
 );
 $revoked = $admin->perm->revokeUserRight($filters);
 
-if (!$revoked) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($revoked === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'The right <b>'.$rights[$randRight]['right_id'].'</b> has been revoked from <b>'.$users[$randUser]['name'].'</b><br />';
 }
@@ -57,8 +59,8 @@ $params = array(
     )
 );
 $user_rights = $admin->perm->getRights($params);
-if (!$user_rights) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($user_rights === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     $randRight = array_rand($user_rights);
     $filters = array(
@@ -67,8 +69,8 @@ if (!$user_rights) {
     );
     $data = array('right_level' => 3);
     $update = $admin->perm->updateUserRight($data, $filters);
-    if (!$update) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    if ($update === false) {
+        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
         echo 'The right <b>'.$user_rights[$randRight]['right_id'].'</b> has been updated to Level 3 for <b>'.$users[$randUser]['name'].'</b><br />';
         $params = array(
@@ -79,8 +81,8 @@ if (!$user_rights) {
         );
         $result = $admin->perm->getRights($params);
 
-        if (!$result) {
-            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        if ($result === false) {
+            echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
         } else {
             Var_Dump::display($result);
         }
@@ -106,8 +108,8 @@ $params = array(
 );
 $singleRight = $admin->perm->getRights($params);
 
-if (!$singleRight) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($singleRight === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'These are the user rights for <b>'.$users[$randUser]['name'].'</b>:<br />';
     Var_Dump::display($singleRight);
@@ -128,8 +130,8 @@ $params = array(
     ),
 );
 $allRights = $admin->perm->getRights($params);
-if (!$allRights) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+if ($allRights === false) {
+    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
     echo 'Here are all the rights:<br />';
     Var_Dump::display($allRights);
