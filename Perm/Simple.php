@@ -39,6 +39,20 @@ require_once 'LiveUser/Perm/Simple.php';
 class LiveUser_Admin_Perm_Simple
 {
     /**
+     * Error stack
+     *
+     * @var PEAR_ErrorStack
+     */
+    var $_stack = null;
+
+    /**
+     * Storage Container
+     *
+     * @var object
+     */
+    var $_storage = null;
+
+    /**
      * Class constructor. Feel free to override in backend subclasses.
      */
     function LiveUser_Admin_Perm_Simple(&$confArray)
@@ -340,6 +354,49 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
+     * @access public
+     * @param array $data
+     * @return
+     */
+    function addTranslation($data)
+    {
+        $result = $this->_storage->insert('translations', $data);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
+    function updateTranslation($data, $filters)
+    {
+        $result = $this->_storage->update('translations', $data, $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
+    function removeTranslation($filters)
+    {
+        $result = $this->_storage->delete('translations', $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
      * @access private
      * @param array $params
      * @param string $root_table
@@ -377,7 +434,7 @@ class LiveUser_Admin_Perm_Simple
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
         if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
-            foreach($params['with'] as $field => $params) {
+            foreach ($params['with'] as $field => $params) {
                 // this is lame and needs to be made more flexible
                 if ($field == 'perm_user_id' || $field == 'group_id') {
                     $method = 'getRights';
@@ -386,7 +443,7 @@ class LiveUser_Admin_Perm_Simple
                 } else {
                     break;
                 }
-                foreach($data as $key => $row) {
+                foreach ($data as $key => $row) {
                     $params['filters'][$field] = $row[$field];
                     $data[$key]['rights'] = $this->$method($params);
                 }
@@ -410,7 +467,7 @@ class LiveUser_Admin_Perm_Simple
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
         if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
-            foreach($params['with'] as $field => $params) {
+            foreach ($params['with'] as $field => $params) {
                 // this is lame and needs to be made more flexible
                 if ($field == 'right_id') {
                     $method = 'getUsers';
@@ -419,7 +476,7 @@ class LiveUser_Admin_Perm_Simple
                 } else {
                     break;
                 }
-                foreach($data as $key => $row) {
+                foreach ($data as $key => $row) {
                     $params['filters'][$field] = $row[$field];
                     $data[$key]['rights'] = $this->$method($params);
                 }
@@ -455,6 +512,21 @@ class LiveUser_Admin_Perm_Simple
     {
         $selectable_tables = array('applications', 'translations');
         $root_table = 'applications';
+
+        return $this->_makeGet($params, $root_table, $selectable_tables);
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return
+     */
+    function getTranslations($params = array())
+    {
+        $selectable_tables = array('translations');
+        $root_table = 'translations';
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
     }
@@ -596,7 +668,7 @@ class LiveUser_Admin_Perm_Simple
                 if ($mode == 'file') {
                     $strDef .= sprintf("define('%s', %s);\n", $v, $k);
                 } else {
-                    if(!defined($v)) {
+                    if (!defined($v)) {
                         define($v, $k);
                     }
                 }
