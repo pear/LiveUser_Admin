@@ -135,7 +135,9 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
                 }
                 $options['portability'] = DB_PORTABILITY_ALL;
                 $this->dbc =& DB::connect($connectOptions['dsn'], $options);
-                if (!DB::isError($this->dbc)) {
+                if (DB::isError($this->dbc)) {
+                    $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error', array('container' => 'could not connect: '.$this->dbc->getMessage()));
+                } else {
                     $this->init_ok = true;
                 }
             }
@@ -191,7 +193,7 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
             $col = ',' . implode(',', $col);
             $val = ',' . implode(',', $val);
         } else {
-        	$col = $val = '';
+            $col = $val = '';
         }
 
         // Register new user in auth table
@@ -420,11 +422,11 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
 
         foreach ($res as $key => $_user) {
             if (isset($_user['is_active'])) {
-        	    if ($_user['is_active'] == 'Y') {
+                if ($_user['is_active'] == 'Y') {
                     $res[$key]['is_active'] = '1';
-        	    } elseif ($_user['is_active'] == 'N') {
+                } elseif ($_user['is_active'] == 'N') {
                     $res[$key]['is_active'] = '0';
-        	    }
+                }
             }
         }
 

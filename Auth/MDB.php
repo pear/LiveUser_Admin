@@ -148,7 +148,9 @@ class LiveUser_Admin_Auth_MDB extends LiveUser_Admin_Auth_Common
                 } else {
                     $this->dbc =& MDB::connect($connectOptions['dsn'], $options);
                 }
-                if (!MDB::isError($this->dbc)) {
+                if (MDB::isError($this->dbc)) {
+                    $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error', array('container' => 'could not connect: '.$this->dbc->getMessage()));
+                } else {
                     $this->init_ok = true;
                 }
             }
@@ -200,7 +202,7 @@ class LiveUser_Admin_Auth_MDB extends LiveUser_Admin_Auth_Common
             $col = ',' . implode(',', $col);
             $val = ',' . implode(',', $val);
         } else {
-        	$col = $val = '';
+            $col = $val = '';
         }
 
         // Register new user in auth table
