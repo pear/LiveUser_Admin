@@ -42,7 +42,6 @@ $params = array(
         'group_id' => array(
             'fields' => array(
                 'group_id',
-                'name',
             ),
         ),
     ),
