@@ -118,7 +118,10 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             );
             return false;
         }
-        return $data[$this->tables[$table]['id']];
+        if (isset($this->tables[$table]['id'])) {
+            return $data[$this->tables[$table]['id']];
+        }
+        return true;
     }
 
     function createInsert($table, $fields, $values)
