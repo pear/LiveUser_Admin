@@ -101,7 +101,7 @@ class LiveUser_Admin
      * @var    array
      */
     var $_errorMessages = array(
-        LIVEUSER_ADMIN_ERROR                  => 'Unknown error',
+        LIVEUSER_ADMIN_ERROR                  => 'An error occurred %msg%',
         LIVEUSER_ADMIN_ERROR_FILTER           => 'There\'s something obscure with the filter array, key %key%',
         LIVEUSER_ADMIN_ERROR_DATA             => 'There\'s something obscure with the data array, key %key%',
         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER    => 'Couldn\'t create the query, reason: %reason%',
@@ -387,8 +387,7 @@ class LiveUser_Admin
                                                             $customFields, $id);
 
             if (PEAR::isError($authId)) {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR_, 'exception', array(),
-                "Configuration file does not exist in LiveUser::readConfig(): $conf");
+                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Cannot add user, container returned' . $authId->getMessage()));
                 return false;
             }
 
