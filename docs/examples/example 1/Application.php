@@ -39,6 +39,7 @@ $removeApp = $admin->perm->removeApplication($filters);
 
 if ($removeApp === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<strong>App3</strong> was removed<br />';
     unset($applications[$id]);
@@ -52,6 +53,7 @@ $updateApp = $admin->perm->updateApplication($data, $filters);
 
 if ($updateApp === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<strong>App2</strong> was updated<br />';
     $params = array('filters' => array('application_id' => $applications[$id]['application_id']));
@@ -59,6 +61,7 @@ if ($updateApp === false) {
 
     if ($result === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
         Var_Dump::display($result);
     }
@@ -69,6 +72,7 @@ $applications = $admin->perm->getApplications();
 
 if ($applications === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo 'These are our current applications:';
     Var_Dump::display($applications);

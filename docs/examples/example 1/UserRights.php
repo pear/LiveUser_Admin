@@ -3,13 +3,13 @@
 <?php
 $users = $admin->searchUsers();
 if  (empty($users)) {
-    echo 'Run the <b>User</b> test first<br />';
+    echo 'Run the <strong>User</strong> test first<br />';
     exit;
 }
 
 $rights = $admin->perm->getRights();
 if  (empty($rights)) {
-    echo 'Run the <b>Right</b> test first<br />';
+    echo 'Run the <strong>Right</strong> test first<br />';
     exit;
 }
 
@@ -25,8 +25,9 @@ for ($i = 1; $i < 30; $i++) {
 
     if ($granted === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
-        echo '<b>' . $users[$user]['name'] . '</b> was granted the right <b>' . $rights[$right]['right_id'] . '</b><br />';
+        echo '<strong>' . $users[$user]['name'] . '</strong> was granted the right <strong>' . $rights[$right]['right_id'] . '</strong><br />';
     }
     unset($rights[$right]);
     $rights = array_values($rights);
@@ -42,8 +43,9 @@ $revoked = $admin->perm->revokeUserRight($filters);
 
 if ($revoked === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
-    echo 'The right <b>' . $rights[$right]['right_id'] . '</b> has been revoked from <b>' . $users[$user]['name'] . '</b><br />';
+    echo 'The right <strong>' . $rights[$right]['right_id'] . '</strong> has been revoked from <strong>' . $users[$user]['name'] . '</strong><br />';
 }
 
 $user = array_rand($users);
@@ -55,7 +57,9 @@ $params = array(
         'perm_user_id' => $users[$user]['perm_user_id']
     )
 );
+
 $user_rights = $admin->perm->getRights($params);
+
 if ($user_rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
@@ -65,11 +69,14 @@ if ($user_rights === false) {
         'right_id' => $user_rights[$right]['right_id']
     );
     $data = array('right_level' => 3);
+
     $update = $admin->perm->updateUserRight($data, $filters);
+
     if ($update === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
-        echo 'The right <b>' . $user_rights[$right]['right_id'] . '</b> has been updated to Level 3 for <b>' . $users[$user]['name'] . '</b><br />';
+        echo 'The right <strong>' . $user_rights[$right]['right_id'] . '</strong> has been updated to Level 3 for <strong>' . $users[$user]['name'] . '</strong><br />';
         $params = array(
             'filters' => array(
                 'right_id' => $user_rights[$right]['right_id'],
@@ -80,6 +87,7 @@ if ($user_rights === false) {
 
         if ($result === false) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+            print_r($admin->getErrors());
         } else {
             Var_Dump::display($result);
         }
@@ -107,8 +115,9 @@ $singleRight = $admin->perm->getRights($params);
 
 if ($singleRight === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
-    echo 'These are the user rights for <b>' . $users[$user]['name'] . '</b>:<br />';
+    echo 'These are the user rights for <strong>' . $users[$user]['name'] . '</strong>:<br />';
     Var_Dump::display($singleRight);
     echo '<br />';
 }
@@ -130,6 +139,7 @@ $params = array(
 $rights = $admin->perm->getRights($params);
 if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo 'Here are all the rights:<br />';
     Var_Dump::display($rights);

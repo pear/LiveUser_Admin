@@ -26,7 +26,7 @@ for ($i = 0; $i < 20; $i++) {
     if ($granted === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
-        echo 'Group <b>' . $group . '</b> was granted the right <b>'.$right.'</b><br />';
+        echo 'Group <b>' . $groups[$group]['group_id'] . '</b> was granted the right <b>'.$rights[$right]['right_id'].'</b><br />';
     }
     unset($rights[$right]);
     $rights = array_values($rights);
@@ -71,6 +71,7 @@ $removed = $admin->perm->revokeGroupRight($filters);
 
 if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo 'Removed the right <b>'.$right.'</b> on group <b>'.$group.'</b><br />';
 }
@@ -88,6 +89,7 @@ $params = array(
 $rights_group = $admin->perm->getRights($params);
 if ($rights_group === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     $right   = array_rand($rights_group);
     $data = array('right_level' => 2);
@@ -99,6 +101,7 @@ if ($rights_group === false) {
 
     if ($updated === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
         echo 'Updated the right level of <b>' . $groups[$group]['group_id'] . '</b><br />';
         $params = array(
@@ -114,6 +117,7 @@ if ($rights_group === false) {
 
         if ($result === false) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+            print_r($admin->getErrors());
         } else {
             Var_Dump::display($result);
         }
@@ -138,6 +142,7 @@ $allGroups = $admin->perm->getRights($params);
 echo 'Here are all the group rights after the changes:<br />';
 if ($allGroups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     Var_Dump::display($allGroups);
 }

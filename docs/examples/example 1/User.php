@@ -12,6 +12,7 @@ for ($i = 1; $i < 10; $i++) {
     $user_id = $admin->addUser('johndoe' . rand(), 'dummypass', array(), $custom, null, '1');
     if ($user_id === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
         echo 'Created User Id <b>' . $user_id . '</b><br />';
     }
@@ -24,6 +25,7 @@ $users = $admin->searchUsers();
 
 if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     Var_Dump::display($users);
     echo '<br />';
@@ -35,6 +37,7 @@ echo 'This user will be removed:<br />';
 $user = $admin->getUser($users[$id]['perm_user_id']);
 if ($user === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     Var_Dump::display($user);
     echo '<br />';
@@ -45,6 +48,7 @@ $removed = $admin->removeUser($users[$id]['perm_user_id']);
 
 if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<b>' . $id . '</b> was deleted<br />';
     unset($users[$id]);
@@ -56,12 +60,14 @@ $updateUser = $users[$id]['perm_user_id'];
 $updated = $admin->updateUser($updateUser, 'updated_user'.rand(), 'foo', array(), $custom);
 if ($updated === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<b>' . $updateUser . '</b> was updated<br />';
     $user = $admin->getUser($updateUser);
 
     if ($user === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
         Var_Dump::display($user);
         echo '<br />';
@@ -74,6 +80,7 @@ echo 'All the users:<br />';
 $users = $admin->searchUsers();
 if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     Var_Dump::display($users);
     echo '<br />';
@@ -89,6 +96,7 @@ $options = array('with_rights' => true);
 $user = $admin->auth->getUsers($filter);
 if ($user === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     Var_Dump::display($user);
     echo '<br />';
@@ -100,6 +108,7 @@ $filter = array(array('filters' => array('perm_user_id' => '3')));
 $user = $admin->perm->getUsers($filter);
 if ($user === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     Var_Dump::display($user);
     echo '<br />';

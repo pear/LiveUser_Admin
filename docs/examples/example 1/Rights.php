@@ -8,7 +8,8 @@ if  (empty($areas)) {
 }
 // Add
 if ($areas === false) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br (>';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 }
 
 foreach ($areas as $row) {
@@ -19,7 +20,8 @@ foreach ($areas as $row) {
         );
         $rightId = $admin->perm->addRight($data);
         if ($rightId === false) {
-              echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+            print_r($admin->getErrors());
         } else {
             echo 'Created Right Id <b>'.$rightId.'</b><br />';
         }
@@ -31,6 +33,7 @@ $rights = $admin->perm->getRights();
 
 if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo 'These are our current rights:';
     Var_Dump::display($rights);
@@ -44,6 +47,7 @@ $rmRight = $admin->perm->removeRight($filters);
 
 if ($rmRight === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<b>Right_' . $id . '</b> was removed<br />';
 }
@@ -53,8 +57,10 @@ $id = array_rand($rights);
 $data = array('right_define_name' => 'RIGHT_' . $id . '_UPDATED');
 $filters = array('right_id' => $rights[$id]['right_id']);
 $upRight = $admin->perm->updateRight($data, $filters);
+
 if ($upRight === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<b>Right_'. $id .'</b> was updated<br />';
     $params = array('filters' => array('right_id' => $rights[$id]['right_id']));
@@ -62,6 +68,7 @@ if ($upRight === false) {
 
     if ($result === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
         Var_Dump::display($result);
     }
@@ -72,6 +79,7 @@ $rights = $admin->perm->getRights();
 
 if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo 'These are our current rights:';
     Var_Dump::display($rights);

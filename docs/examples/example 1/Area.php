@@ -18,6 +18,7 @@ for ($i = 1; $i < 4; $i++) {
 
     if ($areaId === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
         echo 'Created Area Id <b>' . $areaId . '</b><br />';
     }
@@ -28,6 +29,7 @@ $areas = $admin->perm->getAreas();
 
 if ($areas === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo 'These are our current areas:';
     Var_Dump::display($areas);
@@ -41,6 +43,7 @@ $rmArea = $admin->perm->removeArea($filters);
 
 if ($rmArea === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<b>Area3</b> was removed<br />';
     unset($areas[$id]);
@@ -60,6 +63,7 @@ $upArea = $admin->perm->updateArea($data, $filters);
 
 if ($upArea === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo '<b>Area2</b> was updated<br />';
     $params = array('filters' => array('area_id' => $areas[$id]['area_id']));
@@ -67,6 +71,7 @@ if ($upArea === false) {
 
     if ($result === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
         Var_Dump::display($result);
     }
@@ -77,6 +82,7 @@ $areas = $admin->perm->getAreas();
 
 if ($areas === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
     echo 'These are our current areas:';
     Var_Dump::display($areas);
