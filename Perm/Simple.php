@@ -559,7 +559,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeTranslation($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'section_id', 'getTranslation');
+        $filters = $this->_makeRemoveFilter($filters, 'translation_id', 'getTranslations');
         if (!$filters) {
             return $filters;
         }
@@ -582,6 +582,12 @@ class LiveUser_Admin_Perm_Simple
      */
     function _makeRemoveFilter($filters, $key, $method)
     {
+        // notes:
+        // if all filters apply to the given table only then we can probably
+        // skip running the select ..
+        // also do we not want to all people to delete the entire contents of
+        // a given table?
+
         if (empty($filters) || !is_array($filters)) {
             return 0;
         }
@@ -590,7 +596,7 @@ class LiveUser_Admin_Perm_Simple
             $params = array(
                 'fields' => array($key),
                 'filters' => $filters,
-                'select' => 'all',
+                'select' => 'col',
             );
             $result = $this->$method($params);
             if ($result === false) {
@@ -601,8 +607,7 @@ class LiveUser_Admin_Perm_Simple
                 return 0;
             }
 
-            $result = reset($result);
-            $filters = array($key => $result[$key]);
+            $filters = array($key => $result);
         }
         return $filters;
     }
