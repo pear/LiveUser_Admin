@@ -11,10 +11,12 @@ if ($groups === false) {
     exit;
 }
 
+$groups_with_subgroup = array();
 for ($i = 0; $i < 10; $i++) {
     $group = array_rand($groups);
     $subgroup = array_rand($groups);
- 
+    $groups_with_subgroup[] = $groups[$group]['group_id'];
+
     $data = array(
         'group_id' => $groups[$group]['group_id'],
         'subgroup_id' => $groups[$subgroup]['group_id']
@@ -30,6 +32,27 @@ for ($i = 0; $i < 10; $i++) {
     }
 }
 
+    echo '<br /><br />All the groups with hierarchy mode on and rekey to true:<br />';
+    $groups = $admin->perm->getGroups(
+        array(
+            'select' => 'all',
+            'rekey' => true,
+            'filters' => array(
+                'group_id' => $groups_with_subgroup),
+            'subgroups' => 'hierachy',
+        )
+    );
+    if ($groups === false) {
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
+    } elseif (empty($groups)) {
+        echo 'No groups were found<br />';
+    } else {
+        Var_Dump::display($groups);
+        echo '<br />';
+    }
+
+
 echo 'All the groups:<br />';
 $groups = $admin->perm->getGroups();
 if ($groups === false) {
@@ -40,7 +63,6 @@ if ($groups === false) {
 } else {
     Var_Dump::display($groups);
     echo '<br />';
-
 
     // unassignSugroup
     // By group id
@@ -105,20 +127,6 @@ if ($groups === false) {
         print_r($admin->getErrors());
     } elseif (empty($groups)) {
         echo 'No groups were found<br />';
-    } else {
-        Var_Dump::display($groups);
-        echo '<br />';
-    }
-
-    echo '<br /><br />All the groups with hierarchy mode on and rekey to true:<br />';
-    $params = array(
-        'hierarchy' => true,
-        'rekey' => true
-    );
-    $groups = $admin->perm->getGroups($params);
-    if ($groups === false) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-        print_r($admin->getErrors());
     } else {
         Var_Dump::display($groups);
         echo '<br />';
