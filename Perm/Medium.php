@@ -286,7 +286,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         // check if the userhas already been granted added to that group
         $filters = array(
                        'perm_user_id' => $data['perm_user_id'],
-                       'right_id'     => $data['right_id'],
+                       'group_id'     => $data['group_id'],
                    );
         $count = $this->_storage->selectOne('groupusers', 'group_id', $filters, true);
         if ($count > 0) {
