@@ -26,7 +26,7 @@ define('DRINK_COFFEE', 7);
 //ini_set('include_path', $path_to_liveuser_dir.ini_get('include_path'));
 
 // Data Source Name (DSN)
-$dsn = 'mysql://root@localhost/liveuser_test';
+$dsn = 'mysql://root@localhost/liveuser_admin_test_example3';
 
 $liveuserConfig = array(
     'session'           => array('name' => 'PHPSESSID','varname' => 'loginInfo'),

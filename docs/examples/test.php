@@ -2,7 +2,7 @@
 
 require_once 'LiveUser/Admin.php';
 
-$dsn = 'mysql://root:@localhost/liveuser_test';
+$dsn = 'mysql://root:@localhost/liveuser_admin_test';
 
 $liveuserConfig = array(
     'login' => array(

@@ -9,7 +9,7 @@ $GLOBALS['_LIVEUSER_DEBUG'] = true;
 $db_user = 'root';
 $db_pass = '';
 $db_host = 'localhost';
-$db_name = 'liveuser_test';
+$db_name = 'liveuser_admin_test_example1';
 
 $dsn = "mysql://$db_user:$db_pass@$db_host/$db_name";
 $options = array(
