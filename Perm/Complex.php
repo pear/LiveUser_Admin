@@ -204,7 +204,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         $this->_storage->delete('area_admin_areas', $filters);
         $result = parent::removeArea($filters);
         if ($result === false) {
-            return $result
+            return $result;
         }
         return true;
     }
