@@ -1,7 +1,6 @@
 <?php
 /*
 TODO:
-SubGroups (get recursive is left as well as remove groups recursivly as a option not hard coded)
 ImplyRight
 */
 require_once 'config.inc.php';

@@ -78,10 +78,21 @@ if ($unassign === false) {
     echo 'Removed the record that has <strong>' . $groups[$group]['group_id'] . '</strong>
           as group id  and <strong>' . $groups[$subgroup]['group_id'] . '</strong> as subgroup id<br />';
 }
-# getParentGroup
+
+echo '<br /><br />Test getParentGroup:<br />';
+for ($i = 0; $i < 5; $i++) {
+    $subgroup = array_rand($groups);
+    $result = $admin->perm->getParentGroup($groups[$subgroup]['group_id']);
+    if ($result === false) {
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
+    } else {
+        echo '<strong>' . $result['group_id'] . '</strong> is the parent group of <strong>' . $groups[$subgroup]['group_id'] . '</strong><br />';
+    }
+}
 
 // Get
-echo 'All the groups:<br />';
+echo '<br /><br />All the groups:<br />';
 $groups = $admin->perm->getGroups();
 if ($groups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
@@ -91,7 +102,7 @@ if ($groups === false) {
     echo '<br />';
 }
 
-echo 'All the groups with hierarchy mode on:<br />';
+echo '<br /><br />All the groups with hierarchy mode on and rekey to true:<br />';
 $params = array(
     'hierarchy' => true,
     'rekey' => true
