@@ -505,7 +505,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             unset($filters['recursive']);
         }
 
-        $result = $this->_storage->delete('group_subgroups', $filters);
+        $result = $this->unassignSubGroup($filters);
         if ($result === false) {
             return false;
         }
