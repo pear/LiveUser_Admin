@@ -31,6 +31,18 @@ define('LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED', -5);
 define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
 /**#@-*/
 
+/**#@+
+ * Section types
+ *
+ * @var integer
+ */
+define('LIVEUSER_SECTION_APPLICATION',  1);
+define('LIVEUSER_SECTION_AREA',         2);
+define('LIVEUSER_SECTION_GROUP',        3);
+define('LIVEUSER_SECTION_LANGUAGE',     4);
+define('LIVEUSER_SECTION_RIGHT',        5);
+/**#@-*/
+
 /**
  * Attempt at a unified admin class
  *
