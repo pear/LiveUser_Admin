@@ -548,8 +548,7 @@ class LiveUser_Admin
     * @param  mixed  Perm User ID
     * @return mixed Array with userinfo if found else error object
     */
-    function getUser($permId, $permFilter = array(), $authFilter = array(),
-        $permOptions = array())
+    function getUser($permId, $permFilter = array(), $authFilter = array())
     {
         if (is_object($this->auth) && is_object($this->perm)) {
             $permFilter['perm_user_id'] = $permId;
