@@ -98,17 +98,17 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     {
         // Remove users from the group
         $filter_check = array('group_id' => $filters['group_id']);
-        $count = $this->_storage->selectOne('groupusers', 'group_id', $filter_check, true);
+        $count = $this->_storage->selectCount('groupusers', 'group_id', $filter_check);
         if ($count > 0) {
             $result = $this->removeUserFromGroup($filter_check);
-            if (!$result) {
+            if ($result === false) {
                 return false;
             }
         }
 
         // Delete group rights
         $result = $this->revokeGroupRight($filters);
-        if (!$result) {
+        if ($result === false) {
             return false;
         }
 
@@ -135,7 +135,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             'group_id' => $data['group_id'],
             'right_id' => $data['right_id'],
         );
-        $count = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
+        $count = $this->_storage->selectCount('grouprights', 'right_id', $filters);
         if ($count > 0) {
             return true;
         }
@@ -188,7 +188,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
                        'perm_user_id' => $data['perm_user_id'],
                        'group_id'     => $data['group_id'],
                    );
-        $count = $this->_storage->selectOne('groupusers', 'group_id', $filters, true);
+        $count = $this->_storage->selectCount('groupusers', 'group_id', $filters);
         if ($count > 0) {
             return true;
         }
@@ -223,7 +223,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     {
         $filter = array('right_id' => $filters['right_id']);
         $result = $this->revokeGroupRight($filter);
-        if (!$result) {
+        if ($result === false) {
             return false;
         }
 
@@ -241,7 +241,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     {
         $filter = array('perm_user_id' => $filters['perm_user_id']);
         $result = $this->removeUserFromGroup($filter);
-        if (!$result) {
+        if ($result === false) {
             return false;
         }
 

@@ -87,9 +87,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         $filter = array('subgroup_id' => $filters['subgroup_id']);
-        $result = $this->_storage->selectOne('group_subgroups', 'group_id', $filter);
-        if (!$result) {
-            return $result;
+        $result = $this->_storage->selectCount('group_subgroups', 'group_id', $filter);
+        if ($result === false) {
+            return false;
         }
 
         if (!empty($result)) {
@@ -122,7 +122,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function unassignSubGroup($filters)
     {
         $result = $this->_storage->delete('group_subgroup', $filters);
-        if (!$result) {
+        if ($result === false) {
             return $result;
         }
         return true;
@@ -139,8 +139,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         if (isset($filters['subgroup_id']) && $filters['recursive']) {
             $filter = array('group_id' => $filters['subgroup_id']);
-            $result = $this->_storage->selectCol('group_subgroups', 'group_id', $filter);
-            if (!$result) {
+            $result = $this->_storage->select('col', 'group_subgroups', 'group_id', $filter);
+            if ($result === false) {
                 return $result;
             }
 
@@ -166,7 +166,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _updateImpliedStatus($filters)
     {
-         $count = $this->_storage->selectOne('rights_implied', 'right_id', $filters, true);
+         $count = $this->_storage->selectCount('rights_implied', 'right_id', $filters);
          if ($count === false) {
              return false;
          }
@@ -175,7 +175,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
          $data['implied'] = (bool)$count;
 
         $this->updateRight($data, $filters);
-        if (!$result) {
+        if ($result === false) {
             return false;
         }
         // notify observer
@@ -194,12 +194,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
          // Add right level filter that will be used to get user and group count.
          $filters['right_level'] = array('op' => '<', 'value' => LIVEUSER_MAX_LEVEL);
 
-         $usercount = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
+         $usercount = $this->_storage->selectCount('userrights', 'right_id', $filters);
          if (!$usercount) {
              return false;
          }
 
-         $grouprcount = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
+         $grouprcount = $this->_storage->selectCount('grouprights', 'right_id', $filters);
          if (!$groupcount) {
              return false;
          }
@@ -223,7 +223,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function implyRight($data)
     {
         $result = $this->_storage->insert('rights_implied', $data);
-        if (!$result) {
+        if ($result === false) {
             return false;
         }
 
@@ -270,7 +270,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $data = array('owner_user_id' => null);
         $result = $this->updateGroup($data, $filters);
-        if (!$result) {
+        if ($result === false) {
             return false;
         }
 
@@ -287,7 +287,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantUserRight($data)
     {
         $result = parent::grantUserRight($data);
-        if (!$result) {
+        if ($result === false) {
             return $result;
         }
         $this->_updateLevelStatus($data['right_id']);
@@ -306,7 +306,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantGroupRight($data)
     {
         $result = parent::grantGroupRight($data);
-        if (!$result) {
+        if ($result === false) {
             return $result;
         }
         $this->_updateLevelStatus($data['right_id']);
