@@ -385,27 +385,28 @@ class LiveUser_Admin
      * @param  integer permission user type
      * @return mixed   userid or false
      */
-    function addUser($handle, $password, $optionalFields = array(), $customFields = array(),
-                             $id = null, $type = LIVEUSER_USER_TYPE_ID)
+    function addUser($handle, $password, $optionalFields = array(),
+        $customFields = array(), $authId = null, $type = LIVEUSER_USER_TYPE_ID)
     {
-        if (is_object($this->auth) && is_object($this->perm)) {
-            $authId = $this->auth->addUser($handle, $password, $optionalFields,
-                                                            $customFields, $id);
-
-            if (!$authId) {
-                return false;
-            }
-
-            $data = array(
-                'auth_user_id' => $authId,
-                'auth_container_name' => $this->authContainerName,
-                'perm_type' => $type
-            );
-            return $this->perm->addUser($data);
+        if (!is_object($this->auth) || !is_object($this->perm)) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Perm and/or Auth container not set.'));
+            return false;
         }
 
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
-        return false;
+        $authId = $this->auth->addUser($handle, $password, $optionalFields,
+            $customFields, $authId);
+
+        if (!$authId) {
+            return false;
+        }
+
+        $data = array(
+            'auth_user_id' => $authId,
+            'auth_container_name' => $this->authContainerName,
+            'perm_type' => $type
+        );
+        return $this->perm->addUser($data);
     }
 
     /**
@@ -432,35 +433,36 @@ class LiveUser_Admin
      * @return mixed   error object or true
      */
     function updateUser($permId, $handle, $password, $optionalFields = array(),
-                                  $customFields = array(), $type = LIVEUSER_USER_TYPE_ID)
+        $customFields = array(), $type = LIVEUSER_USER_TYPE_ID)
     {
-        if (is_object($this->auth) && is_object($this->perm)) {
-            $authData = $this->perm->getUsers(array(
-                'filters' => array('perm_user_id' => $permId),
-                'fields' => array('auth_user_id'))
-             );
-
-            if (!$authData) {
-                return $authData;
-            }
-
-            $authData = reset($authData);
-            $auth = $this->auth->updateUser($authData['auth_user_id'], $handle, $password,
-                                                             $optionalFields, $customFields);
-
-            if ($auth === false) {
-                return false;
-            }
-
-            $data = array(
-                'perm_type' => $type
-            );
-            $filters = array('perm_user_id' => $permId);
-            return $this->perm->updateUser($data, $filters);
+        if (!is_object($this->auth) || !is_object($this->perm)) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Perm and/or Auth container not set.'));
+            return false;
         }
 
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
-        return false;
+        $authData = $this->perm->getUsers(array(
+            'filters' => array('perm_user_id' => $permId),
+            'fields' => array('auth_user_id')
+            'select' => 'row')
+         );
+
+        if (!$authData) {
+            return false;
+        }
+
+        $auth = $this->auth->updateUser($authData['auth_user_id'], $handle,
+            $password, $optionalFields, $customFields);
+
+        if ($auth === false) {
+            return false;
+        }
+
+        $data = array(
+            'perm_type' => $type
+        );
+        $filters = array('perm_user_id' => $permId);
+        return $this->perm->updateUser($data, $filters);
     }
 
     /**
@@ -474,91 +476,64 @@ class LiveUser_Admin
     */
     function removeUser($permId)
     {
-        if (is_object($this->auth) && is_object($this->perm)) {
-            $authData = $this->perm->getUsers(array(
-                'filters' => array('perm_user_id' => $permId),
-                'fields' => array('auth_user_id'))
-             );
-
-            if (!$authData) {
-                return $authData;
-            }
-
-            $authData = reset($authData);
-            $result = $this->auth->removeUser($authData['auth_user_id']);
-
-            if ($result === false) {
-                return $result;
-            }
-
-            $filters = array('perm_user_id' => $permId);
-            return $this->perm->removeUser($filters);
+        if (!is_object($this->auth) || !is_object($this->perm)) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Perm and/or Auth container not set.'));
+            return false;
         }
 
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
-        return false;
+        $authData = $this->perm->getUsers(array(
+            'filters' => array('perm_user_id' => $permId),
+            'fields' => array('auth_user_id')
+            'select' => 'row')
+         );
+
+
+        if (!$authData) {
+            return false;
+        }
+
+        $result = $this->auth->removeUser($authData['auth_user_id']);
+
+        if ($result === false) {
+            return false;
+        }
+
+        $filters = array('perm_user_id' => $permId);
+        return $this->perm->removeUser($filters);
     }
 
     /**
-    * Searches users with given filters and returns
-    * all users found with their handle, passwd, auth_user_id
-    * lastlogin, is_active and the customFields if they are specified
-    *
-    * Untested: it most likely doesn't work.
+    * Finds and gets full userinfo by filtering inside the perm container
     *
     * @access public
-    * @param   array   filters to apply to fetched data
-    * @param   string  if not null 'ORDER BY $order' will be appended to the query
-    * @param   boolean will return an associative array with the auth_user_id
-    *                  as the key by using DB::getAssoc() instead of DB::getAll()
-    * @return mixed error object or array
-    */
-    function searchUsers($filters = array(), $order = null, $rekey = false)
-    {
-        if (is_object($this->auth) && is_object($this->perm)) {
-            $search = $this->auth->getUsers($filters, $order, $rekey);
-
-            if (!$search) {
-                return $search;
-            }
-
-            foreach ($search as $key => $user) {
-                $permFilter['auth_user_id'] = $user['auth_user_id'];
-                $permData = $this->perm->getUsers(array('filters' => $permFilter));
-                if (!$permData) {
-                    return false;
-                }
-                $search[$key] = LiveUser::arrayMergeClobber(reset($permData), $user);
-            }
-            return $search;
-        }
-
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-            array('msg' => 'Perm or Auth container couldn\t be started.'));
-        return false;
-    }
-
-    /**
-    * Finds and gets userinfo by his userID, customFields can
-    *  also be gotten
-    *
-    * Untested: it most likely doesn't work.
-    *
-    * @access public
-    * @param  mixed  Perm User ID
+    * @param  mixed perm filters (as for getUsers() from the perm container
+    * @param  boolean if only one row should be returned
     * @return mixed Array with userinfo if found else error object
     */
-    function getUser($permId, $permFilter = array(), $authFilter = array())
+    function getUsersByPerm($permFilter = array(), $first = false)
     {
-        if (is_object($this->auth) && is_object($this->perm)) {
-            $permFilter['perm_user_id'] = $permId;
-            $permData = $this->perm->getUsers(array('filters' => $permFilter));
-            if (!$permData) {
+        if (!is_object($this->perm)) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Perm container not set.'));
+            return false;
+        }
+
+        $permFilter = array('filters' => $permFilter);
+        $permFilter['select'] = $first ? 'row' : 'all';
+        $permUsers = $this->perm->getUsers($permFilter);
+        if ($permUsers === false) {
+            return false;
+        }
+
+        $users = array();
+        foreach($permUsers as $permData) {
+            $this->setAdminAuthContainer($permData['auth_container_name']);
+            if (!is_object($this->auth)) {
+                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => 'Auth container could not be set.'));
                 return false;
             }
-
-            $permData = array_shift($permData);
-
             $authFilter = array(
                 array(
                     'name' => $this->auth->authTableCols['required']['auth_user_id']['name'],
@@ -571,16 +546,60 @@ class LiveUser_Admin
 
             $authData = $this->auth->getUsers($authFilter);
             if (!$authData) {
-                return $authData;
+                continue;
             }
-
             $authData = array_shift($authData);
 
-            return LiveUser::arrayMergeClobber($permData, $authData);
+            if ($first) {
+                return LiveUser::arrayMergeClobber($permData, $authData);
+            }
+            $users[] = LiveUser::arrayMergeClobber($permData, $authData);
         }
 
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
-        return false;
+        return $users;
+    }
+
+    /**
+    * Finds and gets full userinfo by filtering inside the auth container
+    *
+    * @access public
+    * @param  mixed auth filters (as for getUsers() from the auth container
+    * @param  boolean if only one row should be returned
+    * @return mixed Array with userinfo if found else error object
+    */
+    function getUsersByAuth($authFilter = array(), $first = false)
+    {
+        if (!is_object($this->auth) || !is_object($this->perm)) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Perm and/or Auth container not set.'));
+            return false;
+        }
+
+        $authUsers = $this->auth->getUsers($authFilter);
+        if ($authUsers === false) {
+            return false;
+        }
+
+        $users = array();
+        foreach($authUsers as $authData) {
+            $permUsers = $this->perm->getUsers(array(
+                'filters' => array(
+                    'auth_user_id' => $authData['auth_user_id'],
+                    'auth_container_name' => $this->authContainerName,
+                    'select' => 'row',
+                ),
+            ));
+            if (!$permUsers) {
+                continue;
+            }
+
+            if ($first) {
+                return LiveUser::arrayMergeClobber($authData, $permData);
+            }
+            $users[] = LiveUser::arrayMergeClobber($authData, $permData);
+        }
+
+        return $users;
     }
 
     /**
