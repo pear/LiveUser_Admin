@@ -10,7 +10,7 @@ for ($i = 1; $i < 20; $i++) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo 'Created Group Id <b>'.$groupId.'</b><br />';
+        echo 'Created Group Id <strong>'.$groupId.'</strong><br />';
     }
 }
 
@@ -35,7 +35,23 @@ if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
-    echo '<b>' . $groups[$id]['group_id'] . '</b> was deleted<br />';
+    echo '<strong>' . $groups[$id]['group_id'] . '</strong> was deleted<br />';
+    unset($groups[$id]);
+}
+
+// test recursive
+$id = array_rand($groups);
+$filters = array(
+    'group_id' => $groups[$id]['group_id'],
+    'recursive' => true
+ );
+$removed = $admin->perm->removeGroup($filters);
+
+if ($removed === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} else {
+    echo '<strong>' . $groups[$id]['group_id'] . '</strong> was deleted and all its child groups<br />';
     unset($groups[$id]);
 }
 
@@ -49,7 +65,7 @@ if ($updated === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
-    echo '<b>' . $groups[$id]['group_id'] . '</b> was updated<br />';
+    echo '<strong>' . $groups[$id]['group_id'] . '</strong> was updated<br />';
     $params = array('filters' => array('group_id' => $groups[$id]['group_id']));
     $group = $admin->perm->getGroups($params);
 
