@@ -179,7 +179,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param string $table
      * @param array $fields
      * @param array $values
-     * @return 
+     * @return string SQL insert query
      *
      * @access public
      */
@@ -198,7 +198,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param string $table
      * @param array $data
      * @param array $filteres
-     * @return 
+     * @return
      *
      * @access public
      */
@@ -236,7 +236,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param string $table
      * @param array $fields
      * @param array $filters
-     * @return 
+     * @return string SQL update query
      *
      * @access public
      */
@@ -268,13 +268,14 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     *
+     * Fetches the count of many rows contain the filtered data
      *
      *
      * @param string $table
      * @param string $field
      * @param array $filters
-     * @return 
+     * @return boolean | integer false on failure and integer of how many 
+     *                           rows contain the filtered data
      *
      * @access public
      */
@@ -285,6 +286,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'field is missing')
             );
+            return false;
         }
 
         if (empty($table)) {
@@ -292,6 +294,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'table is missing')
             );
+            return false;
         }
 
         $query = 'SELECT ';
@@ -314,7 +317,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param integer $offset
      * @param string $root_table
      * @param array $selectable_tables
-     * @return 
+     * @return boolean | array false on failure or array with selected data
      *
      * @access public
      */
@@ -360,7 +363,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param array $orders
      * @param string $root_table
      * @param array $selectable_tables
-     * @return 
+     * @return boolean | string false on failure or a string with SQL query
      *
      * @access public
      */
@@ -414,7 +417,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      *
      * @param array $filters
      * @param array $joinfilters
-     * @return 
+     * @return boolean | string false on failure or string with SQL WHERE
      *
      * @access public
      */
@@ -439,7 +442,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             } else {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                    array('reason' => 'field could not be mapped to a type :'.$field)
+                    array('reason' => 'field could not be mapped to a type : '.$field)
                 );
                 return false;
             }
@@ -476,7 +479,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param array &$filters
      * @param array &$orders
      * @param array $selectable_tables
-     * @return 
+     * @return boolean | array false on failure
      *
      * @access public
      */
@@ -555,7 +558,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param array $tables
      * @param array $selectable_tables
      * @param array $visited
-     * @return 
+     * @return boolean | array false on failure
      *
      * @access public
      */
@@ -713,6 +716,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     /**
      * properly disconnect from resources
+     *
+     * @return void
      *
      * @access  public
      */
