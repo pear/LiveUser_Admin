@@ -319,30 +319,6 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         ),
     );
 
-    var $field_alias = array(
-        'perm_user_id' => null,
-        'auth_user_id' => null,
-        'auth_container_name' => null,
-        'perm_type' => null,
-        'right_id' => null,
-        'right_level' => null,
-        'area_id' => null,
-        'application_id' => null,
-        'right_define_name' => null,
-        'area_define_name' => null,
-        'application_define_name' => null,
-        'section_id' => null,
-        'section_type' => null,
-        'name' => null,
-        'description' => null,
-        'group_id' => null,
-        'group_type' => null,
-        'group_define_name' => null,
-        'is_active' => null,
-        'owner_user_id' => null,
-        'owner_group_id' => null,
-    );
-
     /**
      * Constructor
      *
@@ -533,9 +509,10 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
     function createWhere($filters, $root_table = null, $joinfilters = array())
     {
-        if (empty($filters)) {
+        if (empty($filters) && empty($joinfilters)) {
             return '';
         }
+
         $where = array();
 
         foreach ($filters as $field => $value) {
