@@ -52,17 +52,25 @@ So that these test will run you have to have <a href="http://pear.php.net/packag
 <?php
 if (isset($_GET['del']))  {
     $db->query('DELETE FROM liveuser_applications');
+    $db->query('DROP TABLE liveuser_applications_seq');
     $db->query('DELETE FROM liveuser_area_admin_areas');
     $db->query('DELETE FROM liveuser_areas');
+    $db->query('DROP TABLE liveuser_areas_seq');
     $db->query('DELETE FROM liveuser_group_subgroups');
+    $db->query('DROP TABLE liveuser_group_subgroups_seq');
     $db->query('DELETE FROM liveuser_grouprights');
     $db->query('DELETE FROM liveuser_groups');
+    $db->query('DROP TABLE liveuser_groups_seq');
     $db->query('DELETE FROM liveuser_groupusers');
     $db->query('DELETE FROM liveuser_perm_users');
+    $db->query('DROP TABLE liveuser_perm_users_seq');
     $db->query('DELETE FROM liveuser_right_implied');
-    $db->query('DELETE FROM liveuser_rights ');
+    $db->query('DELETE FROM liveuser_rights');
+    $db->query('DROP TABLE liveuser_rights_seq');
     $db->query('DELETE FROM liveuser_userrights');
+    $db->query('DROP TABLE liveuser_userrights_seq');
     $db->query('DELETE FROM liveuser_users');
+    $db->query('DROP TABLE liveuser_users_seq');
     echo 'Reseted the database';
     exit;
 } else {
