@@ -346,7 +346,7 @@ class LiveUser_Admin_Perm_Simple
             return $filters;
         }
 
-        $result = $this->removeRight($filters);
+        $result = $this->removeArea($filters);
         if ($result === false) {
             return false;
         }
@@ -374,6 +374,7 @@ class LiveUser_Admin_Perm_Simple
             'perm_user_id' => $data['perm_user_id'],
             'right_id'     => $data['right_id'],
         );
+ 
         $count = $this->_storage->selectCount('userrights', 'right_id', $filters);
         if ($count > 0) {
             $this->_stack->push(
@@ -527,10 +528,10 @@ class LiveUser_Admin_Perm_Simple
      * @param array $params
      * @return
      */
-    function getRights($params = array())
+    function getRights($params = array(), $root_table = null)
     {
         $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications', 'right_implied');
-        $root_table = 'rights';
+        $root_table = !is_null($root_table) ? $root_table : 'rights';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
@@ -552,6 +553,7 @@ class LiveUser_Admin_Perm_Simple
 
             }
         }
+
         return $data;
     }
 
