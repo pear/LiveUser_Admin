@@ -114,7 +114,7 @@ $package->addMaintainer(
     'lsmith', 'lead', 'Lukas Kahwe Smith', 'smith@backendmedia.com'
 );
 $package->addMaintainer(
-    'dufuz', 'developer', 'Helgi &#x00DE;ormar', 'dufuz@php.net'
+    'dufuz', 'developer', 'Helgi Þormar', 'dufuz@php.net'
 );
 
 $package->addDependency('php',       '4.2.0',      'ge',  'php', false);

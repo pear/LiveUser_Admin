@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
 <package version="1.0" packagerversion="1.4.0a1">
- <name>LiveUser_Admin</name>       
+ <name>LiveUser_Admin</name>
  <summary>User authentication and permission management framework</summary>
  <description>LiveUser_Admin is meant to be used with the LiveUser package.
   It is composed of all the classes necessary to administrate
@@ -48,14 +48,14 @@
   </maintainer>
   <maintainer>
    <user>dufuz</user>
-   <name>Helgi &amp;#x00DE;ormar</name>
+   <name>Helgi &THORN;ormar</name>
    <email>dufuz@php.net</email>
    <role>developer</role>
   </maintainer>
   </maintainers>
  <release>
   <version>0.2.0</version>
-  <date>2005-02-26</date>
+  <date>2005-02-27</date>
   <license>LGPL</license>
   <state>beta</state>
   <notes>- perm container now also has a default init() method that is called in the factory
@@ -170,7 +170,7 @@
  <changelog>
    <release>
     <version>0.2.0</version>
-    <date>2005-02-26</date>
+    <date>2005-02-27</date>
     <license>LGPL</license>
     <state>beta</state>
     <notes>- perm container now also has a default init() method that is called in the factory
