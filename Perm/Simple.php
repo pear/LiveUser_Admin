@@ -102,6 +102,10 @@ class LiveUser_Admin_Perm_Simple
     function updateUser($data, $filters)
     {
         // sanity checks
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->update('perm_users', $data, $filters);
         // notify observer
         return $result;
@@ -156,6 +160,14 @@ class LiveUser_Admin_Perm_Simple
     function updateRight($data, $filters)
     {
         // sanity checks
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            return false;
+        }
+
+        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->update('rights', $data, $filters);
         // notify observer
         return $result;
@@ -173,6 +185,17 @@ class LiveUser_Admin_Perm_Simple
         // sanity checks
         if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             return false;
+        }
+        
+        if (isset($filters['area_id']) && !is_numeric($filters['area_id'])) {
+            return false;
+        }
+
+        // Check for rights and remove them if they exist for this area
+        $filter_check = array('right_id' => $filters['right_id']);
+        $count = $this->_storage->selectOne('userrights', 'right_id', $filter_check, true);
+        if ($count > 0) {
+            $this->_storage->delete('userrights', $filter_check);
         }
 
         $result = $this->_storage->delete('rights', $filters);
@@ -237,8 +260,13 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
         
-        // Check for rights and remove them
-        
+        // Check for rights and remove them if they exist for this area
+        $filter_check = array('area_id' => $filters['area_id']);
+        $count = $this->_storage->selectOne('rights', 'area_id', $filter_check, true);
+        if ($count > 0) {
+            $this->_storage->delete('rights', $filter_check);
+        }
+
         $result = $this->_storage->delete('areas', $filters);
         // notify observer
         return $result;
@@ -270,6 +298,10 @@ class LiveUser_Admin_Perm_Simple
     function updateApplication($data, $filters)
     {
         // sanity checks
+        if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->update('applications', $data, $filters);
         // notify observer
         return $result;
@@ -289,7 +321,12 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
 
-        // check for areas and remove them also if they exist
+        // Check for areas and remove them also if they exist
+        $filter_check = array('application_id' => $filters['application_id']);
+        $count = $this->_storage->selectOne('areas', 'application_id', $filter_check, true);
+        if ($count > 0) {
+            $this->_storage->delete('areas', $filter_check);
+        }
 
         $result = $this->_storage->delete('applications', $filters);
         // notify observer
@@ -317,7 +354,16 @@ class LiveUser_Admin_Perm_Simple
         if (!isset($data['right_level'])) {
             $data['right_level'] = LIVEUSER_MAX_LEVEL;
         }
+
         // check if already exists
+        $filters = array(
+                       'perm_user_id' => $data['perm_user_id'],
+                       'right_id'     => $data['right_id'],
+                   );
+        $count = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
+        if ($count > 0) {
+            return false;
+        }
 
         $result = $this->_storage->insert('userrights', $data);
         // notify observer
