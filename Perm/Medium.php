@@ -98,10 +98,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function LiveUser_Admin_Perm_Medium()
     {
+        $this->LiveUser_Admin_Perm_Simple();
         $this->selectable_tables['getUsers'][] = 'groupusers';
         $this->selectable_tables['getRights'][] = 'grouprights';
         $this->selectable_tables['getGroups'] = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
-        $this->LiveUser_Admin_Perm_Simple();
     }
 
     /**
@@ -195,7 +195,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         if ($count > 0) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'This group with id '.$data['group_id'].' has already been granted the right id '.$data['right_id'])
+                array('msg' => 'This group with id '.$data['group_id'].
+                    ' has already been granted the right id '.$data['right_id'])
             );
             return false;
         }
@@ -363,7 +364,6 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
                     $method = 'getRights';
                 } elseif ($field == 'perm_user_id') {
                     $method = 'getUsers';
-                    $params['subgroups'] = false;
                 } else {
                     break;
                 }
