@@ -71,41 +71,55 @@ if (!$removed) {
     echo 'Removed the right <b>'.$right.'</b> on group <b>'.$group.'</b><br />';
 }
 
-$right   = array_rand($rights);
-$group = array_rand($groups);
-$data = array('right_level' => 2);
-$filters = array(
-    'right_id' => $rights[$right]['right_id'],
-    'group_id' => $groups[$group]['group_id']
-);
-$updated = $admin->perm->updateGroupRight($data, $filters);
 
-if (!$updated) {
+$group = array_rand($groups);
+$params = array(
+    'fields' => array(
+        'right_id'
+    ),
+    'filters' => array(
+        'group_id' => $groups[$group]['group_id']
+    )
+);
+$rights_group = $admin->perm->getRights($params);
+if (!$rights_group) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    echo 'Updated the right level of <b>'.$group.'</b><br />';
-    $params = array(
-        'fields' => array(
-            'right_id'
-        ),
-        'with' => array(
-            'group_id' => array(
-                'fields' => array(
-                    'group_id',
-                ),
-            ),
-        ),
-        'filters' => array(
-            'right_id' => $rights[$right]['right_id'],
-            'group_id' => $groups[$group]['group_id']
-        )
+    $right   = array_rand($rights_group);
+    $data = array('right_level' => 2);
+    $filters = array(
+        'right_id' => $rights_group[$right]['right_id'],
+        'group_id' => $groups[$group]['group_id']
     );
-    $result = $admin->perm->getRights($params);
+    $updated = $admin->perm->updateGroupRight($data, $filters);
 
-    if (!$result) {
+    if (!$updated) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
-        Var_Dump::display($result);
+        echo 'Updated the right level of <b>'.$groups[$group]['group_id'].'</b><br />';
+        $params = array(
+            'fields' => array(
+                'right_id'
+            ),
+            'with' => array(
+                'group_id' => array(
+                    'fields' => array(
+                        'group_id',
+                    ),
+                ),
+            ),
+            'filters' => array(
+                'right_id' => $rights_group[$right]['right_id'],
+                'group_id' => $groups[$group]['group_id']
+            )
+        );
+        $result = $admin->perm->getRights($params);
+
+        if (!$result) {
+            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        } else {
+            Var_Dump::display($result);
+        }
     }
 }
 
