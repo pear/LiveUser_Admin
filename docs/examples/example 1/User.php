@@ -43,7 +43,7 @@ if ($users === false) {
     $id = array_rand($users);
     // single user
     echo 'This user will be removed:<br />';
-    $user = $admin->getUser($users[$id]['perm_user_id']);
+    $user = $admin->getUsersByPerm(array('perm_user_id' => $users[$id]['perm_user_id']));
     if ($user === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
@@ -74,7 +74,7 @@ if ($users === false) {
         print_r($admin->getErrors());
     } else {
         echo '<strong>' . $updateUser . '</strong> was updated<br />';
-        $user = $admin->getUser($updateUser);
+        $user = $admin->getUsersByPerm(array('perm_user_id' => $updateUser));
 
         if ($user === false) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
