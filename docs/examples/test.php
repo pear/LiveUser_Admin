@@ -78,7 +78,7 @@ echo 'input';
 var_dump($params_users);
 echo '<hr>';
 echo 'output';
-#var_dump($lu->perm->getUser($params_users));
+#var_dump($lu->perm->getUsers($params_users));
 echo '<hr>';
 echo 'underlying query:';
 var_dump($lu->perm->_storage->dbc->last_query);

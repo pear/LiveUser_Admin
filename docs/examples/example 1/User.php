@@ -30,7 +30,7 @@ if (!$allUsers) {
 	
 // single user
 echo 'This user will be removed:<br />';
-$user = $admin->getUser($removeUser);
+$user = $admin->getUsers($removeUser);
 
 if (!$user) {
 	echo '<strong>Error</strong><br />';
@@ -54,7 +54,7 @@ if (!$updated) {
 	echo '<strong>Error</strong><br />';
 } else {
 	echo $updateUser.' was updated<br />';
-	$user = $admin->getUser($updateUser);
+	$user = $admin->getUsers($updateUser);
 	
 	if (!$user) {
     	echo '<strong>Error</strong><br />';
