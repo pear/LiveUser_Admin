@@ -57,7 +57,11 @@ class LiveUser_Admin_Storage
         if (is_array($storageConf)) {
             foreach ($storageConf as $key => $value) {
                 if (isset($this->$key)) {
-                    $this->$key =& $storageConf[$key];
+                    if (empty($this->$key) || !is_array($this->$key)) {
+                        $this->$key =& $storageConf[$key];
+                    } else {
+                        $this->$key = array_merge($this->$key, $value);
+                    }
                 }
             }
         }
