@@ -50,6 +50,8 @@ require_once 'MDB2.php';
  */
 class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 {
+    var $force_seq = true;
+
     /**
      * Constructor
      *
@@ -97,13 +99,6 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     function quote($value, $type)
     {
-        if ($type == 'integer' && !is_numeric($value)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'expected integer value is not numeric: '.$value)
-            );
-            return false;
-        }
         return $this->dbc->quote($value, $type);
     }
 
@@ -122,11 +117,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     function query($query)
     {
-        $result = $this->dbc->query($query);
-        if ($result === false) {
-            return false;
-        }
-        return $this->dbc->affectedRows();
+        return $this->dbc->query($query);
     }
 
     function queryOne($query, $type)
@@ -149,9 +140,25 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
         return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
     }
 
-    function nextId($seqname, $ondemand)
+    function nextId($seqname, $ondemand = true)
     {
         return $this->dbc->nextId($seqname, $ondemand);
+    }
+
+    function getBeforeId($table, $ondemand = true)
+    {
+        if ($this->force_seq) {
+            return $this->dbc->nextId($table, $ondemand);
+        }
+        return $this->dbc->getBeforeId($table);
+    }
+
+    function getAfterId($id, $table)
+    {
+        if ($this->force_seq) {
+            return $id;
+        }
+        return $this->dbc->getAfterId($id, $table);
     }
 
     function disconnect()
