@@ -13,7 +13,7 @@ if  (empty($rights)) {
 	exit;
 }
 
-/*
+
 for ($i = 0; $i < 20; $i++) {
 	$right   = array_rand($rights);
 	$group = array_rand($groups);
@@ -28,7 +28,7 @@ for ($i = 0; $i < 20; $i++) {
 	} else {
 		echo $group.' was granted the right <b>'.$right.'</b><br />';
 	}
-}*/
+}
 echo '<hr />';
 $group = array_rand($groups);
 $params = array(
