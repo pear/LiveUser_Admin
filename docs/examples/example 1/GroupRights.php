@@ -3,13 +3,19 @@ require_once 'index.php';
 echo '<h3>GroupRights</h3>';
 
 $groups = $admin->perm->getGroups();
-if  (empty($groups)) {
+if ($groups === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} elseif  (empty($groups)) {
     echo 'Run the <strong>Group</strong> test first<br />';
     exit;
 }
 
 $rights = $admin->perm->getRights();
-if  (empty($rights)) {
+if ($rights === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} elseif  (empty($rights)) {
     echo 'Run the <strong>Right</strong> test first<br />';
     exit;
 }

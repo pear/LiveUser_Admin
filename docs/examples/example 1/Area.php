@@ -8,6 +8,11 @@ if  (empty($applications)) {
     exit;
 }
 
+echo '<hr />';
+echo '<strong>Sub Tests:</strong><br />';
+echo '<a href="Area_Admin_Areas.php' . $qstring . '">Area Admin Areas</a>';
+echo '<hr />';
+
 // Add
 $id = array_rand($applications);
 for ($i = 1; $i < 4; $i++) {
@@ -79,91 +84,6 @@ if ($areas === false) {
         } else {
             Var_Dump::display($result);
         }
-    }
-
-    // Test for area admins
-    // Add
-    $users = $admin->searchUsers();
-    if ($users === false) {
-        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-        print_r($admin->getErrors());
-    } elseif (empty($users)) {
-        echo 'Please run the <a href="User.php'.$qstring.'">User</a> file to be able to test the area admin part.<br />';
-    } else {
-        for ($i = 0; $i < 15; $i++) {
-
-            $id = array_rand($areas);
-            $uid = array_rand($users);
-
-            $data = array(
-                'area_id' => $areas[$id]['area_id'],
-                'perm_user_id' => $users[$uid]['perm_user_id']
-            );
-
-            #$result = $admin->perm->addAreaAdmin($data);
-            $result = true;
-            if ($result === false) {
-                echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-                print_r($admin->getErrors());
-            } else {
-                echo 'perm user id <strong>' . $users[$uid]['perm_user_id'] . '</strong> was added as admin over area id <strong>' . $areas[$id]['area_id'] . '</strong><br />';
-            }
-        }
-
-        // Remove
-        // By area id
-        $id = array_rand($areas);
-        $filters = array(
-            'area_id' => $areas[$id]['area_id']
-        );
-
-        $result = $admin->perm->removeAreaAdmin($filters);
-
-        if ($result === false) {
-            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-            print_r($admin->getErrors());
-        } else {
-           echo 'Removed area admin with area id <strong>' . $areas[$id]['area_id'] . '</strong><br />';
-        }
-
-        unset($areas[$id]);
-
-        // by right id
-        $uid = array_rand($users);
-        $filters = array(
-            'perm_user_id' => $users[$uid]['perm_user_id'],
-        );
-        $result = $admin->perm->removeAreaAdmin($filters);
-
-        if ($result === false) {
-            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-            print_r($admin->getErrors());
-        } else {
-           echo 'Removed area admin with perm user id <strong>' . $users[$uid]['perm_user_id'] . '</strong><br />';
-        }
-
-        unset($users[$uid]);
-
-        // by area and right id
-        $id = array_rand($areas);
-        $uid = array_rand($users);
-        $filters = array(
-            'perm_user_id' => $users[$uid]['perm_user_id'],
-            'area_id' => $areas[$id]['area_id']
-        );
-
-        $result = $admin->perm->removeAreaAdmin($filters);
-
-        if ($result === false) {
-            echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-            print_r($admin->getErrors());
-        } else {
-           echo 'Removed area admin with perm user id <strong>' . $users[$uid]['perm_user_id'] . '</strong>
-                 and area id <strong>' . $areas[$id]['area_id'] . '</strong><br />';
-        }
-
-        unset($areas[$id]);
-        unset($users[$uid]);
     }
 
     // Get

@@ -1,14 +1,23 @@
-<?php require_once 'index.php'; ?>
-<h3>UserGroup</h3>
 <?php
+require_once 'index.php';
+echo '<h3>UserGroup</h3>';
+
 $groups = $admin->perm->getGroups();
-if  (empty($groups)) {
+if ($groups === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+    exit;
+} elseif  (empty($groups)) {
     echo 'Run the <b>Group</b> test first<br />';
     exit;
 }
 
 $users = $admin->searchUsers();
-if  (empty($users)) {
+if ($users === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+    exit;
+} elseif  (empty($users)) {
     echo 'Run the <b>User</b> test first<br />';
     exit;
 }

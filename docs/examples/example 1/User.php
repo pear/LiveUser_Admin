@@ -4,13 +4,20 @@ echo '<h3>User</h3>
 <h4>for this test to work you need to add a "name" and an "email" field to your auth user table or use extra_sql.sql</h4>';
 
 // Add
-for ($i = 1; $i < 10; $i++) {
+echo 'Make 10 normal users and 10 admins<br />';
+for ($i = 1; $i < 21; $i++) {
     $custom = array(
         'name'  => 'asdf'.$i,
         'email' => 'fleh@example.com'.$i
     );
 
-    $user_id = $admin->addUser('johndoe' . rand(), 'dummypass', array(), $custom, null, '1');
+    if ($i > 10) {
+        $level = 3;
+    } else {
+        $level = 1;
+    }
+
+    $user_id = $admin->addUser('johndoe' . rand(), 'dummypass', array(), $custom, null, $level);
     if ($user_id === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());

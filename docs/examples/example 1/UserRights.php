@@ -1,14 +1,23 @@
-<?php require_once 'index.php'; ?>
-<h3>UserRights</h3>
 <?php
+require_once 'index.php';
+echo '<h3>UserRights</h3>';
+
 $users = $admin->searchUsers();
-if  (empty($users)) {
+if ($users === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+    exit;
+} elseif (empty($users)) {
     echo 'Run the <strong>User</strong> test first<br />';
     exit;
 }
 
 $rights = $admin->perm->getRights();
-if  (empty($rights)) {
+if ($rights === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+    exit;
+} elseif (empty($rights)) {
     echo 'Run the <strong>Right</strong> test first<br />';
     exit;
 }

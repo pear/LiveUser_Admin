@@ -3,17 +3,15 @@ require_once 'index.php';
 echo '<h3>Rights</h3>';
 
 $areas = $admin->perm->getAreas();
-if  (empty($areas)) {
-    echo 'Run the <b>Area</b> test first<br />';
+if ($areas === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} elseif  (empty($areas)) {
+    echo 'Run the <strong>Area</strong> test first<br />';
     exit;
 }
 
 // Add
-if ($areas === false) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-    print_r($admin->getErrors());
-}
-
 foreach ($areas as $row) {
     for ($i = 1; $i < 20; $i++) {
         $data = array(
@@ -25,7 +23,7 @@ foreach ($areas as $row) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
             print_r($admin->getErrors());
         } else {
-            echo 'Created Right Id <b>'.$rightId.'</b><br />';
+            echo 'Created Right Id <strong>'.$rightId.'</strong><br />';
         }
     }
 }
@@ -52,7 +50,7 @@ if ($rights === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo '<b>Right_' . $id . '</b> was removed<br />';
+        echo '<strong>Right_' . $id . '</strong> was removed<br />';
     }
 
     // Update
@@ -65,7 +63,7 @@ if ($rights === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo '<b>Right_'. $id .'</b> was updated<br />';
+        echo '<strong>Right_'. $id .'</strong> was updated<br />';
         $params = array('filters' => array('right_id' => $rights[$id]['right_id']));
         $result = $admin->perm->getRights($params);
 
