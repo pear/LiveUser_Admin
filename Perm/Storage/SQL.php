@@ -107,9 +107,25 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                 'areas' => 'area_id',
                 'userrights' => 'right_id',
                 'grouprights' => 'right_id',
+                'rights_implied' => array(
+                    'right_id' => 'right_id',
+                    'right_id' => 'implied_right_id',
+                ),
                 'translations' => array(
                     'right_id' => 'section_id',
                     LIVEUSER_SECTION_RIGHT => 'section_type',
+                ),
+            ),
+        ),
+        'rights_implied' => array(
+            'fields' => array(
+                'right_id',
+                'implied_right_id',
+            ),
+            'joins' => array(
+                'rights' => array(
+                    'right_id' => 'right_id',
+                    'implied_right_id' => 'right_id',
                 ),
             ),
         ),
