@@ -290,10 +290,11 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         foreach ($filters as $field => $value) {
             // find type for fields with naming like [tablename].[fieldname]
-            if (preg_match('/^'.$this->prefix.'[^.]+\.(.+)$/', $field, $match)) {
-                $tmp_field = $this->alias[$match[1]];
+           if (preg_match('/^'.$this->prefix.'([^.]+)\.(.+)$/', $field, $match)) {
+                $tmp_field = $this->alias[$match[2]];
+                $tmp_table_field = $this->prefix.$match[1].'.'.$tmp_field;
             } else {
-                $tmp_field = $this->alias[$field];
+                $tmp_table_field = $tmp_field = $this->alias[$field];
             }
             if (!isset($this->fields[$tmp_field])) {
                 $this->_stack->push(
@@ -305,12 +306,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $type = $this->fields[$tmp_field];
             if (is_array($value)) {
                 if (isset($value['value'])) {
-                    $where[] = $field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
+                    $where[] = $tmp_table_field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
                 } else {
-                    $where[] = $field.' IN ('.$this->implodeArray($value, $type).')';
+                    $where[] = $tmp_table_field.' IN ('.$this->implodeArray($value, $type).')';
                 }
             } else {
-                $where[] = $field.' = '.$this->quote($value, $type);
+                $where[] = $tmp_table_field.' = '.$this->quote($value, $type);
             }
         }
         foreach ($joinfilters as $field => $value) {
