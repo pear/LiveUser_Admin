@@ -118,43 +118,95 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     {
         $result = $this->dbc->query($query);
         if (PEAR::isError($result)) {
-            return $result;
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
         }
         return $this->dbc->affectedRows();
     }
 
     function queryOne($query, $type)
     {
-        return $this->dbc->getOne($query);
+        $result = $this->dbc->getOne($query);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function queryRow($query, $type)
     {
-        return $this->dbc->getRow($query);
+        $result = $this->dbc->getRow($query);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function queryCol($query, $type)
     {
-        return $this->dbc->getCol($query);
+        $result = $this->dbc->getCol($query);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function queryAll($query, $types, $rekey)
     {
         if ($rekey) {
-            return $this->dbc->getAssoc($query, false, array(), DB_FETCHMODE_ASSOC);
+            $result = $this->dbc->getAssoc($query, false, array(), DB_FETCHMODE_ASSOC);
         } else {
-            return $this->dbc->getAll($query, array(), DB_FETCHMODE_ASSOC);
+            $result = $this->dbc->getAll($query, array(), DB_FETCHMODE_ASSOC);
         }
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function nextId($seqname, $ondemand = true)
     {
-        return $this->dbc->nextId($seqname, $ondemand);
+        $result = $this->dbc->nextId($seqname, $ondemand);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function getBeforeId($table, $ondemand = true)
     {
-        return $this->dbc->nextId($table, $ondemand);
+        $result = $this->dbc->nextId($table, $ondemand);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function getAfterId($id, $table)
@@ -164,7 +216,15 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
 
     function disconnect()
     {
-        return $this->dbc->disconnect();
+        $result = $this->dbc->disconnect();
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 }
 ?>

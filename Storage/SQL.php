@@ -98,11 +98,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             if ($required && !isset($data[$field])) {
                 if ($required == 'seq') {
                     $result = $this->getBeforeId($this->prefix . $table, true);
-                    if (PEAR::isError($result)) {
-                        $this->_stack->push(
-                            LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                            array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
-                        );
+                    if ($result === false) {
                         return false;
                     }
                     $data[$field] = $result;
@@ -136,11 +132,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             return false;
         }
         $result = $this->query($query);
-        if (PEAR::isError($result)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
-            );
+        if ($result === false) {
             return false;
         }
         if (isset($this->tables[$table]['ids'])) {
@@ -189,13 +181,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             return false;
         }
         $result = $this->query($query);
-        if (PEAR::isError($result)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
-            );
-            return false;
-        }
         return $result;
     }
 
@@ -213,13 +198,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $query .= $this->createWhere($filters);
 
         $result = $this->query($query);
-        if (PEAR::isError($result)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
-            );
-            return false;
-        }
         return $result;
     }
 

@@ -117,40 +117,97 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     function query($query)
     {
-        return $this->dbc->query($query);
+        $result = $this->dbc->query($query);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function queryOne($query, $type)
     {
-        return $this->dbc->queryOne($query, $type);
+        $result = $this->dbc->queryOne($query, $type);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function queryRow($query, $type)
     {
-        return $this->dbc->queryRow($query, $type);
+        $result = $this->dbc->queryRow($query, $type);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function queryCol($query, $type)
     {
-        return $this->dbc->queryCol($query, $type);
+        $result = $this->dbc->queryCol($query, $type);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function queryAll($query, $types, $rekey)
     {
-        return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
+        $result = $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function nextId($seqname, $ondemand = true)
     {
-        return $this->dbc->nextId($seqname, $ondemand);
+        $result = $this->dbc->nextId($seqname, $ondemand);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function getBeforeId($table, $ondemand = true)
     {
         if ($this->force_seq) {
-            return $this->dbc->nextId($table, $ondemand);
+            $result = $this->dbc->nextId($table, $ondemand);
+        } else {
+            $result = $this->dbc->getBeforeId($table);
         }
-        return $this->dbc->getBeforeId($table);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function getAfterId($id, $table)
@@ -158,12 +215,28 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
         if ($this->force_seq) {
             return $id;
         }
-        return $this->dbc->getAfterId($id, $table);
+        $result = $this->dbc->getAfterId($id, $table);
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 
     function disconnect()
     {
-        return $this->dbc->disconnect();
+        $result = $this->dbc->disconnect();
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
+        }
+        return $result;
     }
 }
 ?>
