@@ -18,6 +18,18 @@
 
 require_once 'LiveUser.php';
 
+/**#@+
+ * Error related constants definition
+ *
+ * @var integer
+ */
+define('LIVEUSER_ADMIN_ERROR', -1);
+define('LIVEUSER_ADMIN_ERROR_FILTER', -2);
+define('LIVEUSER_ADMIN_ERROR_DATA', -3);
+define('LIVEUSER_ADMIN_ERROR_QUERY_BUILDER', -4);
+define('LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED', -5);
+/**#@-*/
+
 /**
  * Attempt at a unified admin class
  *
@@ -81,6 +93,93 @@ class LiveUser_Admin
      * @var    array
      */
      var $_conf = array();
+
+    /**
+     * Error codes to message mapping array
+     *
+     * @access private
+     * @var    array
+     */
+    var $_errorMessages = array(
+        LIVEUSER_ADMIN_ERROR => 'Unknown error',
+        LIVEUSER_ADMIN_ERROR_FILTER => 'There\'s something obscure with the filter array, key %key%',
+        LIVEUSER_ADMIN_ERROR_DATA => 'There\'s something obscure with the data array, key %key%',
+        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER => 'Couldn\'t create the query, reason: %reason%',
+        LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED => 'That given %field1% has already been assigned to %field2%',
+    );
+
+    /**
+     * PEAR::Log object
+     * used for error logging by ErrorStack
+     *
+     * @access private
+     * @var    Log
+     */
+    var $_log = null;
+
+    /**
+     * For lazy loading of PEAR::Log
+     *
+     * @acess private
+     * @var   boolean
+     */
+    var $_log_loaded = false;
+
+    function LiveUser_Admin()
+    {
+        $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+
+        if ($GLOBALS['_LIVEUSER_DEBUG']) {
+            if (!$this->_log_loaded) {
+                $this->loadPEARLog();
+            }
+            $this->_log->addChild(Log::factory('win', 'LiveUser_Admin'));
+        }
+
+        $this->_stack->setErrorMessageTemplate($this->_errorMessages);
+    }
+
+    /**
+     * This method lazy loads PEAR::Log
+     *
+     * @access protected
+     * @return void
+     */
+    function loadPEARLog()
+    {
+        require 'Log.php';
+        $this->_log = &Log::factory('composite');
+        $this->_stack->setLogger($this->_log);
+        $this->_log_loaded = true;
+    }
+
+    /**
+     * Add error logger for use by Errorstack.
+     *
+     * Be aware that if you need add a log
+     * at the beginning of your code if you
+     * want it to be effective. A log will only
+     * be taken into account after it's added.
+     *
+     * Sample usage:
+     * <code>
+     * $lu_object = &LiveUser::singleton($conf);
+     * $logger = &Log::factory('mail', 'bug@example.com',
+     *      'myapp_debug_mail_log', array('from' => 'application_bug@example.com'));
+     * $lu_object->addErrorLog($logger);
+     * </code>
+     *
+     * @access public
+     * @param  Log     logger instance
+     * @return boolean true on success or false on failure
+     */
+    function addErrorLog(&$log)
+    {
+        if (!$this->_log_loaded) {
+            $this->loadPEARLog();
+        }
+        return $this->_log->addChild($log);
+    }
 
     function &factory($conf)
     {
@@ -443,6 +542,17 @@ class LiveUser_Admin
         }
         return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
+    }
+
+    /**
+     * Wrapper method to get the Error Stack
+     *
+     * @access public
+     * @return array  an array of the errors
+     */
+    function getErrors()
+    {
+        return $this->_stack->getErrors();
     }
 
     /**
