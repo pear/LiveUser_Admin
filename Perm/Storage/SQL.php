@@ -515,7 +515,7 @@ var_dump($tables);
         $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), array_keys($tables));
 
         foreach ($direct_matches as $table) {
-            if (in_array($table, $selectable_tables)) {
+            if (!in_array($table, $selectable_tables)) {
                 continue;
             }
             if (isset($tables[$table])) {
