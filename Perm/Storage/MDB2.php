@@ -99,12 +99,12 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
 
     function setLimit($limit, $offset)
     {
-        return $this->setLimit($limit, $offset);
+        return $this->dbc->setLimit($limit, $offset);
     }
 
     function queryAll($query, $types, $rekey)
     {
-        return $this->dbc->query($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
+        return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
     }
 }
 ?>

@@ -125,7 +125,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
      * @param  mixed      configuration array
      * @return void
      */
-    function LiveUser_Admin_Perm_Storage_MDB2(&$confArray, &$storageConf)
+    function LiveUser_Admin_Perm_Storage_SQL(&$confArray, &$storageConf)
     {
         $this->LiveUser_Admin_Perm_Storage($confArray, $storageConf);
     }
@@ -141,7 +141,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             $types[] = $this->fields[$name]['type'];
         }
 
-        $query = createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
+        $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
         if (!$query) {
             return false;
         }
@@ -211,12 +211,12 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
         // find explicit tables
         foreach ($fields_not_yet_linked as $key => $field) {
-            if (preg_match('/^(.*)\.(.+)$/', $name, $match)) {
+            if (preg_match('/^(.*)\.(.+)$/', $field, $match)) {
                 if (!in_array($match[1], $selectable_tables)) {
                     return false;
                 }
                 $tables[$match[1]] = true;
-                unset($fields_not_yet_linked[$field]);
+                unset($fields_not_yet_linked[$key]);
             }
         }
 
