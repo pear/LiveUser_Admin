@@ -32,8 +32,8 @@ $notes = <<<EOT
   removeGroup in Perm Complex container (before it was hardcoded to true,
   now defaults to false)
 - Tests for SubGroups and ImplyRights up and running
-- getGroup and getRight now work in Perm Complex Container, but only the same
-  as their Perm Medium/Simple equals (i.e. no advance features yet)
+- getGroup and getRight now work in Perm Complex Container, but getRight only works same
+  as the Perm Simple equal (i.e. no advance features yet)
 - added DB and MDB permission backends
 EOT;
 
