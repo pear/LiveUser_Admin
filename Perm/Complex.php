@@ -272,6 +272,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             }
         }
 
+        unset($filters['recursive']);
         $this->_storage->delete('group_subgroups', $filters);
         return parent::removeGroup($filters);
     }
@@ -395,7 +396,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 'subgroup_id' => $subGroupId
             )
         );
-        return $this->getGroups($params);
+        $result = parent::getGroups($params, array('group_subgroups'), 'group_subgroups');
+        if ($result === false) {
+            return false;
+        }
+
+        return reset($result);
     }
 
     /**
@@ -405,13 +411,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * @param array $params
      * @return array
      */
-    function getGroups($params = array())
+    function getGroups($params = array(), $extraSelectable = array(), $root_table = null)
     {
         !isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
         $old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
 
         $params['rekey'] = true;
-        $_groups = parent::getGroups($params);
+        $_groups = parent::getGroups($params, $extraSelectable, $root_table);
         if ($_groups === false) {
             return $_groups;
         }
@@ -420,21 +426,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'fields' => array(
                 'subgroup_id',
                 'group_id'
-            ),
-            'rekey' => true
+            )
         );
-        /*$subgroups = parent::getGroups($param);
+        $subgroups = parent::getGroups($param, array('group_subgroups'), 'group_subgroups');
         if ($subgroups === false) {
             return $subgroups;
-        }*/
-
-        $query = 'SELECT
-                      subgroups.group_id as group_id,
-                      subgroups.subgroup_id as subgroup_id
-                 FROM
-                     liveuser_group_subgroups subgroups';
-
-        $subgroups = $this->_storage->dbc->queryAll($query, null, MDB2_FETCHMODE_ASSOC);
+        }
 
         // first it will make all subgroups, then it will update all subgroups to keep
         // everything up2date
@@ -475,6 +472,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getRights($params = array())
     {
+        !isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
+        /*$old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
+
+        $params['rekey'] = true;*/
+
         return parent::getRights($params);
     }
 
@@ -483,7 +485,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     }
 
-    function getInheritedRights()
+    function getInheritedRights($params = array())
     {
         getGroup();
         
