@@ -33,22 +33,23 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>0.1.0</version>
-    <date>2004-12-20</date>
+    <version>0.2.0</version>
+    <date>2004-12-28</date>
     <license>LGPL</license>
     <state>beta</state>
-    <notes>- refactored into a separate package from LiveUser
-- severe BC breaks in the permission API in order to unify the API
-- added ErrorStack
-- fixed outputRightsConstants() method
-- refactored storage layer to use an SQL query builder (DB and MDB support is
-  currently missing but will be added in the next minor update)
-- sql query builder should output more portable SQL code
-- sql query builder enables full aliasing of all field names
-- sql query builder only joins the necessary tables so the admin API does not
-  force the usage of any table (especially the translation table)
-- searchUser() now also fetches perm data
-- the complex container is currently not fully implemented</notes>
+    <notes>- perm container now also has a default init() method that is called in the factory
+- delete/update now dont require a filter in the id field
+- delete/update now return the number of affected rows
+- use LiveUser::cryptRC4() for rc4 handling
+- added support to be able to query for single values, columns and rows next to
+  fetching multi dimensional arrays ('select' key in params array of get methods)
+- improved error handling in several places to not trigger on empty results
+- sequences are now named after the table they belong to
+- now requiring MDB2-2.0.0beta3
+- if the &quot;force-seq&quot; option is now set to false in the storage config
+  MDB2 will try to use autoincrement if supported by the RDBMS (you will need
+  to add autoincrement to the id fields in the applications, areas, groups,
+  rights, and perm_users tables yourself)</notes>
     <deps>
       <dep type="php" rel="ge" version="4.2.0" optional="no"/>
       <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
@@ -56,7 +57,7 @@
       <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
       <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
       <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
-      <dep type="pkg" rel="ge" version="2.0.0beta2" optional="yes">MDB2</dep>
+      <dep type="pkg" rel="ge" version="2.0.0beta3" optional="yes">MDB2</dep>
       <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
       <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
     </deps>
@@ -121,6 +122,25 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.2.0</version>
+      <date>2004-12-28</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- perm container now also has a default init() method that is called in the factory
+- delete/update now dont require a filter in the id field
+- delete/update now return the number of affected rows
+- use LiveUser::cryptRC4() for rc4 handling
+- added support to be able to query for single values, columns and rows next to
+  fetching multi dimensional arrays ('select' key in params array of get methods)
+- improved error handling in several places to not trigger on empty results
+- sequences are now named after the table they belong to
+- now requiring MDB2-2.0.0beta3
+- if the &quot;force-seq&quot; option is now set to false in the storage config
+  MDB2 will try to use autoincrement if supported by the RDBMS (you will need
+  to add autoincrement to the id fields in the applications, areas, groups,
+  rights, and perm_users tables yourself)</notes>
+    </release>
     <release>
       <version>0.1.0</version>
       <date>2004-12-20</date>

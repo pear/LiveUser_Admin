@@ -14,11 +14,17 @@ $version = '0.2.0';
 $notes = <<<EOT
 - perm container now also has a default init() method that is called in the factory
 - delete/update now dont require a filter in the id field
-- delete/update/insert now return the number of affected rows
+- delete/update now return the number of affected rows
 - use LiveUser::cryptRC4() for rc4 handling
 - added support to be able to query for single values, columns and rows next to
   fetching multi dimensional arrays ('select' key in params array of get methods)
 - improved error handling in several places to not trigger on empty results
+- sequences are now named after the table they belong to
+- now requiring MDB2-2.0.0beta3
+- if the "force-seq" option is now set to false in the storage config
+  MDB2 will try to use autoincrement if supported by the RDBMS (you will need
+  to add autoincrement to the id fields in the applications, areas, groups,
+  rights, and perm_users tables yourself)
 EOT;
 
 $description = <<<EOT
@@ -77,7 +83,7 @@ $package->addDependency('LiveUser',  '0.14.0',     'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0',      'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0',      'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4',      'ge',  'pkg', true);
-$package->addDependency('MDB2',      '2.0.0beta2', 'ge',  'pkg', true);
+$package->addDependency('MDB2',      '2.0.0beta3', 'ge',  'pkg', true);
 $package->addDependency('XML_Tree',  false,        'has', 'pkg', true);
 $package->addDependency('Crypt_RC4', false,        'has', 'pkg', true);
 
