@@ -20,19 +20,19 @@ for ($i = 1; $i < 10; $i++) {
 // Get
 // Group of users
 echo 'All the users:<br />';
-$allUsers = $admin->searchUsers();
+$users = $admin->searchUsers();
 
-if ($allUsers === false) {
+if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    Var_Dump::display($allUsers);
+    Var_Dump::display($users);
     echo '<br />';
 }
 
-$id = array_rand($allUsers);
+$id = array_rand($users);
 // single user
 echo 'This user will be removed:<br />';
-$user = $admin->getUser($allUsers[$id]['perm_user_id']);
+$user = $admin->getUser($users[$id]['perm_user_id']);
 if ($user === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
@@ -41,18 +41,18 @@ if ($user === false) {
 }
 
 // Remove
-$removed = $admin->removeUser($allUsers[$id]['perm_user_id']);
+$removed = $admin->removeUser($users[$id]['perm_user_id']);
 
 if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>' . $id . '</b> was deleted<br />';
-    unset($allUsers[$id]);
+    unset($users[$id]);
 }
 
 // Update
-$id = array_rand($allUsers);
-$updateUser = $allUsers[$id]['perm_user_id'];
+$id = array_rand($users);
+$updateUser = $users[$id]['perm_user_id'];
 $updated = $admin->updateUser($updateUser, 'updated_user'.rand(), 'foo', array(), $custom);
 if ($updated === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
@@ -70,20 +70,21 @@ if ($updated === false) {
 
 // Get
 echo 'All the users:<br />';
-$allUsers = $admin->searchUsers();
-if ($allUsers === false) {
+
+$users = $admin->searchUsers();
+if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    Var_Dump::display($allUsers);
+    Var_Dump::display($users);
     echo '<br />';
 }
 
-$randUser = array_rand($allUsers);
+$user = array_rand($users);
 
 unset($user);
 echo 'Test fetching auth_user_id AND perm_user_id with PERM getUsers()<br />';
 echo 'Auth<br />';
-$filter = array(array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'value' => $allUsers[$randUser]['auth_user_id'], 'type' => 'text'));
+$filter = array(array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'value' => $users[$user]['auth_user_id'], 'type' => 'text'));
 $options = array('with_rights' => true);
 $user = $admin->auth->getUsers($filter);
 if ($user === false) {

@@ -1,13 +1,12 @@
 <?php require_once 'index.php'; ?>
 <h3>Rights</h3>
 <?php
-$currentArea = $admin->perm->getAreas();
-if  (empty($currentArea)) {
+$areas = $admin->perm->getAreas();
+if  (empty($areas)) {
     echo 'Run the <b>Area</b> test first<br />';
     exit;
 }
 // Add
-$areas = $admin->perm->getAreas();
 if ($areas === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br (>';
 }
@@ -28,19 +27,19 @@ foreach ($areas as $row) {
 }
 
 // Get
-$currentRights = $admin->perm->getRights();
+$rights = $admin->perm->getRights();
 
-if ($currentRights === false) {
+if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'These are our current rights:';
-    Var_Dump::display($currentRights);
+    Var_Dump::display($rights);
     echo '<br />';
 }
 
 // Remove
-$id = array_rand($currentRights);
-$filters = array('right_id' => $currentRights[$id]['right_id']);
+$id = array_rand($rights);
+$filters = array('right_id' => $rights[$id]['right_id']);
 $rmRight = $admin->perm->removeRight($filters);
 
 if ($rmRight === false) {
@@ -50,15 +49,15 @@ if ($rmRight === false) {
 }
 
 // Update
-$id = array_rand($currentRights);
+$id = array_rand($rights);
 $data = array('right_define_name' => 'RIGHT_' . $id . '_UPDATED');
-$filters = array('right_id' => $currentRights[$id]['right_id']);
+$filters = array('right_id' => $rights[$id]['right_id']);
 $upRight = $admin->perm->updateRight($data, $filters);
 if ($upRight === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>Right_'. $id .'</b> was updated<br />';
-    $params = array('filters' => array('right_id' => $currentRights[$id]['right_id']));
+    $params = array('filters' => array('right_id' => $rights[$id]['right_id']));
     $result = $admin->perm->getRights($params);
 
     if ($result === false) {
@@ -69,13 +68,13 @@ if ($upRight === false) {
 }
 
 // Get
-$currentRights = $admin->perm->getRights();
+$rights = $admin->perm->getRights();
 
-if ($currentRights === false) {
+if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'These are our current rights:';
-    Var_Dump::display($currentRights);
+    Var_Dump::display($rights);
     echo '<br />';
 }
 echo '<hr />';

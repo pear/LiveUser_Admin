@@ -15,38 +15,38 @@ for ($i = 1; $i < 20; $i++) {
 
 // Get
 echo 'All the groups:<br />';
-$allGroups = $admin->perm->getGroups();
+$groups = $admin->perm->getGroups();
 
-if ($allGroups === false) {
+if ($groups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    Var_Dump::display($allGroups);
+    Var_Dump::display($groups);
     echo '<br />';
 }
 
 // Remove
-$id = array_rand($allGroups);
-$filters = array('group_id' => $allGroups[$id]['group_id']);
+$id = array_rand($groups);
+$filters = array('group_id' => $groups[$id]['group_id']);
 $removed = $admin->perm->removeGroup($filters);
 
 if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    echo '<b>' . $allGroups[$id]['group_id'] . '</b> was deleted<br />';
-    unset($allGroups[$id]);
+    echo '<b>' . $groups[$id]['group_id'] . '</b> was deleted<br />';
+    unset($groups[$id]);
 }
 
 // Update
-$id = array_rand($allGroups);
-$filters = array('group_id' => $allGroups[$id]['group_id']);
-$data = array('group_define_name' => 'GROUP_' . $allGroups[$id]['group_id'] . '_UPDATED');
+$id = array_rand($groups);
+$filters = array('group_id' => $groups[$id]['group_id']);
+$data = array('group_define_name' => 'GROUP_' . $groups[$id]['group_id'] . '_UPDATED');
 $updated = $admin->perm->updateGroup($data, $filters);
 
 if ($updated === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    echo '<b>' . $allGroups[$id]['group_id'] . '</b> was updated<br />';
-    $params = array('filters' => array('group_id' => $allGroups[$id]['group_id']));
+    echo '<b>' . $groups[$id]['group_id'] . '</b> was updated<br />';
+    $params = array('filters' => array('group_id' => $groups[$id]['group_id']));
     $group = $admin->perm->getGroups($params);
 
     if ($group === false) {
@@ -60,11 +60,11 @@ if ($updated === false) {
 // Get
 echo 'All the groups:<br />';
 
-$allGroups = $admin->perm->getGroups();
-if ($allGroups === false) {
+$groups = $admin->perm->getGroups();
+if ($groups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
-    Var_Dump::display($allGroups);
+    Var_Dump::display($groups);
     echo '<br />';
 }
 echo '<hr />';

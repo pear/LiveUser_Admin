@@ -1,20 +1,18 @@
 <?php require_once 'index.php'; ?>
 <h3>UserGroup</h3>
 <?php
-$currentGroup = $admin->perm->getGroups();
-if  (empty($currentGroup)) {
+$groups = $admin->perm->getGroups();
+if  (empty($groups)) {
     echo 'Run the <b>Group</b> test first<br />';
     exit;
 }
 
-$currentUser = $admin->searchUsers();
-if  (empty($currentUser)) {
+$users = $admin->searchUsers();
+if  (empty($users)) {
     echo 'Run the <b>User</b> test first<br />';
     exit;
 }
 // Add
-$users   = $admin->searchUsers();
-$groups = $admin->perm->getGroups();
 
 foreach ($groups as $group) {
     $rand = array_rand($users);

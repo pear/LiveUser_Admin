@@ -3,31 +3,91 @@
 <?php
 $groups = $admin->perm->getGroups();
 if  (empty($groups)) {
-    echo 'Run the <b>Group</b> test first<br />';
+    echo 'Run the <strong>Group</strong> test first<br />';
     exit;
 }
 
-for ($i = 0; $i < 5; $i++) {
+for ($i = 0; $i < 10; $i++) {
     $group = array_rand($groups);
     $subgroup = array_rand($groups);
-    $assign = $admin->perm->assignSubgroup($group, $subgroup);
+ 
+    $data = array(
+        'group_id' => $groups[$group]['group_id'],
+        'subgroup_id' => $groups[$subgroup]['group_id']
+    );
+    $assign = $admin->perm->assignSubGroup($data);
+
     if ($assign === false) {
-        echo $subgroup.' is already a subgroup of <b>'.$group.'</b><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
     } else {
-        echo $subgroup.' is now subgroup of <b>'.$group.'</b><br />';
+        echo '<strong>' . $groups[$subgroup]['group_id'] . '</strong> is now 
+              subgroup of <strong>'. $groups[$group]['group_id'] .'</strong><br />';
     }
 }
 
-# unassignSugroup
+echo 'All the groups:<br />';
+$groups = $admin->perm->getGroups();
+if ($groups === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} else {
+    Var_Dump::display($groups);
+    echo '<br />';
+}
+
+// unassignSugroup
+// By group id
+$id = array_rand($groups);
+$filters = array('group_id' => $groups[$id]['group_id']);
+$unassign = $admin->perm->unassignSubGroup($filters);
+
+if ($unassign === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} else {
+    echo 'Removed all records with the group id <strong>' . $groups[$id]['group_id'] . '</strong><br />';
+    unset($groups[$id]);
+}
+
+// By subgroup id
+$id = array_rand($groups);
+$filters = array('subgroup_id' => $groups[$id]['group_id']);
+$unassign = $admin->perm->unassignSubGroup($filters);
+
+if ($unassign === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} else {
+    echo 'Removed all records with the subgroup id <strong>' . $groups[$id]['group_id'] . '</strong><br />';
+    unset($groups[$id]);
+}
+// By subgroup id and group id
+$group = array_rand($groups);
+$subgroup = array_rand($groups);
+$filters = array(
+    'group_id' => $groups[$group]['group_id'],
+    'subgroup_id' => $groups[$subgroup]['group_id']
+);
+$unassign = $admin->perm->unassignSubGroup($filters);
+
+if ($unassign === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
+} else {
+    echo 'Removed the record that has <strong>' . $groups[$group]['group_id'] . '</strong>
+          as group id  and <strong>' . $groups[$subgroup]['group_id'] . '</strong> as subgroup id<br />';
+}
 # getParentGroup
 
 // Get
 echo 'All the groups:<br />';
-$allGroups = $admin->perm->getGroups(null, true);
-if ($allGroups === false) {
-    echo $allGroups->getMessage().'<br />';
+$groups = $admin->perm->getGroups();
+if ($groups === false) {
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+    print_r($admin->getErrors());
 } else {
-    Var_Dump::display($allGroups);
+    Var_Dump::display($groups);
     echo '<br />';
 }
 echo '<hr />';
