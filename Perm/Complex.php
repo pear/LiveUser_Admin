@@ -81,7 +81,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function removeGroup($filters)
     {
-
+        parent::removeGroup($filters);
     }
 
     function _updateImpliedStatus($filters)
@@ -190,7 +190,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        $data = array('owner_user_id' => 'NULL');
+        $data = array($this->getAlias('owner_user_id') => 'NULL');
         $result = $this->_storage->update('groups', $data, $filters);
         if (!$result) {
             return false;
@@ -199,9 +199,79 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         parent::removeUser($filters);
     }
 
-    function _updateLevelStatus()
+    function grantUserRight($data)
     {
+        parent::grantUserRight($data);
+        $this->_updateLevelStatus($data[$this->getAlias('right_id')]);
 
+        // Job done ...
+        return true;
+    }
+
+    function grantGroupRight($data)
+    {
+        parent::grantGroupRight($data);
+        $this->_updateLevelStatus($data[$this->getAlias('right_id')]);
+
+        // Job done ...
+        return true;
+    }
+
+    function _updateImpliedStatus($filters)
+    {
+        // sanity checks
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => $this->getAlias('right_id'))
+            );
+            return false;
+        }
+
+         $count = $this->_storage->selectOne('rights_implied', $this->getAlias('right_id'), $filters, true);
+         if (!$count) {
+             return false;
+         }
+
+         $data = array();
+         $data['implied'] = (int)$count == '0' ? 'Y' : 'N';
+
+        $this->updateRight($data, $filters);
+        if (!$result) {
+            return false;
+        }
+        // notify observer
+        return true;
+    }
+
+    function _updateLevelStatus($filters)
+    {
+        // sanity checks
+        if (!isset($filters[$this->getAlias('right_id')]) || !is_numeric($filters[$this->getAlias('right_id')])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => $this->getAlias('right_id'))
+            );
+            return false;
+        }
+
+         $usercount = $this->_storage->selectOne('userrights', $this->getAlias('right_id'), $filters, true);
+         if (!$usercount) {
+             return false;
+         }
+
+         $grouprcount = $this->_storage->selectOne('grouprights', $this->getAlias('right_id'), $filters, true);
+         if (!$groupcount) {
+             return false;
+         }
+
+        $count = $usercount + $groupcount;
+        
+        $data = array($this->getAlias('has_level') => ($count > 0));
+        $filter = array($this->getAlias('right_id') => $filters[$this->getAlias('right_id')]);
+        $this->_storage->update('rights', $data, $filter);
+        
+        return true;
     }
 
     function getParentGroup()
@@ -225,16 +295,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     function getInheritedRights()
-    {
-
-    }
-
-    function grantUserRight()
-    {
-
-    }
-
-    function grantGroupRight()
     {
 
     }
