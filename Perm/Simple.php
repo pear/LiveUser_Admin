@@ -506,11 +506,6 @@ class LiveUser_Admin_Perm_Simple
      */
     function revokeUserRight($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getRights');
-        if (!$filters) {
-            return $filters;
-        }
-
         $result = $this->_storage->delete('userrights', $filters);
         // notify observer
         return $result;

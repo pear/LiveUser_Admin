@@ -172,11 +172,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function unassignSubGroup($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'group_id', 'getGroups');
-        if (!$filters) {
-            return $filters;
-        }
-
         $result = $this->_storage->delete('group_subgroups', $filters);
         // notify observer
         return $result;
@@ -338,11 +333,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeAreaAdmin($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getAreas');
-        if (!$filters) {
-            return $filters;
-        }
-
         $result = $this->_storage->delete('area_admin_areas', $filters);
         if ($result === false) {
             return false;

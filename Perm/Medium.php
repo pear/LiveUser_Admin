@@ -235,11 +235,6 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function revokeGroupRight($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
-        if (!$filters) {
-            return $filters;
-        }
-
         $result = $this->_storage->delete('grouprights', $filters);
         // notify observer
         return $result;
@@ -282,11 +277,6 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function removeUserFromGroup($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getGroups');
-        if (!$filters) {
-            return $filters;
-        }
-
         $result = $this->_storage->delete('groupusers', $filters);
         // notify observer
         return $result;
