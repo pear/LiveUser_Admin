@@ -77,6 +77,8 @@ class LiveUser_Admin_Auth_Common
      */
     function LiveUser_Admin_Auth_Common(&$connectOptions, $name = null)
     {
+        $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+
         if (is_array($connectOptions)) {
             foreach ($connectOptions as $key => $value) {
                 if (isset($this->$key)) {
