@@ -231,7 +231,7 @@ class LiveUser_Admin_Perm_Simple
         $filter_check = array('right_id' => $filters['right_id']);
         $result = $this->_storage->delete('userrights', $filter_check);
         if (!$result) {
-            return false;
+            return true;
         }
 
         $result = $this->_storage->delete('rights', $filters);
