@@ -541,50 +541,27 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _updateImpliedStatus($filters)
     {
+        $params = array(
+            'fields' => array('right_id'),
+            'filters' => $filters,
+            'select' => 'col',
+        );
+
+        $rights = $this->getRights($params);
+        if ($rights === false) {
+            return false;
+        }
+
+        $filters = array('right_id' => $rights);
+
         $count = $this->_storage->selectCount('right_implied', 'right_id', $filters);
         if ($count === false) {
             return false;
         }
 
-        if (isset($filters['right_id'])) {
-            $rightId = $filters['right_id'];
-        } elseif (isset($filters['implied_right_id'])) {
-            $params = array(
-                'fields' => array(
-                    'right_id'
-                ),
-                'filters' => array(
-                    'implied_right_id' => $filters['implied_right_id']
-                )
-            );
-
-            $result = $this->getRights($params);
-            if ($result === false) {
-                return false;
-            }
-
-            if (empty($result)) {
-                $this->_stack->push(
-                    LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => 'No right implies right id ' . $filters['implied_right_id'])
-                );
-                return false;
-            }
-
-            $rightId = $result['right_id'];
-        } else {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Neither right_id nor implied_right_id were set
-                                in the filter.')
-            );
-            return false;
-        }
-
         $data = array('has_implied' => (bool)$count);
-        $filter = array('right_id' => $rightId);
 
-        $result = $this->updateRight($data, $filter);
+        $result = $this->updateRight($data, $filters);
         if ($result === false) {
             return false;
         }
