@@ -139,7 +139,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if (isset($this->tables[$table]['ids'])) {
             return $data[reset($this->tables[$table]['ids'])];
         }
-        return true;
+        return $result;
     }
 
     function createInsert($table, $fields, $values)
@@ -160,19 +160,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     array('reason' => 'field may not be empty: '.$field)
                 );
                 return false;
-            }
-        }
-
-        // id filter checks .. we could actually remove this to be more flexible
-        if (isset($this->tables[$table]['ids'])) {
-            foreach ($this->tables[$table]['ids'] as $field) {
-                if (!isset($filters[$field]) || $filters[$field] === '') {
-                    $this->_stack->push(
-                        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                        array('reason' => 'filter for id field may not be empty: '.$field)
-                    );
-                    return false;
-                }
             }
         }
 
@@ -202,7 +189,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             );
             return false;
         }
-        return true;
+        return $result;
     }
 
     function createUpdate($table, $fields, $filters)
@@ -215,19 +202,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     function delete($table, $filters)
     {
-        // id filter checks .. we could actually remove this to be more flexible
-        if (isset($this->tables[$table]['ids'])) {
-            foreach ($this->tables[$table]['ids'] as $field) {
-                if (!isset($filters[$field]) || $filters[$field] === '') {
-                    $this->_stack->push(
-                        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                        array('reason' => 'filter for id field may not be empty: '.$field)
-                    );
-                    return false;
-                }
-            }
-        }
-
         $query = 'DELETE FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
 
@@ -239,10 +213,10 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             );
             return false;
         }
-        return true;
+        return $result;
     }
 
-    function selectOne($table, $field, $filters, $count = false)
+    function selectCount($table, $field, $filters)
     {
         if (empty($field)) {
             $this->_stack->push(
@@ -259,43 +233,13 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         }
 
         $query = 'SELECT ';
-        if ($count) {
-            $query .= 'COUNT(' . $this->alias[$field] . ')';
-            $type = 'integer';
-        } else {
-            $query .= $this->alias[$field];
-            $type = $this->fields[$field];
-        }
+        $query .= 'COUNT(' . $this->alias[$field] . ')';
         $query .= "\n" . 'FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
-        return $this->queryOne($query, $type);
+        return $this->queryOne($query, 'integer');
     }
 
-    function selectCol($table, $field, $filters)
-    {
-        if (empty($field)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'field is missing')
-            );
-        }
-
-        if (empty($table)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'table is missing')
-            );
-        }
-
-        $query = 'SELECT ';
-        $query .= $this->alias[$field];
-        $type = $this->fields[$field];
-        $query .= "\n" . 'FROM ' . $this->prefix . $table;
-        $query .= $this->createWhere($filters);
-        return $this->queryCol($query, $type);
-    }
-
-    function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
+    function select($select, $fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
     {
         if (!is_array($fields) || empty($fields)) {
             $fields = array_keys($this->tables[$root_table]['fields']);
@@ -316,6 +260,19 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         }
 
         $this->setLimit($limit, $offset);
+
+        switch($select) {
+        case 'one':
+            return $this->queryOne($query, $types);
+            break;
+        case 'row':
+            return $this->queryRow($query, $types);
+            break;
+        case 'col':
+            return $this->queryCol($query, $types);
+            break;
+        }
+
         return $this->queryAll($query, $types, $rekey);
     }
 
