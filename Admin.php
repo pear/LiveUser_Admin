@@ -178,9 +178,12 @@ class LiveUser_Admin
             if (!isset($this->_conf['authContainers'][$authName])) {
                 return false;
             }
-            $this->_authContainers[$authName] =
-                &LiveUser::authFactory($this->_conf['authContainers'][$authName], $authName, true);
-            if (LiveUser::isError($this->_authContainers[$authName])) {
+            $this->_authContainers[$authName] = &LiveUser::authFactory(
+                $this->_conf['authContainers'][$authName],
+                $authName,
+                'LiveUser_Admin_'
+            );
+            if (PEAR::isError($this->_authContainers[$authName])) {
                 return false;
             }
         }
@@ -207,7 +210,7 @@ class LiveUser_Admin
             return false;
         }
 
-        $this->perm = &LiveUser::permFactory($this->_conf['permContainer'], true);
+        $this->perm = &LiveUser::permFactory($this->_conf['permContainer'], 'LiveUser_Admin_');
         $this->perm->setCurrentLanguage($this->lang);
         return true;
     }
@@ -241,7 +244,7 @@ class LiveUser_Admin
                     if (!isset($this->_authContainers[$k]) ||
                         !is_object($this->_authContainers[$k])
                     ) {
-                        $this->_authContainers[$k] = &$this->authFactory($v, $k, true);
+                        $this->_authContainers[$k] = &$this->authFactory($v, $k, 'LiveUser_Admin_');
                     }
 
                     if (!is_null($authId)) {
@@ -306,7 +309,7 @@ class LiveUser_Admin
             $authId = $this->auth->addUser($handle, $password, $optionalFields,
                                                             $customFields, $id);
 
-            if (LiveUser::isError($authId)) {
+            if (PEAR::isError($authId)) {
                 return $authId;
             }
 
@@ -348,7 +351,7 @@ class LiveUser_Admin
             $auth = $this->auth->updateUser($authData['auth_user_id'], $handle, $password,
                                                              $optionalFields, $customFields);
 
-            if (LiveUser::isError($auth)) {
+            if (PEAR::isError($auth)) {
                 return $auth;
             }
 
@@ -372,13 +375,13 @@ class LiveUser_Admin
         if (is_object($this->auth) && is_object($this->perm)) {
             $authData = $this->perm->getAuthUserId($permId);
 
-            if (LiveUser::isError($authData)) {
+            if (PEAR::isError($authData)) {
                 return $authData;
             }
 
             $result = $this->auth->removeUser($authData['auth_user_id']);
 
-            if (LiveUser::isError($result)) {
+            if (PEAR::isError($result)) {
                 return $result;
             }
 
@@ -407,7 +410,7 @@ class LiveUser_Admin
         if (is_object($this->auth) && is_object($this->perm)) {
             $search = $this->auth->getUsers($filters, $order, $rekey);
 
-            if (LiveUser::isError($search)) {
+            if (PEAR::isError($search)) {
                 return $search;
             }
 
@@ -433,7 +436,7 @@ class LiveUser_Admin
         if (is_object($this->auth) && is_object($this->perm)) {
             $permFilter['perm_user_id'] = $permId;
             $permData = $this->perm->getUsers($permFilter, $permOptions);
-            if (LiveUser::isError($permData)) {
+            if (PEAR::isError($permData)) {
                 return $permData;
             }
 
@@ -450,7 +453,7 @@ class LiveUser_Admin
             );
 
             $authData = $this->auth->getUsers($authFilter);
-            if (LiveUser::isError($authData)) {
+            if (PEAR::isError($authData)) {
                 return $authData;
             }
 
