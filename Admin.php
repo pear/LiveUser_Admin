@@ -509,6 +509,14 @@ class LiveUser_Admin
                 return $search;
             }
 
+            foreach($search as $key => $user) {
+                $permFilter['auth_user_id'] = $user['auth_user_id'];
+                $permData = $this->perm->getUsers(array('filters' => $permFilter));
+                if (!$permData) {
+                    return false;
+                }
+                $search[$key] = LiveUser::arrayMergeClobber(reset($permData), $user);
+            }
             return $search;
         }
 
