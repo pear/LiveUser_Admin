@@ -81,6 +81,39 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function removeGroup($filters)
     {
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'group_id')
+            );
+            return false;
+        }
+
+        if (!isset($filters['subgroup_id']) || !is_numeric($filters['subgroup_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'subgroup_id')
+            );
+            return false;
+        }
+
+        if ($filters['recursive']) {
+            $filter = array('group_id' => $filters['subgroup_id']);
+            $result = $this->_storage->selectCol('group_subgroup', 'group_id', $filter);
+            if (!$result) {
+                return $result;
+            }
+
+            foreach ($result as $subGroupId) {
+                    $filter = array('group_id' => $subGroupId, 'recursive' => true);
+                    $res = $this->removeGroup($filter);
+                    if (!$res) {
+                        return $res;
+                    }
+            }
+        }
+
+        $this->_storage->delete('group_subgroups', $filters);
         parent::removeGroup($filters);
     }
 
