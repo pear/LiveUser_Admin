@@ -133,29 +133,6 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    function _makeRemoveFilter($filters, $key, $method)
-    {
-        if (empty($filters) || !is_array($filters)) {
-            return 0;
-        }
-        if (!isset($filters[$key]) || count($filters) > 1) {
-            $params = array(
-                'fields' => array($key),
-                'filters' => $filters,
-                'select' => 'col',
-            );
-            $result = $this->$method($params);
-            if ($result === false) {
-                return false;
-            }
-            if (empty($result)) {
-                return 0;
-            }
-            $filters = array($key => $result);
-        }
-        return $filters;
-    }
-
     /**
      *
      *
@@ -467,6 +444,38 @@ class LiveUser_Admin_Perm_Simple
         $result = $this->_storage->delete('translations', $filters);
         // notify observer
         return $result;
+    }
+
+    /**
+     *
+     *
+     * @access private
+     * @param mixed $filteres
+     * @param string $key
+     * @param string $method
+     * @return array
+     */
+    function _makeRemoveFilter($filters, $key, $method)
+    {
+        if (empty($filters) || !is_array($filters)) {
+            return 0;
+        }
+        if (!isset($filters[$key]) || count($filters) > 1) {
+            $params = array(
+                'fields' => array($key),
+                'filters' => $filters,
+                'select' => 'col',
+            );
+            $result = $this->$method($params);
+            if ($result === false) {
+                return false;
+            }
+            if (empty($result)) {
+                return 0;
+            }
+            $filters = array($key => $result);
+        }
+        return $filters;
     }
 
     /**
