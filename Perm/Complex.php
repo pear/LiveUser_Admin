@@ -195,6 +195,21 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      *
      * @access public
+     * @param array $data
+     * @return
+     */
+    function addAreaAdmin($data)
+    {
+        $result = $this->_storage->insert('area_admins_areas', $data);
+
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
      * @param array $filters
      * @return
      */
