@@ -27,18 +27,6 @@
 class LiveUser_Admin_Auth_Common
 {
     /**
-     * Indicates if backend module initialized correctly. If yes,
-     * true, if not false. Backend module won't initialize if the
-     * init value (usually an object or resource handle that
-     * identifies the backend to be used) is not of the required
-     * type.
-     *
-     * @access public
-     * @var    boolean
-     */
-    var $init_ok = false;
-
-    /**
      * Set posible encryption modes.
      *
      * @access private
@@ -114,9 +102,8 @@ class LiveUser_Admin_Auth_Common
                 break;
             case 'RC4':
                 $rc4 =& LiveUser::CryptRC4Factory($this->_options['cookie']['secret']);
-                if (LiveUser::isError($rc4)) {
-                    $this->_error = $rc4;
-                    return $this->_error;
+                if ($rc4 === false) {
+                    return false;
                 }
                 $this->rc4 =& $rc4;
                 $decryptedPW = $encryptedPW;
@@ -154,9 +141,8 @@ class LiveUser_Admin_Auth_Common
             case 'RC4':
                 if (!is_object($this->rc4)) {
                     $rc4 =& LiveUser::CryptRC4Factory($this->_options['cookie']['secret']);
-                    if (LiveUser::isError($rc4)) {
-                        $this->_error = $rc4;
-                        return $this->_error;
+                    if ($rc4 === false) {
+                        return false;;
                     }
                     $this->rc4 =& $rc4;
                 }

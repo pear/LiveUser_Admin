@@ -11,9 +11,7 @@ for ($i = 0; $i < 5; $i++) {
     $group = array_rand($groups);
     $subgroup = array_rand($groups);
     $assign = $admin->perm->assignSubgroup($group, $subgroup);
-    if (PEAR::isError($assign)) {
-        echo $assign->getMessage().'<br />';
-    } elseif ($assign === false) {
+    if ($assign === false) {
         echo $subgroup.' is already a subgroup of <b>'.$group.'</b><br />';
     } else {
         echo $subgroup.' is now subgroup of <b>'.$group.'</b><br />';
@@ -26,7 +24,7 @@ for ($i = 0; $i < 5; $i++) {
 // Get
 echo 'All the groups:<br />';
 $allGroups = $admin->perm->getGroups(null, true);
-if (PEAR::isError($allGroups)) {
+if ($allGroups === false) {
     echo $allGroups->getMessage().'<br />';
 } else {
     Var_Dump::display($allGroups);

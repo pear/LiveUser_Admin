@@ -17,7 +17,7 @@ for ($i = 1; $i < 4; $i++) {
 // Get
 $currentApps = $admin->perm->getApplications();
 
-if (PEAR::isError($currentApps) || !$currentApps) {
+if (!$currentApps) {
     echo '<strong>Error</strong><br />';
     print_r($admin->getErrors());
 } else {
