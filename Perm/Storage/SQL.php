@@ -76,21 +76,43 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
     var $tables = array(
         'perm_users' => array(
             'fields' => array(
-                'perm_user_id',
-                'auth_user_id',
-                'auth_container_name',
-                'perm_type',
+                'perm_user_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'auth_user_id' => array(
+                    'type' => 'text',
+                    'required' => true,
+                ),
+                'auth_container_name' => array(
+                    'type' => 'text',
+                    'required' => true,
+                ),
+                'perm_type' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
              ),
             'joins' => array(
                 'userrights' => 'perm_user_id',
                 'groupusers' => 'perm_user_id',
             ),
+            'id' => 'perm_user_id',
         ),
         'userrights' => array(
             'fields' => array(
-                'perm_user_id',
-                'right_id',
-                'right_level',
+                'perm_user_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'right_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'right_level' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
             ),
             'joins' => array(
                 'perm_users' => 'perm_user_id',
@@ -99,9 +121,18 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         ),
         'rights' => array(
             'fields' => array(
-                'right_id',
-                'area_id',
-                'right_define_name',
+                'right_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'area_id' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
+                'right_define_name' => array(
+                    'type' => 'text',
+                    'required' => false,
+                ),
             ),
             'joins' => array(
                 'areas' => 'area_id',
@@ -116,6 +147,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                     LIVEUSER_SECTION_RIGHT => 'section_type',
                 ),
             ),
+            'id' => 'right_id',
         ),
         'rights_implied' => array(
             'fields' => array(
@@ -131,10 +163,22 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         ),
         'translations' => array(
             'fields' => array(
-                'section_id',
-                'section_type',
-                'name',
-                'description',
+                'section_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'section_type' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'name' => array(
+                    'type' => 'text',
+                    'required' => false,
+                ),
+                'description' => array(
+                    'type' => 'text',
+                    'required' => false,
+                ),
             ),
             'joins' => array(
                 'rights' => array(
@@ -157,9 +201,18 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         ),
         'areas' => array(
             'fields' => array(
-                'area_id',
-                'application_id',
-                'area_define_name',
+                'area_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'application_id' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
+                'area_define_name' => array(
+                    'type' => 'text',
+                    'required' => false,
+                ),
             ),
             'joins' => array(
                 'rights' => 'area_id',
@@ -169,11 +222,18 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                     LIVEUSER_SECTION_AREA => 'section_type',
                 ),
             ),
+            'id' => 'area_id',
         ),
         'applications' => array(
             'fields' => array(
-                'application_id',
-                'application_define_name',
+                'application_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'application_define_name' => array(
+                    'type' => 'text',
+                    'required' => false,
+                ),
             ),
             'joins' => array(
                 'areas' => 'application_id',
@@ -182,15 +242,34 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                     LIVEUSER_SECTION_APPLICATION => 'section_type',
                 ),
             ),
+            'id' => 'application_id',
         ),
         'groups' => array(
             'fields' => array(
-                'group_id',
-                'group_type',
-                'group_define_name',
-                'is_active',
-                'owner_user_id',
-                'owner_group_id',
+                'group_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'group_type' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
+                'group_define_name' => array(
+                    'type' => 'text',
+                    'required' => false,
+                ),
+                'is_active' => array(
+                    'type' => 'boolean',
+                    'required' => false,
+                ),
+                'owner_user_id' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
+                'owner_group_id' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
             ),
             'joins' => array(
                 'groupusers' => 'group_id',
@@ -200,11 +279,18 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                     LIVEUSER_SECTION_GROUP => 'section_type',
                 ),
             ),
+            'id' => 'group_id',
         ),
         'groupusers' => array(
             'fields' => array(
-                'perm_user_id',
-                'group_id',
+                'perm_user_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'group_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
             ),
             'joins' => array(
                 'groups' => 'group_id',
@@ -213,9 +299,18 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         ),
         'grouprights' => array(
             'fields' => array(
-                'group_id',
-                'right_id',
-                'right_level',
+                'group_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'right_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'right_level' => array(
+                    'type' => 'integer',
+                    'required' => false,
+                ),
             ),
             'joins' => array(
                 'rights' => 'right_id',
@@ -224,37 +319,28 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         ),
     );
 
-    var $fields = array(
-        'perm_user_id' => array('type' => 'integer'),
-        'auth_user_id' => array('type' => 'text'),
-        'auth_container_name' => array('type' => 'text'),
-        'perm_type' => array('type' => 'integer'),
-        'right_id' => array('type' => 'integer'),
-        'right_level' => array('type' => 'integer'),
-        'area_id' => array('type' => 'integer'),
-        'application_id' => array('type' => 'integer'),
-        'right_define_name' => array('type' => 'text'),
-        'area_define_name' => array('type' => 'text'),
-        'application_define_name' => array('type' => 'text'),
-        'section_id' => array('type' => 'integer'),
-        'section_type' => array('type' => 'integer'),
-        'name' => array('type' => 'text'),
-        'description' => array('type' => 'text'),
-        'group_id' => array('type' => 'integer'),
-        'group_type' => array('type' => 'integer'),
-        'group_define_name' => array('type' => 'text'),
-        'is_active' => array('type' => 'boolean'),
-        'owner_user_id' => array('type' => 'integer'),
-        'owner_group_id' => array('type' => 'integer'),
-    );
-
-    var $ids = array(
-        'rights' => 'right_id',
-        'areas' => 'area_id',
-        'applications' => 'application_id',
-        'perm_users' => 'perm_user_id',
-        'translations' => 'translation_id',
-        'groups' => 'group_id',
+    var $field_alias = array(
+        'perm_user_id' => null,
+        'auth_user_id' => null,
+        'auth_container_name' => null,
+        'perm_type' => null,
+        'right_id' => null,
+        'right_level' => null,
+        'area_id' => null,
+        'application_id' => null,
+        'right_define_name' => null,
+        'area_define_name' => null,
+        'application_define_name' => null,
+        'section_id' => null,
+        'section_type' => null,
+        'name' => null,
+        'description' => null,
+        'group_id' => null,
+        'group_type' => null,
+        'group_define_name' => null,
+        'is_active' => null,
+        'owner_user_id' => null,
+        'owner_group_id' => null,
     );
 
     /**
@@ -271,15 +357,15 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
     function insert($table, $data)
     {
-        if (isset($this->ids[$table]) && !isset($data[$this->ids[$table]])) {
-            $data[$this->ids[$table]] = $this->dbc->nextId($this->prefix . $table, true);
+        if (isset($this->tables[$table]['id']) && !isset($data[$this->tables[$table]['id']])) {
+            $data[$this->tables[$table]['id']] = $this->nextId($this->prefix . $table, true);
         }
 
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
             $fields[] = $field;
-            $values[] = $this->quote($value, $this->fields[$field]['type']);
+            $values[] = $this->quote($value, $this->tables[$table]['fields'][$field]['type']);
         }
 
         $query = $this->createInsert($table, $fields, $values);
@@ -306,7 +392,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
-            $fields[] = $field . ' = ' . $this->quote($value, $this->fields[$field]['type']);
+            $fields[] = $field . ' = ' . $this->quote($value, $this->tables[$table]['fields'][$field]['type']);
         }
 
         $query = $this->createUpdate($table, $fields, $filters);
@@ -320,18 +406,18 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         return $this->dbc->query($query);
     }
 
-    function createUpdate($table, $fields,  $filters)
+    function createUpdate($table, $fields, $filters)
     {
         $query = 'UPDATE ' . $this->prefix . $table . ' SET'. "\n";
         $query .= implode(",\n", $fields);
-        $query .= $this->createWhere($filters);
+        $query .= $this->createWhere($filters, $table);
         return $query;
     }
 
     function delete($table, $filters)
     {
         $query = 'DELETE FROM ' . $this->prefix . $table;
-        $query .= $this->createWhere($filters);
+        $query .= $this->createWhere($filters, $table);
         return $this->dbc->query($query);
     }
 
@@ -357,24 +443,17 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             $type = 'integer';
         } else {
             $query .= $field;
-            // find type for fields with naming like [tablename].[fieldname]
-            if (preg_match('/^[^.]*\.?(.+)$/', $field, $match)) {
-                if (isset($this->fields[$match[1]]['type'])) {
-                    $type = $this->fields[$match[1]]['type'];
-                }
-            } else {
-                $type = $this->fields[$field]['type'];
-            }
+            $type = $this->tables[$table]['fields'][$field]['type'];
         }
         $query .= "\n" . 'FROM ' . $this->prefix . $table;
-        $query .= $this->createWhere($filters);
+        $query .= $this->createWhere($filters, $table);
         return $this->queryOne($query, $type);
     }
 
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
     {
         if (!is_array($fields) || empty($fields)) {
-            $fields = $this->tables[$root_table]['fields'];
+            $fields = array_keys($this->tables[$root_table]['fields']);
         }
 
         $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
@@ -388,14 +467,27 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
         $types = array();
         foreach ($fields as $field) {
-            $types[] = $this->fields[$field]['type'];
+            $tmp_table = $root_table;
+            $tmp_field = $field;
+            if (preg_match('/^'.$this->prefix.'([^.]+)\.(.+)$/', $field, $match)) {
+                $tmp_table = $match[1];
+                $tmp_field = $match[2];
+            }
+            if (!isset($this->tables[$tmp_table]['fields'][$tmp_field]['type'])) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => 'field could not be mapped to a type:'.$field)
+                );
+                return false;
+            }
+            $types[] = $this->tables[$tmp_table]['fields'][$tmp_field]['type'];
         }
 
         $this->setLimit($limit, $offset);
         return $this->queryAll($query, $types, $rekey);
     }
 
-    function createSelect($fields, $filters, $orders, $root_table, $selectable_tables)
+    function createSelect(&$fields, $filters, $orders, $root_table, $selectable_tables)
     {
         // find the tables to be used inside the query FROM
         $tables = $this->findTables($fields, $filters, $orders, $selectable_tables);
@@ -427,7 +519,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         // build SELECT query
         $query = 'SELECT '.implode(', ', $fields);
         $query.= "\n".' FROM '.$this->prefix.implode(', '.$this->prefix, array_keys($tables));
-        $query.= $this->createWhere($filters, $joinfilters);
+        $query.= $this->createWhere($filters, $root_table, $joinfilters);
         if ($orders) {
             $query.= "\n".' ORDER BY ';
             $orderby = array();
@@ -439,20 +531,29 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         return $query;
     }
 
-    function createWhere($filters, $joinfilters = array())
+    function createWhere($filters, $root_table = null, $joinfilters = array())
     {
         if (empty($filters)) {
             return '';
         }
         $where = array();
+
         foreach ($filters as $field => $value) {
-            $type = 'text';
             // find type for fields with naming like [tablename].[fieldname]
-            if (preg_match('/^[^.]*\.?(.+)$/', $field, $match)) {
-                if (isset($this->fields[$match[1]]['type'])) {
-                    $type = $this->fields[$match[1]]['type'];
-                }
+            $tmp_table = $root_table;
+            $tmp_field = $field;
+            if (preg_match('/^'.$this->prefix.'([^.]+)\.(.+)$/', $field, $match)) {
+                $tmp_table = $match[1];
+                $tmp_field = $match[2];
             }
+            if (!isset($this->tables[$tmp_table]['fields'][$tmp_field]['type'])) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => 'field could not be mapped to a type :'.$field)
+                );
+                return false;
+            }
+            $type = $this->tables[$tmp_table]['fields'][$tmp_field]['type'];
             if (is_array($value)) {
                 $where[] = $field.' IN ('.$this->implodeArray($value, $type).')';
             } else {
@@ -473,7 +574,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         // find tables that the user explicitly requested by using field names
         // like [tablename].[fieldname]
         foreach ($fields_not_yet_linked as $key => $field) {
-            if (preg_match('/^(.*)\.(.+)$/', $field, $match)) {
+            if (preg_match('/^([^.]+)\.(.+)$/', $field, $match)) {
                 if (!in_array($match[1], $selectable_tables)) {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
@@ -481,6 +582,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                     );
                     return false;
                 }
+                // todo add prefix!!
                 $tables[$match[1]] = true;
                 unset($fields_not_yet_linked[$key]);
             }
@@ -488,8 +590,8 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
         // find the required tables for all other fields
         foreach ($selectable_tables as $table) {
-            // find all fields still not linked in the current table
-            $current_fields = array_intersect($fields_not_yet_linked, $this->tables[$table]['fields']);
+            // find all fields linked in the current table
+            $current_fields = array_intersect($fields_not_yet_linked, array_keys($this->tables[$table]['fields']));
             if (empty($current_fields)) {
                 continue;
             }
@@ -562,19 +664,19 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             if (is_array($this->tables[$root_table]['joins'][$table])) {
                 foreach ($this->tables[$root_table]['joins'][$table] as $joinsource => $jointarget) {
                     // both tables use a field to join
-                    if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
+                    if (isset($this->tables[$root_table]['fields'][$joinsource]) && isset($this->tables[$table]['fields'][$jointarget])) {
                         $filters[$this->prefix.$root_table.'.'.$joinsource] =
                             $this->prefix.$table.'.'.$jointarget;
                     // target table uses a field in the join and source table
                     // a constant value
-                    } elseif (isset($this->fields[$jointarget])) {
+                    } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
                         $filters[$this->prefix.$table.'.'.$jointarget] =
-                            $this->quote($joinsource, $this->fields[$jointarget]['type']);
+                            $this->quote($joinsource, $this->tables[$table]['fields'][$jointarget]['type']);
                     // source table uses a field in the join and target table
                     // a constant value
-                    } elseif (isset($this->fields[$joinsource])) {
+                    } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
                         $filters[$this->prefix.$root_table.'.'.$joinsource] =
-                            $this->quote($jointarget, $this->fields[$joinsource]['type']);
+                            $this->quote($jointarget, $this->tables[$root_table]['fields'][$joinsource]['type']);
                     // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
@@ -617,19 +719,19 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             if (is_array($fields)) {
                 foreach ($fields as $joinsource => $jointarget) {
                     // both tables use a field to join
-                    if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
+                    if (isset($this->tables[$root_table]['fields'][$joinsource]) && isset($this->tables[$table]['fields'][$jointarget])) {
                         $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
                             $this->prefix.$table.'.'.$jointarget;
                     // target table uses a field in the join and source table
                     // a constant value
-                    } elseif (isset($this->fields[$jointarget])) {
+                    } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
                         $tmp_filters[$this->prefix.$table.'.'.$jointarget] =
-                            $this->quote($joinsource, $this->fields[$jointarget]['type']);
+                            $this->quote($joinsource, $this->tables[$table]['fields'][$jointarget]['type']);
                     // source table uses a field in the join and target table
                     // a constant value
-                    } elseif (isset($this->fields[$joinsource])) {
+                    } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
                         $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
-                            $this->quote($jointarget, $this->fields[$joinsource]['type']);
+                            $this->quote($jointarget, $this->tables[$root_table]['fields'][$joinsource]['type']);
                     // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
