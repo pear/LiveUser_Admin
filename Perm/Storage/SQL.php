@@ -231,42 +231,25 @@ var_dump('explicit table does not exist: '.$match[1]);
 
         // find implicit tables
         foreach ($selectable_tables as $table) {
-            $count_not_yet_linked = count($fields_not_yet_linked);
             $current_fields = array_intersect($fields_not_yet_linked, $this->tables[$table]['fields']);
             if (empty($current_fields)) {
                 continue;
             }
             foreach ($current_fields as $field) {
-                for ($i=0,$j=count($fields); $i<$j; $i++) {
+                for ($i = 0, $j = count($fields); $i < $j; $i++) {
                     if ($field == $fields[$i]) {
                         $fields[$i] = $this->prefix.$table.'.'.$fields[$i];
                     }
                 }
-                if (!empty($filters)) {
-                    $tmp_filters = $filters;
-                    foreach($filters as $name => $value) {
-                        if ($field == $name) {
-                            unset($tmp_filters[$name]);
-                            $tmp_filters[$this->prefix.$table.'.'.$name] = $value;
-                        }
-                    }
-                    $filters = $tmp_filters;
+                if (isset($filters[$field])) {
+                    $filters[$this->prefix.$table.'.'.$field] = $value
                 }
-                if (!empty($orders)) {
-                    $tmp_orders = $orders;
-                    foreach($orders as $name => $value) {
-                        if ($field == $name) {
-                            unset($tmp_orders[$name]);
-                            $tmp_orders[$this->prefix.$table.'.'.$name] = $value;
-                        }
-                    }
-                    $orders = $tmp_orders;
+                if (isset($orders[$field])) {
+                    $orders[$this->prefix.$table.'.'.$field] = $value
                 }
             }
             $fields_not_yet_linked = array_diff($fields_not_yet_linked, $this->tables[$table]['fields']);
-            if ($count_not_yet_linked > count($fields_not_yet_linked)) {
-                $tables[$table] = true;
-            }
+            $tables[$table] = true;
             if (empty($fields_not_yet_linked)) {
                 break;
             }
@@ -302,12 +285,11 @@ var_dump($tables);
             $tmp_filters = $filters;
             $tmp_tables = $tables;
             if (is_array($this->tables[$root_table]['joins'][$table][$field])) {
-var_dump('foo');
-                foreach ($this->tables[$root_table]['joins'][$table][$field] as $joinfield) {
+                foreach ($this->tables[$root_table]['joins'][$table][$field] as $joinfield => $value) {
                     if (isset($this->fields[$joinfield])) {
                         $filter = $this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table][$joinfield];
                     } else {
-                        $filter = $this->quote($this->tables[$table]['joins'][$root_table][$joinfield], $this->fields[$joinfield]['type']);
+                        $filter = $this->quote($value, $this->fields[$joinfield]['type']);
                     }
                     $tmp_filters[$this->prefix.$root_table.'.'.$joinfield] = $filter;
                 }
