@@ -290,28 +290,30 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         foreach ($filters as $field => $value) {
             // find type for fields with naming like [tablename].[fieldname]
-           if (preg_match('/^'.$this->prefix.'([^.]+)\.(.+)$/', $field, $match)) {
-                $tmp_field = $this->alias[$match[2]];
-                $tmp_table_field = $this->prefix.$match[1].'.'.$tmp_field;
+            if (preg_match('/^('.$this->prefix.'[^.]+\.)(.+)$/', $field, $match) &&
+                isset($this->fields[$match[2]])
+            ) {
+                $type = $this->fields[$match[2]];
+                $tmp_field = $match[1].$this->alias[$match[2]];
+            } elseif (isset($this->fields[$field])) {
+                $type = $this->fields[$field];
+                $tmp_field = $this->alias[$field];
             } else {
-                $tmp_table_field = $tmp_field = $this->alias[$field];
-            }
-            if (!isset($this->fields[$tmp_field])) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'field could not be mapped to a type :'.$field)
                 );
                 return false;
             }
-            $type = $this->fields[$tmp_field];
+
             if (is_array($value)) {
                 if (isset($value['value'])) {
-                    $where[] = $tmp_table_field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
+                    $where[] = $tmp_field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
                 } else {
-                    $where[] = $tmp_table_field.' IN ('.$this->implodeArray($value, $type).')';
+                    $where[] = $tmp_field.' IN ('.$this->implodeArray($value, $type).')';
                 }
             } else {
-                $where[] = $tmp_table_field.' = '.$this->quote($value, $type);
+                $where[] = $tmp_field.' = '.$this->quote($value, $type);
             }
         }
         foreach ($joinfilters as $field => $value) {
