@@ -61,20 +61,21 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Storage_MDB2
     {
         $this->LiveUser_Admin_Storage_MDB2($confArray, $storageConf);
 
+        require_once 'LiveUser/Perm/Storage/Globals.php';
         if (empty($this->tables)) {
-            $this->tables = LiveUser_Perm_Storage_SQL::getTableDefaults();
+            $this->tables = $GLOBALS['_LiveUser']['tables'];
         } else {
-            $this->tables = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getTableDefaults(), $this->tables);
+            $this->tables = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['tables'], $this->tables);
         }
         if (empty($this->fields)) {
-            $this->fields = LiveUser_Perm_Storage_SQL::getFieldDefaults();
+            $this->fields = $GLOBALS['_LiveUser']['fields'];
         } else {
-            $this->fields = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getFieldDefaults(), $this->fields);
+            $this->fields = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['fields'], $this->fields);
         }
         if (empty($this->alias)) {
-            $this->alias = LiveUser_Perm_Storage_SQL::getAliasDefaults();
+            $this->alias = $GLOBALS['_LiveUser']['alias'];
         } else {
-            $this->alias = LiveUser::arrayMergeClobber(LiveUser_Perm_Storage_SQL::getAliasDefaults(), $this->alias);
+            $this->alias = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['alias'], $this->alias);
         }
     }
 }
