@@ -18,6 +18,7 @@ $notes = <<<EOT
 - update getErrors() with code from the LiveUser class
 - typo fix in outputRightsConstants() (bug #3897)
 - removed calls to make remove filter on delete of relationship tables (bug #3874)
+- unsetting perm_user_id instead of casting it to null in _getInheritedRights() (bug #3976)
 EOT;
 
 $description = <<<EOT
