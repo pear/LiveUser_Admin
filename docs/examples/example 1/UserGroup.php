@@ -18,7 +18,7 @@ $groups = $admin->perm->getGroups();
 
 foreach ($groups as $group) {
     $rand = array_rand($users);
-    $return = $admin->perm->addUserToGroup($users[$rand]['auth_user_id'], $group['group_id']);
+    $return = $admin->perm->addUserToGroup(array('perm_user_id' => $users[$rand]['perm_user_id'], 'group_id' => $group['group_id']));
 
     if (!$return) {
         echo '<strong>Error</strong><br />';
@@ -27,14 +27,14 @@ foreach ($groups as $group) {
     }
 }
 // Get users from one group
-$group = array_rand($groups);
+$randGroup = array_rand($groups);
 
 $params = array(
     'filters' => array(
-        'group_id' => $groups[$group]['group_id']
+        'group_id' => $groups[$randGroup]['group_id']
     )
 );
-$usersGroup = $admin->perm->getUsersFromGroup($params);
+$usersGroup = $admin->perm->getUsers($params);
 
 if (!$usersGroup) {
     echo '<strong>Error</strong><br />';
@@ -45,11 +45,11 @@ if (!$usersGroup) {
 }
 
 // Remove user from one group
-$group = array_rand($groups);
+$randGroup = array_rand($groups);
 $user = array_rand($users);
 
 $filters = array(
-    'group_id' => $groups[$group]['group_id'],
+    'group_id' => $groups[$randGroup]['group_id'],
     'perm_user_id' => $users[$user]['perm_user_id']
 );
 $removed = $admin->perm->removeUserFromGroup($filters);
@@ -57,7 +57,7 @@ $removed = $admin->perm->removeUserFromGroup($filters);
 if (!$removed) {
     echo '<strong>Error</strong><br />';
 } else {
-    echo $users[$user]['name'].' was removed from group <b>'.$groups[$group]['group_id'].'</b><br />';
+    echo $users[$user]['name'].' was removed from group <b>'.$groups[$randGroup]['group_id'].'</b><br />';
 }
 
 // Remove user from all his groups

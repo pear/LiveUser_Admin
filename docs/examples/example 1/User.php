@@ -27,10 +27,13 @@ if (!$allUsers) {
     Var_Dump::display($allUsers);
     echo '<br />';
 }
+var_dump($allUsers);
+$randUser = array_rand($allUsers);
+$removeUser = $allUsers[$randUser]['perm_user_id'];
 
 // single user
 echo 'This user will be removed:<br />';
-$user = $admin->getUsers($removeUser);
+$user = $admin->getUser($removeUser);
 
 if (!$user) {
     echo '<strong>Error</strong><br />';
@@ -74,13 +77,15 @@ if (!$allUsers) {
     echo '<br />';
 }
 
+$randUser = array_rand($allUsers);
+
 unset($user);
 echo 'Test fetching auth_user_id AND perm_user_id with PERM getUsers()<br />';
 echo 'Auth<br />';
-$filter = array('auth_user_id' => '1239');
+$filter = array(array('cond' => '', 'name' => 'user_id', 'op' => '=', 'value' => $allUsers[$randUser]['auth_user_id'], 'type' => 'text'));
 $options = array('with_rights' => true);
-$user = $admin->auth->getUsers($filter, $options);
-if (!$users) {
+$user = $admin->auth->getUsers($filter);
+if (!$user) {
     echo '<strong>Error</strong><br />';
 } else {
     Var_Dump::display($user);
@@ -89,9 +94,9 @@ if (!$users) {
 unset($user);
 
 echo 'Perm<br />';
-$filter = array('perm_user_id' => '3');
+$filter = array(array('filters' => array('perm_user_id' => '3')));
 $user = $admin->perm->getUsers($filter);
-if (!$users) {
+if (!$user) {
     echo '<strong>Error</strong><br />';
 } else {
     Var_Dump::display($user);

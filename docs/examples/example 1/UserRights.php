@@ -17,11 +17,11 @@ $users = $admin->searchUsers();
 $rights = $admin->perm->getRights();
 
 for ($i = 1; $i < 4; $i++) {
-    $user = array_rand($users);
-    $right = array_rand($rights);
+    $randUser = array_rand($users);
+    $randRight = array_rand($rights);
     $data = array(
-        'perm_user_id' => $users[$user]['auth_user_id'],
-        'right_id' => $rights[$right]['right_id'],
+        'perm_user_id' => $users[$randUser]['auth_user_id'],
+        'right_id' => $rights[$randRight]['right_id'],
         'right_level' => 1,
     );
     $granted = $admin->perm->grantUserRight($data);
@@ -33,11 +33,11 @@ for ($i = 1; $i < 4; $i++) {
     }
 }
 
-$user = array_rand($users);
-$right = array_rand($rights);
+$randUser = array_rand($users);
+$randRight = array_rand($rights);
 $filters = array(
-    'perm_user_id' => $users[$user]['auth_user_id'],
-    'right_id' => $rights[$right]['right_id']
+    'perm_user_id' => $users[$randUser]['auth_user_id'],
+    'right_id' => $rights[$randRight]['right_id']
 );
 $revoked = $admin->perm->revokeUserRight($filters);
 
@@ -47,22 +47,22 @@ if (!$revoked) {
     echo 'The right <b>'.$rights[$randRight]['right_id'].'</b> has been revoked from <b>'.$users[$randUser]['name'].'</b><br />';
 }
 
-$user = array_rand($users);
-$right = array_rand($rights);
+$randUser = array_rand($users);
+$randRight = array_rand($rights);
 $filters = array(
-    'perm_user_id' => $users[$user]['auth_user_id'],
-    'right_id' => $rights[$right]['right_id']
+    'perm_user_id' => $users[$randUser]['auth_user_id'],
+    'right_id' => $rights[$randRight]['right_id']
 );
 $data = array('right_level' => 3);
 $update = $admin->perm->updateUserRight($data, $filters);
 if (!$update) {
     echo '<strong>Error</strong><br />';
 } else {
-    echo 'The right <b>'.$rights[$right]['right_id'].'</b> has been updated to Level 2 for <b>'.$users[$user]['name'].'</b><br />';
+    echo 'The right <b>'.$rights[$randRight]['right_id'].'</b> has been updated to Level 2 for <b>'.$users[$randUser]['name'].'</b><br />';
     $params = array(
         'filters' => array(
-            'right_id' => $rights[$right]['right_id'],
-            'perm_user_id' => $users[$user]['perm_user_id']
+            'right_id' => $rights[$randRight]['right_id'],
+            'perm_user_id' => $users[$randUser]['perm_user_id']
         )
     );
     $result = $admin->perm->getRights($params);
@@ -74,7 +74,7 @@ if (!$update) {
     }
 }
 
-$user = array_rand($users);
+$randUser = array_rand($users);
 $params = array(
     'with' => array(
         'perm_user_id' => array(
@@ -86,14 +86,14 @@ $params = array(
         ),
     ),
     'filters' => array(
-        'perm_user_id' => $users[$user]['perm_user_id']
+        'perm_user_id' => $users[$randUser]['perm_user_id']
     )
 );
 $singleRight = $admin->perm->getRights($params);
 if (!$singleRight) {
     echo '<strong>Error</strong><br />';
 } else {
-    echo 'These are the user rights for <b>'.$users[$user]['name'].'</b>:<br />';
+    echo 'These are the user rights for <b>'.$users[$randUser]['name'].'</b>:<br />';
     Var_Dump::display($singleRight);
     echo '<br />';
 }
