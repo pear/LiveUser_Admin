@@ -87,7 +87,7 @@ for ($i = 0; $i < 5; $i++) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo '<strong>' . $result['group_id'] . '</strong> is the parent group of <strong>' . $groups[$subgroup]['group_id'] . '</strong><br />';
+        echo 'Group <strong>' . $result['group_id'] . '</strong> is the parent group of <strong>' . $groups[$subgroup]['group_id'] . '</strong><br />';
     }
 }
 
