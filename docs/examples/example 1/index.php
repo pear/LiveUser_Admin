@@ -62,6 +62,7 @@ if (isset($_GET['del']))  {
     $db->query('DELETE FROM liveuser_groups');
     $db->query('DROP TABLE liveuser_groups_seq');
     $db->query('DELETE FROM liveuser_groupusers');
+    $db->query('DROP TABLE liveuser_groupusers_seq');
     $db->query('DELETE FROM liveuser_perm_users');
     $db->query('DROP TABLE liveuser_perm_users_seq');
     $db->query('DELETE FROM liveuser_right_implied');
