@@ -637,8 +637,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *    like they are directly assigned, if set to 'hierachy' it will place
      *    a tree of the subgroups under the array key 'subgroups'
      *
-     *    note that 'hierachy' requires 'rekey' enabled, 'select' set to 'all'
-     *    and the first field needs to be 'group_id'
+     *    note that 'hierachy' requires 'rekey' enabled, 'group' is disabled,
+     *    'select' set to 'all' and the first field needs to be 'group_id'
      *
      * rekey = defaults to false
      *    By default (false) we return things in this fashion
@@ -673,13 +673,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         if ($subgroup === 'hierachy') {
             if ((!isset($params['rekey']) || !$params['rekey'])
+                || (isset($params['group']) && $params['group'])
                 || (isset($params['select']) && $params['select'] != 'all')
                 || (isset($params['fields']) && reset($tmp_params['fields']) !== 'group_id')
             ) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => "Setting 'subgroups' to 'hierachy' is only allowed if ".
-                        "'rekey' is enabled, 'select' is 'all' and the first field is 'group_id'")
+                    array('msg' => "Setting 'subgroups' to 'hierachy' is only allowed if 'rekey' is enabled, ".
+                        "'group' is disabled, 'select' is 'all' and the first field is 'group_id'")
                 );
                 return false;
             }
