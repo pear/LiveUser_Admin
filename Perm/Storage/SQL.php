@@ -336,12 +336,21 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         $query = 'SELECT ';
         if ($count) {
             $query .= 'COUNT(' . $field . ')';
+            $type = 'integer';
         } else {
             $query .= $field;
+            // find type for fields with naming like [tablename].[fieldname]
+            if (preg_match('/^[^.]*\.?(.+)$/', $field, $match)) {
+                if (isset($this->fields[$match[1]]['type'])) {
+                    $type = $this->fields[$match[1]]['type'];
+                }
+            } else {
+                $type = $this->fields[$field]['type'];
+            }
         }
         $query .= "\n" . 'FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
-        return $this->queryOne($query, 'integer');
+        return $this->queryOne($query, $type);
     }
 
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
@@ -370,6 +379,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
     function createSelect($fields, $filters, $orders, $root_table, $selectable_tables)
     {
+        // find the tables to be used inside the query FROM
         $tables = $this->findTables($fields, $filters, $orders, $selectable_tables);
 
         if (!$tables) {
@@ -396,6 +406,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             $joinfilters = $return[0];
         }
 
+        // build SELECT query
         $query = 'SELECT '.implode(', ', $fields);
         $query.= "\n".' FROM '.$this->prefix.implode(', '.$this->prefix, array_keys($tables));
         $query.= $this->createWhere($filters, $joinfilters);
@@ -418,6 +429,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         $where = array();
         foreach ($filters as $field => $value) {
             $type = 'text';
+            // find type for fields with naming like [tablename].[fieldname]
             if (preg_match('/^[^.]*\.?(.+)$/', $field, $match)) {
                 if (isset($this->fields[$match[1]]['type'])) {
                     $type = $this->fields[$match[1]]['type'];
@@ -440,7 +452,8 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         $tables = array();
         $fields_not_yet_linked = array_merge($fields, array_keys($filters), array_keys($orders));
 
-        // find explicit tables
+        // find tables that the user explicitly requested by using field names
+        // like [tablename].[fieldname]
         foreach ($fields_not_yet_linked as $key => $field) {
             if (preg_match('/^(.*)\.(.+)$/', $field, $match)) {
                 if (!in_array($match[1], $selectable_tables)) {
@@ -455,29 +468,35 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             }
         }
 
-        // find implicit tables
+        // find the required tables for all other fields
         foreach ($selectable_tables as $table) {
+            // find all fields still not linked in the current table
             $current_fields = array_intersect($fields_not_yet_linked, $this->tables[$table]['fields']);
             if (empty($current_fields)) {
                 continue;
             }
+            // add table to the list of tables to include in the FROM
+            $tables[$table] = true;
             foreach ($current_fields as $field) {
+                // append table name to all selected fields for this table
                 for ($i = 0, $j = count($fields); $i < $j; $i++) {
                     if ($field == $fields[$i]) {
                         $fields[$i] = $this->prefix.$table.'.'.$fields[$i];
                     }
                 }
+                // append table name to all filter fields for this table
                 if (isset($filters[$field])) {
                     $filters[$this->prefix.$table.'.'.$field] = $filters[$field];
                     unset($filters[$field]);
                 }
+                // append table name to all order by fields for this table
                 if (isset($orders[$field])) {
                     $orders[$this->prefix.$table.'.'.$field] = $orders[$field];
                     unset($orders[$field]);
                 }
             }
-            $fields_not_yet_linked = array_diff($fields_not_yet_linked, $this->tables[$table]['fields']);
-            $tables[$table] = true;
+            // remove fields that have been dealt with
+            $fields_not_yet_linked = array_diff($fields_not_yet_linked, $current_fields);
             if (empty($fields_not_yet_linked)) {
                 break;
             }
@@ -501,6 +520,7 @@ var_dump($tables);
             return array($filters, null);
         }
 
+        // check for possible infinite recursion
         if (in_array($root_table, $visited)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
@@ -508,63 +528,35 @@ var_dump($tables);
             );
             return false;
         }
-
         $visited[] = $root_table;
+
         $tables_orig = $tables;
+
+        // find tables that can be join directly with the root table
         $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), array_keys($tables));
-
         foreach ($direct_matches as $table) {
+            // verify that the table is in the selectable_tables list
             if (!in_array($table, $selectable_tables)) {
                 continue;
             }
-            if (isset($tables[$table])) {
-                if (is_array($this->tables[$root_table]['joins'][$table])) {
-                    foreach ($this->tables[$root_table]['joins'][$table] as $joinsource => $jointarget) {
-                        if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
-                            $filters[$this->prefix.$root_table.'.'.$joinsource] =
-                                $this->prefix.$table.'.'.$jointarget;
-                        } elseif (isset($this->fields[$jointarget])) {
-                            $filters[$this->prefix.$table.'.'.$jointarget] =
-                                $this->quote($joinsource, $this->fields[$jointarget]['type']);
-                        } elseif (isset($this->fields[$joinsource])) {
-                            $filters[$this->prefix.$root_table.'.'.$joinsource] =
-                                $this->quote($jointarget, $this->fields[$joinsource]['type']);
-                        } else {
-                            $this->_stack->push(
-                                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                                array('reason' => 'join structure incorrect, one of the two needs to be a field')
-                            );
-                            return false;
-                        }
-                    }
-                } else {
-                    $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
-                        $this->prefix.$table.'.'.$this->tables[$root_table]['joins'][$table];
-                }
-            }
-        }
-
-        if (empty($tables)) {
-            return array($filters, null);
-        }
-
-        foreach ($this->tables[$root_table]['joins'] as $table => $fields) {
-            if (!in_array($table, $selectable_tables)) {
-                continue;
-            }
-            $tmp_filters = $filters;
-            $tmp_tables = $tables;
-            if (is_array($fields)) {
-                foreach ($fields as $joinsource => $jointarget) {
+            // handle multi column join
+            if (is_array($this->tables[$root_table]['joins'][$table])) {
+                foreach ($this->tables[$root_table]['joins'][$table] as $joinsource => $jointarget) {
+                    // both tables use a field to join
                     if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
-                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
+                        $filters[$this->prefix.$root_table.'.'.$joinsource] =
                             $this->prefix.$table.'.'.$jointarget;
+                    // target table uses a field in the join and source table
+                    // a constant value
                     } elseif (isset($this->fields[$jointarget])) {
-                        $tmp_filters[$this->prefix.$table.'.'.$jointarget] =
+                        $filters[$this->prefix.$table.'.'.$jointarget] =
                             $this->quote($joinsource, $this->fields[$jointarget]['type']);
+                    // source table uses a field in the join and target table
+                    // a constant value
                     } elseif (isset($this->fields[$joinsource])) {
-                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
+                        $filters[$this->prefix.$root_table.'.'.$joinsource] =
                             $this->quote($jointarget, $this->fields[$joinsource]['type']);
+                    // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
                             LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
@@ -573,12 +565,64 @@ var_dump($tables);
                         return false;
                     }
                 }
+            // handle single column join
+            } else {
+                $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
+                    $this->prefix.$table.'.'.$this->tables[$root_table]['joins'][$table];
+            }
+            // table has been joint
+            unset($tables[$table]);
+        }
+
+        // all tables have been joined
+        if (empty($tables)) {
+            return array($filters, null);
+        }
+
+        foreach ($this->tables[$root_table]['joins'] as $table => $fields) {
+            // verify that the table is in the selectable_tables list
+            if (!in_array($table, $selectable_tables)) {
+                continue;
+            }
+            $tmp_filters = $filters;
+            $tmp_tables = $tables;
+            // handle multi column join
+            if (is_array($fields)) {
+                foreach ($fields as $joinsource => $jointarget) {
+                    // both tables use a field to join
+                    if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
+                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
+                            $this->prefix.$table.'.'.$jointarget;
+                    // target table uses a field in the join and source table
+                    // a constant value
+                    } elseif (isset($this->fields[$jointarget])) {
+                        $tmp_filters[$this->prefix.$table.'.'.$jointarget] =
+                            $this->quote($joinsource, $this->fields[$jointarget]['type']);
+                    // source table uses a field in the join and target table
+                    // a constant value
+                    } elseif (isset($this->fields[$joinsource])) {
+                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
+                            $this->quote($jointarget, $this->fields[$joinsource]['type']);
+                    // neither tables uses a field in the join
+                    } else {
+                        $this->_stack->push(
+                            LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                            array('reason' => 'join structure incorrect, one of the two needs to be a field')
+                        );
+                        return false;
+                    }
+                }
+            // handle single column join
             } else {
                 $tmp_filters[$this->prefix.$root_table.'.'.$fields] =
                     $this->prefix.$table.'.'.$fields;
             }
+            // table has been joint
             unset($tmp_tables[$table]);
+            // recurse
             $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
+            // check if the recursion was able to find a join that would reduce
+            // the number of to be joined tables
             if ($return) {
                 if (!$return[1]) {
                     return $return;
@@ -588,10 +632,12 @@ var_dump($tables);
             }
         }
 
+        // return false if list of tables was not reduced using the current root table
         if ($tables_orig == $table) {
             return false;
         }
 
+        // return the generated new filters and reduced table list
         return array($filters, $tables);
     }
 
