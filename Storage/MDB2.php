@@ -121,6 +121,11 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
         return $this->dbc->queryOne($query, $type);
     }
 
+    function queryCol($query, $type)
+    {
+        return $this->dbc->queryCol($query, $type);    
+    }
+
     function nextId($seqname, $ondemand)
     {
         return $this->dbc->nextId($seqname, $ondemand);
