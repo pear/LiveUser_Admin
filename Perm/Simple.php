@@ -62,7 +62,7 @@ class LiveUser_Admin_Perm_Simple
             foreach ($confArray as $key => $value) {
                 if (isset($this->$key)) {
                     if (empty($this->$key) || !is_array($this->$key)) {
-                        $this->$key =& $storageConf[$key];
+                        $this->$key =& $confArray[$key];
                     } else {
                         $this->$key = array_merge($this->$key, $value);
                     }
@@ -504,7 +504,7 @@ class LiveUser_Admin_Perm_Simple
         if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
             foreach ($params['with'] as $field => $params) {
                 // this is lame and needs to be made more flexible
-                if ($field == 'perm_user_id' || $field == 'group_id') {
+                if ($field == 'right_id') {
                     $method = 'getRights';
                 } elseif ($field == 'group_id') {
                     $method = 'getGroups';
