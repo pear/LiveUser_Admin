@@ -31,16 +31,14 @@ $result = $package->setOptions(array(
     'state'             => 'beta',
     'license'           => 'LGPL',
     'filelistgenerator' => 'cvs',
-    'ignore'            => array('package.php', 'package.xml', 'TODO', 'DefineGenerator'),
+    'ignore'            => array('package.php', 'package.xml', 'TODO'),
     'notes'             => $notes,
     'changelogoldtonew' => false,
     'simpleoutput'      => true,
     'baseinstalldir'    => '/LiveUser/Admin',
     'packagedirectory'  => './',
     'installexceptions' => array(
-    ),
-    'installas'         => array(
-        'Admin.php' => './Admin.php'
+        'Admin.php'            => '/LiveUser',
     ),
     'exceptions'         => array(
         'lgpl.txt' => 'doc',

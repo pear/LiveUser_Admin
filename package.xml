@@ -51,6 +51,12 @@
     </deps>
     <filelist>
       <dir baseinstalldir="/LiveUser/Admin" name="/">
+       <dir name="Auth">
+        <file role="php" name="Common.php"/>
+        <file role="php" name="DB.php"/>
+        <file role="php" name="MDB.php"/>
+        <file role="php" name="MDB2.php"/>
+       </dir> <!-- Auth -->
        <dir name="Perm">
         <file role="php" name="Simple.php"/>
         <file role="php" name="Storage.php"/>
@@ -59,7 +65,7 @@
          <file role="php" name="SQL.php"/>
         </dir> <!-- Perm/Storage -->
        </dir> <!-- Perm -->
-       <file role="php" install-as="./Admin.php" name="Admin.php"/>
+       <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
       </dir> <!-- / -->
     </filelist>
   </release>
