@@ -95,11 +95,18 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     {
         // sanity checks
         foreach ($this->tables[$table]['fields'] as $field => $required) {
-            if ($required) {
-                if ($required == 'seq' && !isset($data[$field])) {
-                    $data[$field] = $this->nextId($this->prefix . $field, true);
-                }
-                if (!isset($data[$field]) || $data[$field] === '') {
+            if ($required && !isset($data[$field])) {
+                if ($required == 'seq') {
+                    $result = $this->getBeforeId($this->prefix . $table, true);
+                    if (PEAR::isError($result)) {
+                        $this->_stack->push(
+                            LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                            array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+                        );
+                        return false;
+                    }
+                    $data[$field] = $result;
+                } elseif (empty($data[$field])) {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                         array('reason' => 'field may not be empty: '.$field)
@@ -137,7 +144,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             return false;
         }
         if (isset($this->tables[$table]['ids'])) {
-            return $data[reset($this->tables[$table]['ids'])];
+            return $this->getAfterId($data[reset($this->tables[$table]['ids'])], $table);
         }
         return $result;
     }
