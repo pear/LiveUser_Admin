@@ -12,8 +12,17 @@ $db_host = 'localhost';
 $db_name = 'liveuser_test';
 
 $dsn = "mysql://$db_user:$db_pass@$db_host/$db_name";
+$options = array(
+    'debug' => true,
+    'debug_handler' => 'echoQuery',
+);
 
-$db = MDB2::connect($dsn);
+function echoQuery(&$db, $scope, $message)
+{
+    Var_Dump::display($scope.': '.$message);
+}
+
+$db = MDB2::connect($dsn, $options);
 
 if (PEAR::isError($db)) {
     echo $db->getMessage() . ' ' . $db->getUserInfo();
@@ -76,10 +85,11 @@ $conf =
             'alias' => array(),
             'storage' => array(
                 'MDB2' => array(
-                    'dsn' => $dsn,
+                    'connection' => $db,
                     'prefix' => 'liveuser_',
                     'tables' => array(),
                     'fields' => array(),
+#                    'force_seq' => false,
                 ),
             ),
         ),
