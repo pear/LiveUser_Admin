@@ -129,7 +129,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $value
      * @param string $type
-     * @return
+     * @return string
      *
      * @access public
      * @uses DB::quoteSmart
@@ -143,7 +143,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param array $array
      * @param string $type
-     * @return
+     * @return string
      *
      * @access public
      * @uses DB::quoteSmart
@@ -165,7 +165,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $limit
      * @param string $offset
-     * @return
+     * @return boolean false This feature isn't supported by DB
      *
      * @access public
      */
@@ -183,7 +183,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     /**
      *
      * @param string $query
-     * @return
+     * @return boolean | integer
      *
      * @access public
      * @uses DB::query DB::affectedRows
@@ -205,7 +205,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $query
      * @param string $type
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses DB::getOne
@@ -227,7 +227,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $query
      * @param string $type
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses DB::getRow
@@ -249,7 +249,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $query
      * @param string $type
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses DB::getCol
@@ -272,7 +272,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * @param string $query
      * @param array $types
      * @param boolean $rekey
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses DB::getAll DB::getAssoc
@@ -298,7 +298,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $seqname
      * @param boolean $ondemand
-     * @return
+     * @return boolean | integer
      *
      * @access public
      * @uses DB::nextId
@@ -320,7 +320,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $table
      * @param boolean $ondemand
-     * @return
+     * @return boolean | integer
      *
      * @access public
      * @uses DB::nextId

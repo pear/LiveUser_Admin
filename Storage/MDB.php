@@ -137,7 +137,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $value
      * @param string $type
-     * @return
+     * @return string
      *
      * @access public
      * @uses MDB::getValue
@@ -151,7 +151,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      *
      * @param array $array
      * @param string $type
-     * @return
+     * @return string
      *
      * @access public
      * @uses MDB::getValue
@@ -186,7 +186,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
     /**
      *
      * @param string $query
-     * @return
+     * @return boolean | integer
      *
      * @access public
      * @uses MDB::query MDB::affectedRows
@@ -208,7 +208,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $query
      * @param string $type
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses MDB::queryOne
@@ -234,7 +234,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $query
      * @param string $type
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses MDB::queryRow
@@ -256,7 +256,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $query
      * @param string $type
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses MDB::queryCol
@@ -282,7 +282,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      * @param string $query
      * @param array $types
      * @param boolean $rekey
-     * @return
+     * @return boolean | array
      *
      * @access public
      * @uses MDB::queryAll
@@ -304,7 +304,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $seqname
      * @param boolean $ondemand
-     * @return
+     * @return boolean | integer
      *
      * @access public
      * @uses MDB::nextId
@@ -326,7 +326,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
      *
      * @param string $table
      * @param boolean $ondemand
-     * @return
+     * @return boolean | integer
      *
      * @access public
      * @uses MDB::nextId
