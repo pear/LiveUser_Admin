@@ -142,7 +142,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
 
     function queryRow($query, $type)
     {
-        $result = $this->dbc->getRow($query);
+        $result = $this->dbc->getRow($query, null, DB_FETCHMODE_ASSOC);
         if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',

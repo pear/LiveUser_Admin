@@ -143,7 +143,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     function queryRow($query, $type)
     {
-        $result = $this->dbc->queryRow($query, $type);
+        $result = $this->dbc->queryRow($query, $type, MDB2_FETCHMODE_ASSOC);
         if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
