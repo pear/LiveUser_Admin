@@ -114,12 +114,12 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 
         $result = $this->removeUserFromGroup($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = $this->revokeGroupRight($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = $this->_storage->delete('groups', $filters);
@@ -260,7 +260,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     {
         $result = $this->revokeGroupRight($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         return parent::removeRight($filters);
@@ -286,7 +286,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 
         $result = $this->removeUserFromGroup($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         return parent::removeUser($filters);

@@ -161,7 +161,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->revokeUserRight($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = $this->_storage->delete('perm_users', $filters);
@@ -221,7 +221,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->revokeUserRight($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = $this->_storage->delete('rights', $filters);
@@ -281,7 +281,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->removeRight($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = $this->_storage->delete('areas', $filters);
@@ -370,7 +370,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->removeArea($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = $this->_storage->delete('applications', $filters);
@@ -523,7 +523,7 @@ class LiveUser_Admin_Perm_Simple
             );
             $result = $this->$method($params);
             if ($result === false) {
-                return $result;
+                return false;
             }
 
             if (empty($result)) {

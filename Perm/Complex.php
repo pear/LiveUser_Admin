@@ -83,7 +83,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         $filter = array('subgroup_id' => $data['subgroup_id']);
         $result = $this->_storage->selectCount('group_subgroups', 'group_id', $filter);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         if ($result == $data['group_id']) {
@@ -164,7 +164,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->_getImpliedRight($params);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         if (!empty($result)) {
@@ -177,7 +177,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->_storage->insert('right_implied', $data);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $filter = array('right_id' => $data['right_id']);
@@ -258,7 +258,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = parent::getUsers($params);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         if ($result[0]['perm_type'] < 3) {
@@ -293,7 +293,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->_storage->delete('area_admin_areas', $filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         // notify observer
@@ -313,7 +313,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $result = $this->removeAreaAdmin($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = parent::removeArea($filters);
@@ -356,7 +356,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
             $result = parent::getRight($params);
             if ($result === false) {
-                return $result;
+                return false;
             }
 
             if ($result['perm_type'] < 3) {
@@ -382,12 +382,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $result = $this->unimplyRight($filters, false);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $result = parent::removeRight($filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $this->_updateImpliedStatus($filters);
@@ -413,7 +413,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         $filter = array('owner_user_id' => $filters['perm_user_id']);
         $result = $this->updateGroup($data, $filter);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         // notify observer
@@ -480,14 +480,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             );
             $result = $this->_getSubGroups($param);
             if ($result === false) {
-                return $result;
+                return false;
             }
 
             foreach ($result as $subGroupId) {
                 $filter = array('group_id' => $subGroupId['subgroup_id'], 'recursive' => true);
                 $result = $this->removeGroup($filter);
                 if ($result === false) {
-                    return $result;
+                    return false;
                 }
             }
             unset($filters['recursive']);
@@ -495,7 +495,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->_storage->delete('group_subgroups', $filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         return parent::removeGroup($filters);
@@ -531,7 +531,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $count = $this->_storage->selectCount('right_implied', 'right_id', $filters);
         if ($count === false) {
-            return $count;
+            return false;
         }
 
         if (isset($filters['right_id'])) {
@@ -548,7 +548,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
             $result = $this->getRights($params);
             if ($result === false) {
-                return $result;
+                return false;
             }
 
             if (empty($result)) {
@@ -574,7 +574,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->updateRight($data, $filter);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         // notify observer
@@ -637,7 +637,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $_groups = parent::getGroups($params);
         if ($_groups === false) {
-            return $_groups;
+            return false;
         }
 
         if ($params['subgroups']) {
@@ -649,7 +649,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             );
             $subgroups = $this->_getSubGroups($param);
             if ($subgroups === false) {
-                return $subgroups;
+                return false;
             }
 
             // first it will make all subgroups, then it will update all subgroups to keep
@@ -704,7 +704,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $rights = parent::getRights($params);
         if ($rights === false) {
-            return $rights;
+            return false;
         }
 
         $_rights = array();
@@ -722,7 +722,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     $implied_rights = $this->_getImpliedRights($param);
 
                     if ($implied_rights === false) {
-                        return $implied_rights;
+                        return false;
                     }
 
                     foreach($implied_rights as $right) {
@@ -754,7 +754,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $inherited_rights = $this->_getInheritedRights($params);
 
             if ($inherited_rights === false) {
-                return $inherited_rights;
+                return false;
             }
 
             foreach ($inherited_rights as $right) {
@@ -791,7 +791,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $params['filters']['right_id'] = $row['right_id'];
             $implied_rights = $this->getRights($params);
             if ($implied_rights === false) {
-                return $implied_rights;
+                return false;
             }
 
             $_rights = array_merge($_rights, $implied_rights);
@@ -821,7 +821,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->getGroup($params, $select, $root_table);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         $_rights = array();
@@ -830,7 +830,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $params['filters']['group_id'] = $row['group_id'];
             $inherited_rights = $this->getRights($params);
             if ($inherited_rights === false) {
-                return $inherited_rights;
+                return false;
             }
 
             $_rights = array_merge($_rights, $inherited_rights);
