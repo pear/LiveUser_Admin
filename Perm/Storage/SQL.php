@@ -133,6 +133,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         'perm_type' => array('type' => 'integer'),
         'right_id' => array('type' => 'integer'),
         'right_level' => array('type' => 'integer'),
+        'area_id' => array('type' => 'integer'),
         'right_define_name' => array('type' => 'text'),
         'section_id' => array('type' => 'integer'),
         'section_type' => array('type' => 'integer'),
@@ -159,8 +160,8 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         }
 
         $types = array();
-        foreach ($fields as $name) {
-            $types[] = $this->fields[$name]['type'];
+        foreach ($fields as $field) {
+            $types[] = $this->fields[$field]['type'];
         }
 
         $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
@@ -183,11 +184,11 @@ var_dump('no tables were found');
         }
 
         $tables[$root_table] = true;
-        $joinfilters = false;
+        $joinfilters = array();
         if (count($tables) > 1) {
             // find join condition
             $joinfilters = array();
-            $return = $this->createJoinFilter($root_table, $joinfilters, $tables);
+            $return = $this->createJoinFilter($root_table, $joinfilters, $tables, $selectable_tables);
             if (!$return) {
 var_dump('joins could not be set');
                 return false;
@@ -215,21 +216,21 @@ var_dump('joins could not be set');
             return '';
         }
         $where = array();
-        foreach ($filters as $name => $value) {
+        foreach ($filters as $field => $value) {
             $type = 'text';
-            if (preg_match('/^.*\.?(.+)$/', $name, $match)) {
+            if (preg_match('/^[^.]*\.?(.+)$/', $field, $match)) {
                 if (isset($this->fields[$match[1]]['type'])) {
                     $type = $this->fields[$match[1]]['type'];
                 }
             }
             if (is_array($value)) {
-                $where[] = $name.' IN ('.$this->implodeArray($value, $type).')';
+                $where[] = $field.' IN ('.$this->implodeArray($value, $type).')';
             } else {
-                $where[] = $name.' = '.$this->quote($value, $type);
+                $where[] = $field.' = '.$this->quote($value, $type);
             }
         }
-        foreach ($joinfilters as $name => $value) {
-            $where[] = $name.' = '.$value;
+        foreach ($joinfilters as $field => $value) {
+            $where[] = $field.' = '.$value;
         }
         return "\n".' WHERE '.implode("\n".'     AND ', $where);
     }
@@ -288,14 +289,22 @@ var_dump($tables);
         return $tables;
     }
 
-    function createJoinFilter($root_table, $filters, $tables, $visited = array())
+    function createJoinFilter($root_table, $filters, $tables, $selectable_tables, $visited = array())
     {
         if (empty($tables)) {
             return array($filters, null);
         }
+        if (in_array($root_table, $visited)) {
+var_dump('infinite recursion detected: '.$root_table);
+            return false;
+        }
+        $visited[] = $root_table;
         $tables_orig = $tables;
         $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), array_keys($tables));
         foreach ($direct_matches as $table) {
+            if (!in_array($table, $selectable_tables)) {
+                continue;
+            }
             if (isset($tables[$table])) {
                 if (is_array($this->tables[$root_table]['joins'][$table])) {
                     foreach ($this->tables[$root_table]['joins'][$table] as $joinsource => $jointarget) {
@@ -306,7 +315,7 @@ var_dump($tables);
                             $filters[$this->prefix.$table.'.'.$jointarget] =
                                 $this->quote($joinsource, $this->fields[$jointarget]['type']);
                         } elseif (isset($this->fields[$joinsource])) {
-                            $filters[$this->prefix.$root_table.'.'.$jointarget] =
+                            $filters[$this->prefix.$root_table.'.'.$joinsource] =
                                 $this->quote($jointarget, $this->fields[$joinsource]['type']);
                         } else {
 var_dump('join structure incorrect, one of the two needs to be a field');
@@ -323,9 +332,11 @@ var_dump('join structure incorrect, one of the two needs to be a field');
             return array($filters, null);
         }
         foreach ($this->tables[$root_table]['joins'] as $table => $fields) {
+            if (!in_array($table, $selectable_tables)) {
+                continue;
+            }
             $tmp_filters = $filters;
             $tmp_tables = $tables;
-            $tmp_visited = $visited;
             if (is_array($fields)) {
                 foreach ($fields as $joinsource => $jointarget) {
                     if (isset($this->fields[$joinsource]) && isset($this->fields[$jointarget])) {
@@ -335,7 +346,7 @@ var_dump('join structure incorrect, one of the two needs to be a field');
                         $tmp_filters[$this->prefix.$table.'.'.$jointarget] =
                             $this->quote($joinsource, $this->fields[$jointarget]['type']);
                     } elseif (isset($this->fields[$joinsource])) {
-                        $tmp_filters[$this->prefix.$root_table.'.'.$jointarget] =
+                        $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
                             $this->quote($jointarget, $this->fields[$joinsource]['type']);
                     } else {
 var_dump('join structure incorrect, one of the two needs to be a field');
@@ -347,12 +358,7 @@ var_dump('join structure incorrect, one of the two needs to be a field');
                     $this->prefix.$table.'.'.$fields;
             }
             unset($tmp_tables[$table]);
-            if (in_array($table, $tmp_visited)) {
-var_dump('infinite recursion detected: '.$table);
-                continue;
-            }
-            $tmp_visited[] = $table;
-            $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $tmp_visited);
+            $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
             if ($return) {
                 if (!$return[1]) {
                     return $return;
