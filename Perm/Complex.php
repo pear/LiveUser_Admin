@@ -255,6 +255,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeGroup($filters)
     {
+        !isset($filters['recursive']) ? $filters['recursive'] = false : '';
         if (isset($filters['subgroup_id']) && $filters['recursive']) {
             $filter = array('group_id' => $filters['subgroup_id']);
             $result = $this->_storage->select('col', 'group_subgroups', 'group_id', $filter);
@@ -262,7 +263,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 return $result;
             }
 
-            !isset($filters['recursive']) ? $filters['recursive'] = false : '';
             foreach ($result as $subGroupId) {
                 $filter = array('group_id' => $subGroupId, 'recursive' => $filters['recursive']);
                 $res = $this->removeGroup($filter);
