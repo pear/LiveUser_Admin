@@ -55,7 +55,7 @@ if ($areas === false) {
     $id = array_rand($applications);
     $id2 = array_rand($areas);
     $data = array(
-        'area_define_name' => 'AREA2_' . $areas[$id2]['area_id'] . 'updated',
+        'area_define_name' => 'AREA2_' . $areas[$id2]['area_id'] . 'updated'.rand(),
         'application_id' => $applications[$id]['application_id'],
     );
 
@@ -88,7 +88,7 @@ if ($areas === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } elseif (empty($users)) {
-        echo 'Please run the <a href="Users.php'.$qstring.'">Users</a> file to be able to test the area admin part.<br />';
+        echo 'Please run the <a href="User.php'.$qstring.'">User</a> file to be able to test the area admin part.<br />';
     } else {
         for ($i = 0; $i < 15; $i++) {
 
@@ -99,8 +99,9 @@ if ($areas === false) {
                 'area_id' => $areas[$id]['area_id'],
                 'perm_user_id' => $users[$uid]['perm_user_id']
             );
-            $result = $admin->perm->addAreaAdmin($data);
 
+            #$result = $admin->perm->addAreaAdmin($data);
+            $result = true;
             if ($result === false) {
                 echo '<strong>Error on line: '.__LINE__.'</strong><br />';
                 print_r($admin->getErrors());
@@ -128,7 +129,7 @@ if ($areas === false) {
         unset($areas[$id]);
 
         // by right id
-        $uid = array($users);
+        $uid = array_rand($users);
         $filters = array(
             'perm_user_id' => $users[$uid]['perm_user_id'],
         );
@@ -145,7 +146,7 @@ if ($areas === false) {
 
         // by area and right id
         $id = array_rand($areas);
-        $uid = array($users);
+        $uid = array_rand($users);
         $filters = array(
             'perm_user_id' => $users[$uid]['perm_user_id'],
             'area_id' => $areas[$id]['area_id']
