@@ -212,6 +212,30 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         return $this->queryOne($query, $type);
     }
 
+    function selectCol($table, $field, $filters)
+    {
+        if (empty($field)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'field is missing')
+            );
+        }
+
+        if (empty($table)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'table is missing')
+            );
+        }
+
+        $query = 'SELECT ';
+        $query .= $this->alias[$field];
+        $type = $this->fields[$field];
+        $query .= "\n" . 'FROM ' . $this->prefix . $table;
+        $query .= $this->createWhere($filters);
+        return $this->queryCol($query, $type);
+    }
+
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
     {
         if (!is_array($fields) || empty($fields)) {
