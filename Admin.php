@@ -635,6 +635,10 @@ class LiveUser_Admin
             return false;
         }
 
+        if ($first) {
+            $permUsers = array($permUsers);
+        }
+
         $users = array();
         foreach($permUsers as $permData) {
             $this->setAdminAuthContainer($permData['auth_container_name']);
