@@ -21,7 +21,7 @@ foreach ($groups as $group) {
     $result = $admin->perm->addUserToGroup(array('perm_user_id' => $users[$rand]['perm_user_id'], 'group_id' => $group['group_id']));
 
     if ($result === false) {
-        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         echo '<b>' . $users[$rand]['name'] . '</b> was added to group <b>' . $group['group_id'] . '</b><br />';
     }
@@ -37,7 +37,7 @@ $params = array(
 $usersGroup = $admin->perm->getUsers($params);
 
 if ($usersGroup === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'Perm ID\'s of the users in group <b>' . $groups[$randGroup]['group_id'] . '</b><br />';
     Var_Dump::display($usersGroup);
@@ -55,7 +55,7 @@ $filters = array(
 $removed = $admin->perm->removeUserFromGroup($filters);
 
 if ($removed === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>' . $users[$user]['name'] . '</b> was removed from group <b>'.$groups[$randGroup]['group_id'].'</b><br />';
 }
@@ -68,7 +68,7 @@ $filters = array(
 $removed = $admin->perm->removeUserFromGroup($filters);
 
 if ($removed === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>' . $users[$randUser]['name'] . '</b> was removed from <b>ALL</b> his groups<br />';
 }
@@ -83,7 +83,7 @@ foreach ($groups as $group) {
     $usersGroup = $admin->perm->getGroups($params);
 
     if ($usersGroup === false) {
-        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         echo 'Perm ID\'s of the users in group <b>' . $group['group_id'] . '</b><br />';
         Var_Dump::display($usersGroup);

@@ -7,7 +7,7 @@ for ($i = 1; $i < 4; $i++) {
     $appId = $admin->perm->addApplication($data);
 
     if ($appId === false) {
-        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
         echo 'Created Application id <b>' . $appId . '</b><br />';
@@ -18,7 +18,7 @@ for ($i = 1; $i < 4; $i++) {
 $currentApps = $admin->perm->getApplications();
 
 if ($currentApps === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
     echo 'These are our current applications:';
@@ -38,7 +38,7 @@ $filters = array('application_id' => $currentApps[$id]['application_id']);
 $removeApp = $admin->perm->removeApplication($filters);
 
 if ($removeApp === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>App3</b> was removed<br />';
     unset($currentApps[$id]);
@@ -51,14 +51,14 @@ $filters = array('application_id' => $currentApps[$id]['application_id']);
 $updateApp = $admin->perm->updateApplication($data, $filters);
 
 if ($updateApp === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>App2</b> was updated<br />';
     $params = array('filters' => array('application_id' => $currentApps[$id]['application_id']));
     $result = $admin->perm->getApplications($params);
 
     if ($result === false) {
-        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         Var_Dump::display($result);
     }
@@ -68,7 +68,7 @@ if ($updateApp === false) {
 $currentApps = $admin->perm->getApplications();
 
 if ($currentApps === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'These are our current applications:';
     Var_Dump::display($currentApps);

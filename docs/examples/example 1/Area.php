@@ -17,7 +17,7 @@ for ($i = 1; $i < 4; $i++) {
     $areaId  = $admin->perm->addArea($data);
 
     if ($areaId === false) {
-        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         echo 'Created Area Id <b>' . $areaId . '</b><br />';
     }
@@ -27,7 +27,7 @@ for ($i = 1; $i < 4; $i++) {
 $currentAreas = $admin->perm->getAreas();
 
 if ($currentAreas === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'These are our current areas:';
     Var_Dump::display($currentAreas);
@@ -40,7 +40,7 @@ $filters = array('area_id' => $currentAreas[$id]['area_id']);
 $rmArea = $admin->perm->removeArea($filters);
 
 if ($rmArea === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>Area3</b> was removed<br />';
     unset($currentAreas[$id]);
@@ -59,14 +59,14 @@ $filters = array('area_id' => $currentAreas[$id]['area_id']);
 $upArea = $admin->perm->updateArea($data, $filters);
 
 if ($upArea === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo '<b>Area2</b> was updated<br />';
     $params = array('filters' => array('area_id' => $currentAreas[$id]['area_id']));
     $result = $admin->perm->getAreas($params);
 
     if ($result === false) {
-        echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     } else {
         Var_Dump::display($result);
     }
@@ -76,7 +76,7 @@ if ($upArea === false) {
 $currentAreas = $admin->perm->getAreas();
 
 if ($currentAreas === false) {
-    echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
+    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
 } else {
     echo 'These are our current areas:';
     Var_Dump::display($currentAreas);
