@@ -41,7 +41,7 @@ $params = array(
     'with' => array(
         'group_id' => array(
             'fields' => array(
-                'group_id',
+                'group_id'
             ),
         ),
     ),
@@ -91,7 +91,7 @@ if ($rights_group === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
 } else {
-    $right   = array_rand($rights_group);
+    $right = array_rand($rights_group);
     $data = array('right_level' => 2);
     $filters = array(
         'right_id' => $rights_group[$right]['right_id'],
