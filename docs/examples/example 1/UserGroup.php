@@ -62,10 +62,12 @@ if (!$removed) {
 
 // Remove user from all his groups
 $randUser = array_rand($users);
+$filters = array(
+    'perm_user_id' => $users[$randUser]['perm_user_id']
+);
+$removed = $admin->perm->removeUserFromGroup($filters);
 
-$removed = $admin->perm->removeUserFromGroup($randUser);
-
-if ($removed) {
+if (!$removed) {
     echo '<strong>Error</strong><br />';
 } else {
     echo $users[$randUser]['name'].' was removed from <b>ALL</b> his groups<br />';

@@ -16,11 +16,11 @@ if  (empty($currentRight)) {
 $users = $admin->searchUsers();
 $rights = $admin->perm->getRights();
 
-for ($i = 1; $i < 4; $i++) {
+for ($i = 1; $i < 30; $i++) {
     $randUser = array_rand($users);
     $randRight = array_rand($rights);
     $data = array(
-        'perm_user_id' => $users[$randUser]['auth_user_id'],
+        'perm_user_id' => $users[$randUser]['perm_user_id'],
         'right_id' => $rights[$randRight]['right_id'],
         'right_level' => 1,
     );
@@ -76,11 +76,13 @@ if (!$update) {
 
 $randUser = array_rand($users);
 $params = array(
+    'fields' => array(
+        'right_id',
+        'right_level'
+    ),
     'with' => array(
         'perm_user_id' => array(
             'fields' => array(
-                'right_id',
-                'right_level',
                 'name',
             ),
         ),
@@ -90,6 +92,7 @@ $params = array(
     )
 );
 $singleRight = $admin->perm->getRights($params);
+
 if (!$singleRight) {
     echo '<strong>Error</strong><br />';
 } else {
@@ -99,11 +102,13 @@ if (!$singleRight) {
 }
 
 $params = array(
+    'fields' => array(
+        'right_id',
+        'right_level'
+    ),
     'with' => array(
         'perm_user_id' => array(
             'fields' => array(
-                'right_id',
-                'right_level',
                 'name',
             ),
         ),
