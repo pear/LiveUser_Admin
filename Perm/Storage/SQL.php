@@ -358,7 +358,15 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             );
             return false;
         }
-        return $this->dbc->query($query);
+        $return = $this->query($query);
+        if (PEAR::isError($return)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $return->getMessage() . '-' . $return->getUserinfo())
+            );
+            return false;
+        }
+        return $data[$this->tables[$table]['id']];
     }
 
     function createInsert($table, $fields, $values)
@@ -385,7 +393,15 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
             );
             return false;
         }
-        return $this->dbc->query($query);
+        $return = $this->query($query);
+        if (PEAR::isError($return)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $return->getMessage() . '-' . $return->getUserinfo())
+            );
+            return false;
+        }
+        return true;
     }
 
     function createUpdate($table, $fields, $filters)
@@ -400,7 +416,16 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
     {
         $query = 'DELETE FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters, $table);
-        return $this->dbc->query($query);
+
+        $return = $this->query($query);
+        if (PEAR::isError($return)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $return->getMessage() . '-' . $return->getUserinfo())
+            );
+            return false;
+        }
+        return $data[$this->tables[$table]['id']];
     }
 
     function selectOne($table, $field, $filters, $count = false)
@@ -758,7 +783,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
      */
     function disconnect()
     {
-        $this->dbc->disconnect();
+        $this->disconnect();
     }
 }
 ?>
