@@ -98,16 +98,36 @@ class LiveUser_Admin
      * @param  string two letters language code
      * @return void
      */
-    function LiveUser_Admin($conf, $lang)
+    function LiveUser_Admin($lang)
     {
-        if (is_array($conf)) {
-            $this->_conf = $conf;
-        }
         $this->lang = $lang;
+    }
 
-        if (isset($this->_conf['autoInit']) && $this->_conf['autoInit'] === true) {
+    function &factory($conf, $lang)
+    {
+        $obj = &new LiveUser_Admin($lang);
+
+        if (is_array($conf)) {
+            $obj->_conf = $conf;
+        }
+
+        if (isset($obj->_options['autoInit']) && $obj->_options['autoInit']) {
             $this->setAdminContainers();
         }
+
+        return $obj;
+    }
+
+    function &singleton($conf, $lang)
+    {
+        static $instance;
+
+        if (!isset($instance)) {
+            $obj = &LiveUser_Admin::factory($conf, $lang);
+            $instance =& $obj;
+        }
+
+        return $instance;
     }
 
     /**
@@ -125,36 +145,6 @@ class LiveUser_Admin
 
         $this->_conf = LiveUser::arrayMergeClobber($this->_conf, $conf);
         return true;
-    }
-
-    /**
-    * Makes your instance global.
-    *
-    * <b>You MUST call this method with the $var = &LiveUser_Admin::singleton() syntax.
-    * Without the ampersand (&) in front of the method name, you will not get
-    * a reference, you will get a copy.</b>
-    *
-    * @access public
-    * @param  array  liveuser conf array
-    * @param  string two letters language code
-    * @return object      Returns an object of either LiveUser or PEAR_Error type
-    * @see    LiveUser_Admin::LiveUser_Admin
-    */
-    function &singleton($conf, $lang)
-    {
-        static $instances;
-        if (!isset($instances)) $instances = array();
-
-        $signature = serialize(array($conf, $lang));
-        if (!isset($instances[$signature])) {
-            $obj = &LiveUser_Admin::LiveUser_Admin($conf, $lang);
-            if(PEAR::isError($obj)) {
-                return $obj;
-            }
-            $instances[$signature] =& $obj;
-        }
-
-        return $instances[$signature];
     }
 
     /**
@@ -211,7 +201,7 @@ class LiveUser_Admin
         }
 
         $this->perm = &LiveUser::permFactory($this->_conf['permContainer'], 'LiveUser_Admin_');
-        $this->perm->setCurrentLanguage($this->lang);
+#        $this->perm->setCurrentLanguage($this->lang);
         return true;
     }
 
