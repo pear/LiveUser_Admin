@@ -105,7 +105,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Adds a group
      *
      *
      * @param array $data
@@ -121,7 +121,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Update group(s)
      *
      *
      * @param array $data
@@ -138,7 +138,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Removes group(s)
      *
      *
      * @param array $filters Array containing the filters on what group(s)
@@ -172,7 +172,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Grants a group X rights
      *
      *
      * @param array $data
@@ -206,7 +206,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Updates group(s) right(s)
      *
      *
      * @param array $data
@@ -223,7 +223,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Revokes (removes) right(s) from group(s)
      *
      *
      * @param array $filters Array containing the filters on what right(s)
@@ -245,7 +245,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Adds a user to a group
      *
      *
      * @param array $data
@@ -270,7 +270,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Removes user(s) from group(s)
      *
      *
      * @param array $filters Array containing the filters on what user(s)
@@ -292,7 +292,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Removes right(s)
      *
      *
      * @param array $filters Array containing the filters on what right(s)
@@ -314,7 +314,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Removes user(s)
      *
      *
      * @param array $filters Array containing the filters on what user(s)
@@ -341,7 +341,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Fetches group(s)
      *
      *
      * @param array $params

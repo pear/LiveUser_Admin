@@ -149,7 +149,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Add user
      *
      *
      * @param array $data
@@ -169,7 +169,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Update usr
      *
      *
      * @param array $data
@@ -186,7 +186,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Remove user
      *
      *
      * @param array $filters Array containing the filters on what user(s)
@@ -214,7 +214,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Add right
      *
      *
      * @param array $data
@@ -230,7 +230,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Update right
      *
      *
      * @param array $data
@@ -247,7 +247,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Remove right
      *
      *
      * @param array $filters Array containing the filters on what right(s)
@@ -275,7 +275,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Add area
      *
      *
      * @param array $data
@@ -291,7 +291,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Update area(s)
      *
      *
      * @param array $data
@@ -381,7 +381,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Add application
      *
      *
      * @param array $data
@@ -397,7 +397,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Update application(s)
      *
      *
      * @param array $data
@@ -414,7 +414,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Remove application(s)
      *
      *
      * @param array $filters Array containing the filters on what application(s)
@@ -442,7 +442,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Grant user a right
      *
      *
      * @param array $data
@@ -477,7 +477,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Update right(s) for the given user(s)
      *
      *
      * @param array $data
@@ -494,7 +494,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Revoke (remove) right(s) from the user(s)
      *
      *
      * @param array $filters Array containing the filters on what right(s)
@@ -516,7 +516,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Add translation
      *
      *
      * @param array $data
@@ -532,7 +532,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Update translation(s)
      *
      *
      * @param array $data
@@ -549,7 +549,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Remove translation(s)
      *
      * @param array $filters Array containing the filters on what tranlation(s)
      *                       should be removed
@@ -565,7 +565,8 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Makes the filters used by the remove functions and also
+     * checks if there is actually something that needs removing.
      *
      * @param mixed $filteres
      * @param string $key
@@ -602,8 +603,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
-     *
+     * This function holds up most of the heat for all the get* functions.
      *
      * @param array $params
      * @param string $root_table
@@ -630,7 +630,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Fetches users
      *
      *
      * @param array $params
@@ -667,7 +667,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Fetches rights
      *
      *
      * @param array $params
@@ -706,7 +706,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Fetches areas
      *
      *
      * @param array $params
@@ -723,7 +723,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Fetches applications
      *
      * @access public
      * @param array $params
@@ -738,7 +738,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     *
+     * Fetches translations
      *
      *
      * @param array $params

@@ -531,7 +531,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Updates implied status
      *
      *
      * @param array $filters
@@ -594,11 +594,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     * Get parent of the group that's passed via param
      *
      *
-     *
-     * @param int $subGroupId
-     * @return
+     * @param int $subGroupId Id of the group that is used to fetch parents
+     * @return array
      *
      * @access public
      */
@@ -628,11 +628,27 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
-     *
+     * Get groups
+     * 
+     * Params:
+     * hierachy - defaults to false
+     *    If hierachy of the group tree should be kept on the return array
+     * subgroups - defaults to false
+     *    If subgroups should be included, if false then it acts same as the
+     *    medium container getGroups
+     * rekey = defaults to false
+     *    By default (false) we return things in this fashion
+     *    <code>
+     *       array(0 => array('group_id' => '1'))
+     *    </code>
+     *    But if rekey is turned on you get
+     *    <code>
+     *       array(1 => array('group_define_name' => 'FOO'))
+     *    </code>
+     *    Where 1 is the group_id
      *
      * @param array $params
-     * @return array
+     * @return boolean | array
      *
      * @access public
      */
@@ -700,11 +716,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Fetches rights
      *
      *
      * @param array $params
-     * @return array
+     * @return boolean | array
      *
      * @access public
      */
@@ -783,11 +799,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Fetches implied rights
      *
      *
      * @param array $params
-     * @return mixed false for error and array with impliedRights on success
+     * @return boolean | array false for error and array with impliedRights on success
      *
      * @access private
      */
@@ -816,11 +832,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     * Fetches inherited rights
      * FIX ME!
      *
      *
      * @param array $params
-     * @return mixed false for error and array with inheritedRights on success
+     * @return boolean | array false for error and array with inheritedRights on success
      *
      * @access private
      */
