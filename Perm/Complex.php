@@ -274,7 +274,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getSubGroups($params = array())
     {
-        $selectable_tables = 'group_subgroups';
+        $selectable_tables = array('group_subgroups');
         $root_table = 'group_subgroups';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
@@ -589,10 +589,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getImpliedRights($params = array())
     {
-        $result = $this->getRight($params, 'right_implied');
-        if ($result === false) {
-            return false;
-        }
+        $selectable_tables = array('right_implied');
+        $root_table = 'right_implied';
+
+        $result = $this->_makeGet($params, $root_table, $selectable_tables);
 
         $_rights = array();
         foreach ($result as $row) {
