@@ -34,10 +34,17 @@ $notes = <<<EOT
 - Tests for SubGroups and ImplyRights up and running
 - getGroup and getRight now work in Perm Complex Container
 - added DB and MDB permission backends
-- added new function in the Complex container named addAreaAdmin
 - Complex container is now fully implemented.
 - addAreaAdmin and removeAreaAdmin where added to the Complex container
 - Admin.php getUser was removed and searchUser was renamed to getUsers and with new params
+- give each example a unique database name
+- moved selectable tables into property so that they can be overwritten
+- fixed autoinit handling in factoray (bug #3133)
+- added missing PEAR error to error stack conversions
+- return false if we previously ensured that the value is false anyways for clarity
+- call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
+  the proper auth container is affected
+- updated the file headers as per the RFC
 EOT;
 
 $description = <<<EOT
