@@ -35,6 +35,7 @@ $notes = <<<EOT
 - getGroup and getRight now work in Perm Complex Container, but getRight only works same
   as the Perm Simple equal (i.e. no advance features yet)
 - added DB and MDB permission backends
+- added new function in the Complex container named addAreaAdmin
 - Complex container is now fully coded.
 EOT;
 
