@@ -36,7 +36,8 @@ $notes = <<<EOT
 - added DB and MDB permission backends
 - Complex container is now fully implemented.
 - addAreaAdmin and removeAreaAdmin where added to the Complex container
-- Admin.php getUser was removed and searchUser was renamed to getUsers and with new params
+- Admin.php getUser was removed and searchUser was renamed to getUsers and with
+  new params (BC break!)
 - give each example a unique database name
 - moved selectable tables into property so that they can be overwritten
 - fixed autoinit handling in factoray (bug #3133)
@@ -45,6 +46,8 @@ $notes = <<<EOT
 - call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
   the proper auth container is affected
 - updated the file headers as per the RFC
+- getGroups() in the complex container was refactored and subgroup handling
+  was reworked (BC break!)
 EOT;
 
 $description = <<<EOT
