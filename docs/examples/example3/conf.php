@@ -8,6 +8,17 @@ if (!defined('PATH_SEPARATOR')) {
     }
 }
 
+error_reporting(E_ALL);
+
+// right definitions
+define('READ_TESTS', 1);
+define('WRITE_TESTS', 2);
+define('ACCESS', 3);
+define('LAUNCH_ATOMIC_BOMB', 4);
+define('FLY_ALIEN_SPACE_CRAFT', 5);
+define('MAKE_COFFEE', 6);
+define('DRINK_COFFEE', 7);
+
 // set this to the path in which the directory for liveuser resides
 // more remove the following two lines to test LiveUser in the standard
 // PEAR directory
@@ -19,53 +30,102 @@ $dsn = 'mysql://root@localhost/liveuser_test';
 
 $liveuserConfig = array(
     'session'           => array('name' => 'PHPSESSID','varname' => 'loginInfo'),
-    'login'             => array('username' => 'handle', 'password' => 'passwd', 'remember' => 'rememberMe'),
-    'logout'            => array('trigger' => 'logout', 'destroy'  => true, 'method' => 'get'),
-    'cookie'            => array('name' => 'loginInfo', 'path' => '/', 'domain' => '', 'lifetime' => 30, 'secret' => 'mysecretkey'),
-    'autoInit'          => true,
-    'authContainers'    => array('DB' => array(
-        'type' => 'DB',
-                  'dsn' => $dsn,
-                  'loginTimeout' => 0,
-                  'expireTime'   => 0,
-                  'idleTime'     => 0,
-                  'allowDuplicateHandles'  => 1,
-                  'passwordEncryptionMode' => 'PLAIN',
-                  'authTableCols' => array(
-                      'required' => array(
-                          'auth_user_id' => array('name' => 'auth_user_id', 'type' => 'text'),
-                          'handle'       => array('name' => 'handle',       'type' => 'text'),
-                          'passwd'       => array('name' => 'passwd',       'type' => 'text'),
-                      ),
-                      'optional' => array(
-                          'lastlogin'    => array('name' => 'lastlogin',    'type' => 'timestamp'),
-                          'is_active'    => array('name' => 'is_active',    'type' => 'boolean')
-                      )
-                    )
-    )
-                                ),
-    'permContainer' => array(
-        'type'   => 'Complex',
-        'storage' => array(
-            'DB' => array(
-                'dsn' => $dsn,
-                'prefix' => 'liveuser_',
-                'groupTableCols' => array(
-                    'required' => array(
-                        'group_id' => array('type' => 'integer', 'name' => 'group_id'),
-                        'group_define_name' => array('type' => 'text', 'name' => 'group_define_name')
-                    ),
-                    'optional' => array(
-                        'group_type'    => array('type' => 'integer', 'name' => 'group_type'),
-                        'is_active'    => array('type' => 'boolean', 'name' => 'is_active'),
-                        'owner_user_id'  => array('type' => 'integer', 'name' => 'owner_user_id'),
-                        'owner_group_id' => array('type' => 'integer', 'name' => 'owner_group_id')
-                    )
+    'logout'            => array('destroy'  => true),
+    'cookie'            => array(
+        'name' => 'loginInfo',
+        'path' => null,
+        'domain' => null,
+        'secure' => false,
+        'lifetime' => 30,
+        'secret' => 'mysecretkey',
+        'savedir' => '.',
+    ),
+    'authContainers'    => array(
+        'DB' => array(
+            'type' => 'DB',
+            'dsn' => $dsn,
+            'loginTimeout' => 0,
+            'expireTime'   => 0,
+            'idleTime'     => 0,
+            'allowDuplicateHandles'  => 1,
+            'passwordEncryptionMode' => 'PLAIN',
+            'authTableCols' => array(
+                'required' => array(
+                    'auth_user_id' => array('name' => 'auth_user_id', 'type' => 'text'),
+                    'handle'       => array('name' => 'handle',       'type' => 'text'),
+                    'passwd'       => array('name' => 'passwd',       'type' => 'text'),
+                ),
+                'optional' => array(
+                    'lastlogin'    => array('name' => 'lastlogin',    'type' => 'timestamp'),
+                    'is_active'    => array('name' => 'is_active',    'type' => 'boolean')
                 )
             )
         )
-    )
+    ),
+    'permContainer' => array(
+        'type'  => 'Complex',
+        'alias' => array(),
+        'storage' => array(
+            'MDB2' => array(
+                'dsn' => $dsn,
+                'prefix' => 'liveuser_',
+                'tables' => array(),
+                'fields' => array(),
+            ),
+        ),
+    ),
 );
 
 // Get LiveUser class definition
 require_once 'LiveUser.php';
+
+// The error handling stuff is not needed and used only for debugging
+// while LiveUser is not yet mature
+PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'eHandler');
+
+function eHandler($errObj)
+{
+    echo('<hr /><span style="color: red;">' . $errObj->getMessage() . ':<br />' . $errObj->getUserInfo() . '</span><hr />');
+    $debug_backtrace = debug_backtrace();
+    array_shift($debug_backtrace);
+    $message= 'Debug backtrace:'."\n";
+
+    foreach ($debug_backtrace as $trace_item) {
+        $message.= "\t" . '    @ ';
+        if (isset($trace_item['file'])) {
+            $message.= basename($trace_item['file']) . ':' . $trace_item['line'];
+        } else {
+            $message.= '- PHP inner-code - ';
+        }
+        $message.= ' -- ';
+        if (isset($trace_item['class'])) {
+            $message.= $trace_item['class'] . $trace_item['type'];
+        }
+        $message.= $trace_item['function'];
+
+        if (isset($trace_item['args']) && is_array($trace_item['args'])) {
+            $message.= '('.@implode(', ', $trace_item['args']).')';
+        } else {
+            $message.= '()';
+        }
+        $message.= "\n";
+    }
+    echo "<pre>$message</pre>";
+}
+
+// Create new LiveUser object
+$LU =& LiveUser::factory($liveuserConfig);
+
+$handle = (isset($_REQUEST['handle'])) ? $_REQUEST['handle'] : null;
+$passwd = (isset($_REQUEST['passwd'])) ? $_REQUEST['passwd'] : null;
+$logout = (isset($_REQUEST['logout'])) ? $_REQUEST['logout'] : false;
+$remember = (isset($_REQUEST['rememberMe'])) ? $_REQUEST['rememberMe'] : false;
+
+$LU->init($handle, $passwd, $logout, $remember);
+
+require_once 'LiveUser/Admin.php';
+
+$luadmin =& LiveUser_Admin::factory($liveuserConfig);
+$luadmin->setAdminContainers();
+
+$language_selected = isset($_GET['language']) ? $_GET['language'] : 'de';
