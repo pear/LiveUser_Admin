@@ -51,13 +51,13 @@ $liveuserConfig = array(
             'passwordEncryptionMode' => 'PLAIN',
             'authTableCols' => array(
                 'required' => array(
-                    'auth_user_id' => array('name' => 'auth_user_id', 'type' => 'text'),
+                    'auth_user_id' => array('name' => 'authUserId', 'type' => 'text'),
                     'handle'       => array('name' => 'handle',       'type' => 'text'),
                     'passwd'       => array('name' => 'passwd',       'type' => 'text'),
                 ),
                 'optional' => array(
-                    'lastlogin'    => array('name' => 'lastlogin',    'type' => 'timestamp'),
-                    'is_active'    => array('name' => 'is_active',    'type' => 'boolean')
+                    'lastlogin'    => array('name' => 'lastLogin',    'type' => 'timestamp'),
+                    'is_active'    => array('name' => 'isActive',    'type' => 'boolean')
                 )
             )
         )

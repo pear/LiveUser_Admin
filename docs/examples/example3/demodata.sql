@@ -16,8 +16,8 @@ CREATE TABLE `liveuser_translations` (
 # Dumping data for table `liveuser_users`
 #
 
-INSERT INTO liveuser_users (auth_user_id, handle, passwd, lastlogin, owner_user_id, owner_group_id, is_active) VALUES ('c4ca4238a0b923820dcc509a6f75849b', 'boss', 'test', NULL, NULL, 1, 'Y');
-INSERT INTO liveuser_users (auth_user_id, handle, passwd, lastlogin, owner_user_id, owner_group_id, is_active) VALUES ('c81e728d9d4c2f636f067f89cc14862c', 'hoss', 'bonanza', NULL, 1, NULL, 'Y');
+INSERT INTO liveuser_users (authUserId, handle, passwd, lastLogin, owner_user_id, owner_group_id, isActive) VALUES ('c4ca4238a0b923820dcc509a6f75849b', 'boss', 'test', NULL, NULL, 1, 'Y');
+INSERT INTO liveuser_users (authUserId, handle, passwd, lastLogin, owner_user_id, owner_group_id, isActive) VALUES ('c81e728d9d4c2f636f067f89cc14862c', 'hoss', 'bonanza', NULL, 1, NULL, 'Y');
 
 #
 # Dumping data for table `liveuser_areas`
