@@ -67,7 +67,8 @@ echo '
 <a href="Subgroups.php'.$qstring.'">Subgroups</a> |
 <a href="UserGroup.php'.$qstring.'">UserGroup</a> | 
 <a href="UserRights.php'.$qstring.'">UserRights</a> |
-<a href="OutputRightsConstants.php'.$qstring.'">OutputRightsConstants</a><br />';
+<a href="OutputRightsConstants.php'.$qstring.'">OutputRightsConstants</a> |
+<a href="Translation.php'.$qstring.'">Translation</a><br />';
 ?>
 So that these test will run you have to have <a href="http://pear.php.net/package/Var_Dump">Var_Dump</a> installed<br /><br />
 <?php
@@ -93,6 +94,8 @@ if (isset($_GET['del']))  {
     $db->query('DROP TABLE liveuser_userrights_seq');
     $db->query('DELETE FROM liveuser_users');
     $db->query('DROP TABLE liveuser_users_seq');
+    $db->query('DELETE FROM liveuser_translations');
+    $db->query('DROP TABLE liveuser_translations_seq');
     echo 'Reseted the database';
     exit;
 } else {
