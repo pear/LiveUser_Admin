@@ -631,11 +631,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Get groups
      * 
      * Params:
-     * hierachy - defaults to false
-     *    If hierachy of the group tree should be kept on the return array
      * subgroups - defaults to false
      *    If subgroups should be included, if false then it acts same as the
-     *    medium container getGroups
+     *    medium container getGroups, if set to true it will return all subgroups
+     *    like they are directly assigned, if set to 'hierachy' it will place
+     *    a tree of the subgroups under the array key 'subgroups'
+     *
+     *    note that 'hierachy' requires 'rekey' enabled, 'select' set to 'all'
+     *    and the first field needs to be 'group_id'
+     *
      * rekey = defaults to false
      *    By default (false) we return things in this fashion
      *    <code>
@@ -654,23 +658,89 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getGroups($params = array())
     {
-        if (isset($params['subgroups']) && !$params['subgroups']
+        $subgroup = true;
+        if (isset($params['subgroups'])) {
+            $subgroup = $params['subgroups'];
+            unset($params['subgroups']);
+        }
+
+        if (!$subgroup
             && isset($params['select'])
             && ($params['select'] == 'one' || $params['select'] == 'row')
         ) {
             return parent::getGroups($params);
         }
 
-        $tmp_params = $params;
-        $tmp_params['fields'] = array('group_id');
-        $tmp_params['select'] = 'col';
+        if ($subgroup === 'hierachy') {
+            if ((!isset($params['rekey']) || !$params['rekey'])
+                || (isset($params['select']) && $params['select'] != 'all')
+                || (isset($params['fields']) && reset($tmp_params['fields']) !== 'group_id')
+            ) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => "Setting 'subgroups' to 'hierachy' is only allowed if ".
+                        "'rekey' is enabled, 'select' is 'all' and the first field is 'group_id'")
+                );
+                return false;
+            }
+            $groups = parent::getGroups($params);
 
-        $_groups = parent::getGroups($tmp_params);
-        if (!$_groups) {
-            return $_groups;
+            if ($groups === false) {
+                return false;
+            }
+            $group_ids = array_keys($groups);
+
+            $tmp_params = array(
+                'fields' => array(
+                    'group_id',
+                    'subgroup_id',
+                ),
+                'filters' => array(
+                    'group_id' => $group_ids,
+                    'subgroup_id' => array(
+                        'value' => $group_ids,
+                        'op' => 'NOT IN',
+                    ),
+                ),
+                'rekey' => true,
+                'group' => true,
+            );
+
+            $subgroups = $this->_getSubGroups($tmp_params);
+            if ($subgroups === false) {
+                return false;
+            }
+
+            foreach ($subgroups as $group_id => $subgroup_ids) {
+                $tmp_params = $params;
+                $tmp_params['subgroups'] = 'hierachy';
+                $tmp_params['filters'] = array('group_id' => $subgroup_ids);
+                $subgroup_data = parent::getGroups($tmp_params);
+                if ($subgroup_data === false) {
+                    return false;
+                }
+                $groups[$group_id]['subgroups'] = $subgroup_data;
+            }
+
+            return $groups;
         }
 
-        $subgroups = $_groups;
+        $tmp_params = array(
+            'fields' => array('group_id'),
+            'select' => 'col',
+        );
+
+        if (isset($params['filter'])) {
+            $tmp_params['filter'] = $params['filter'];
+            unset($params['filter']);
+        }
+
+        $groups = parent::getGroups($tmp_params);
+        if (!$groups) {
+            return $groups;
+        }
+
+        $subgroups = $groups;
         $new_count = count($subgroups);
 
         do {
@@ -691,11 +761,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 return false;
             }
 
-            $_groups= array_merge($_groups, $subgroups);
+            $groups= array_merge($groups, $subgroups);
             $new_count = count($subgroups);
         } while(!empty($subgroups) && $count <= $new_count);
 
-        $params['filters'] = array('group_id' => $_groups);
+        $params['filters'] = array('group_id' => $groups);
         return parent::getGroups($params);
     }
 
