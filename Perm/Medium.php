@@ -296,6 +296,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function removeRight($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->revokeGroupRight($filters);
         if ($result === false) {
             return false;

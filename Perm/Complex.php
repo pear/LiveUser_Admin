@@ -354,6 +354,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeArea($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'area_id', 'getAreas');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->removeAreaAdmin($filters);
         if ($result === false) {
             return false;
