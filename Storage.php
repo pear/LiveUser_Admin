@@ -97,6 +97,16 @@ class LiveUser_Admin_Storage
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
     }
 
+    /**
+     * Initializes database storage container.
+     * Goes through the storage config and turns each value into
+     * a var
+     *
+     * @param array &$storageConf Storage Configuration
+     * @return boolean false on failure and true on success
+     *
+     * @access public
+     */
     function init(&$storageConf)
     {
         if (is_array($storageConf)) {
