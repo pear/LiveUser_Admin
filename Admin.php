@@ -1,20 +1,65 @@
 <?php
-// LiveUser: A framework for authentication and authorization in PHP applications
-// Copyright (C) 2002-2003 Markus Wolff
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
+
+/**
+ * A framework for authentication and authorization in PHP applications
+ *
+ * LiveUser_Admin is meant to be used with the LiveUser package.
+ * It is composed of all the classes necessary to administrate
+ * data used by LiveUser.
+ * 
+ * You'll be able to add/edit/delete/get things like:
+ * * Rights
+ * * Users
+ * * Groups
+ * * Areas
+ * * Applications
+ * * Subgroups
+ * * ImpliedRights
+ * 
+ * And all other entities within LiveUser.
+ * 
+ * At the moment we support the following storage containers:
+ * * DB
+ * * MDB
+ * * MDB2
+ * 
+ * But it takes no time to write up your own storage container,
+ * so if you like to use native mysql functions straight, then it's possible
+ * to do so in under a hour!
+ *
+ * PHP version 4 and 5 
+ *
+ * LICENSE: This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA  02111-1307  USA 
+ *
+ *
+ * @category authentication
+ * @package  LiveUser_Admin
+ * @author  Markus Wolff <wolff@21st.de>
+ * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Lukas Smith <smith@backendmedia.com>
+ * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Christian Dickmann <dickmann@php.net>
+ * @author  Matt Scifo <mscifo@php.net>
+ * @author  Bjoern Kraus <krausbn@php.net>
+ * @copyright 2002-2005 Markus Wolff
+ * @license http://www.gnu.org/licenses/lgpl.txt
+ * @version CVS: $Id$
+ * @link http://pear.php.net/LiveUser_Admin
+ */
 
 require_once 'LiveUser.php';
 
@@ -38,7 +83,10 @@ define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
  *
  * <code>
  * $admin = new LiveUser_Admin::factory($conf);
- * $found = $admin->getUser(3);
+ * $filters = array(
+ *     'perm_user_id' => '3'
+ * );
+ * $found = $admin->getUsers($filters);
  *
  * if ($found) {
  *  var_dump($admin->perm->getRights());
@@ -46,11 +94,16 @@ define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
  * </code>
  *
  * @see     LiveUser::factory()
- * @author  Lukas Smith
- * @author  Arnaud Limbourg
- * @author Helgi Þormar Þorbjörnsson
- * @version $Id$
- * @package LiveUser
+ *
+ * @category authentication
+ * @package  LiveUser_Admin
+ * @author  Lukas Smith <smith@backendmedia.com>
+ * @author  Arnaud Limbourg <arnaud@php.net>
+ * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @copyright 2002-2005 Markus Wolff
+ * @license http://www.gnu.org/licenses/lgpl.txt
+ * @version Release: @package_version@
+ * @link http://pear.php.net/LiveUser_Admin
  */
 class LiveUser_Admin
 {
@@ -58,48 +111,48 @@ class LiveUser_Admin
      /**
       * Name of the current selected auth container
       *
-      * @access public
       * @var    string
+      * @access public
       */
      var $authContainerName;
 
     /**
      * Array containing the auth objects.
      *
-     * @access private
      * @var    array
+     * @access private
      */
     var $_authContainers = array();
 
     /**
      * Admin perm object
      *
-     * @access public
      * @var    object
+     * @access public
      */
     var $perm = null;
 
     /**
      * Auth admin object
      *
-     * @access public
      * @var    object
+     * @access public
      */
     var $auth = null;
 
     /**
      * Configuration array
      *
-     * @access private
      * @var    array
+     * @access private
      */
      var $_conf = array();
 
     /**
      * Error codes to message mapping array
      *
-     * @access private
      * @var    array
+     * @access private
      */
     var $_errorMessages = array(
         LIVEUSER_ADMIN_ERROR                  => 'An error occurred %msg%',
@@ -114,8 +167,9 @@ class LiveUser_Admin
      * PEAR::Log object
      * used for error logging by ErrorStack
      *
-     * @access private
+     *
      * @var    Log
+     * @access private
      */
     var $_log = null;
 
@@ -137,8 +191,9 @@ class LiveUser_Admin
     /**
      * This method lazy loads PEAR::Log
      *
-     * @access protected
      * @return void
+     *
+     * @access protected
      */
     function loadPEARLog()
     {
@@ -163,9 +218,10 @@ class LiveUser_Admin
      * $lu_object->addErrorLog($logger);
      * </code>
      *
-     * @access public
-     * @param  Log     logger instance
+     * @param  Log &$log logger instance
      * @return boolean true on success or false on failure
+     *
+     * @access public
      */
     function addErrorLog(&$log)
     {
@@ -177,8 +233,11 @@ class LiveUser_Admin
 
     /**
      *
-     * @access public
+     * @param array $conf configuration array
      * @return object
+     *
+     * @access public
+     * @see setAdminContainers
      */
     function &factory($conf)
     {
@@ -196,8 +255,11 @@ class LiveUser_Admin
 
     /**
      *
-     * @access public
+     * @param array $conf configuration array
      * @return object
+     *
+     * @access public
+     * @see factory
      */
     function &singleton($conf)
     {
@@ -215,8 +277,10 @@ class LiveUser_Admin
      * Merges the current configuration array with configuration array pases
      * along with the method call.
      *
-     * @param  array   configuration array
+     * @param  array $conf configuration array
      * @return boolean true upon success, false otherwise
+     *
+     * @access public
      */
     function setConfArray($conf)
     {
@@ -237,9 +301,10 @@ class LiveUser_Admin
      *
      * e.g.: $admin->auth->addUser();
      *
-     * @access public
-     * @param  string   auth container name
+     * @param  string $authName  auth container name
      * @return boolean true upon success, false otherwise
+     *
+     * @access public
      */
     function setAdminAuthContainer($authName)
     {
@@ -275,8 +340,9 @@ class LiveUser_Admin
      *
      * e.g.: $admin->perm->addUser();
      *
-     * @access public
      * @return boolean true upon success, false otherwise
+     *
+     * @access public
      */
     function setAdminPermContainer()
     {
@@ -301,10 +367,11 @@ class LiveUser_Admin
      *
      * e.g.: $admin->perm->updateAuthUserId();
      *
-     * @access public
-     * @param  mixed   user auth id
-     * @param  string   auth container name
+     * @param  mixed $authId  user auth id
+     * @param  string $authName  auth container name
      * @return boolean true upon success, false otherwise
+     *
+     * @access public
      */
     function setAdminContainers($authId = null, $authName = null)
     {
@@ -374,16 +441,15 @@ class LiveUser_Admin
      *       $user_id = $admin->addUser('johndoe', 'dummypass', $optional);
      *  </code>
      *
-     * Untested: it most likely doesn't work.
+     * @param  string $handle  user handle (username)
+     * @param  string $password user password
+     * @param  array $optionalFields  values for the optional fields
+     * @param  array $customFields  values for the custom fields
+     * @param  int  $authId  Auth ID
+     * @param  integer $type permission user type
+     * @return mixed   userid or false
      *
      * @access public
-     * @param  string  user handle (username)
-     * @param  string  user password
-     * @param  array   values for the optional fields
-     * @param  array   values for the custom fields
-     * @param  int          ID
-     * @param  integer permission user type
-     * @return mixed   userid or false
      */
     function addUser($handle, $password, $optionalFields = array(),
         $customFields = array(), $authId = null, $type = LIVEUSER_USER_TYPE_ID)
@@ -421,16 +487,16 @@ class LiveUser_Admin
      *       $admin->updateUser($user_id, 'johndoe', 'dummypass');
      * </code>
      *
-     * Untested: it most likely doesn't work.
+     *
+     * @param integer $permId permission user id
+     * @param  string $handle user handle (username)
+     * @param  string $password user password
+     * @param  array  $optionalFields values for the optional fields
+     * @param  array  $customFields values for the custom fields
+     * @param  integer $type permission user type
+     * @return mixed   error object or true
      *
      * @access public
-     * @param integer permission user id
-     * @param  string  user handle (username)
-     * @param  string  user password
-     * @param  array   values for the optional fields
-     * @param  array   values for the custom fields
-     * @param  integer permission user type
-     * @return mixed   error object or true
      */
     function updateUser($permId, $handle, $password, $optionalFields = array(),
         $customFields = array(), $type = LIVEUSER_USER_TYPE_ID)
@@ -469,13 +535,12 @@ class LiveUser_Admin
     }
 
     /**
-    * Removes user from both containers
+    * Removes user from both Perm and Auth containers
     *
-    * Untested: it most likely doesn't work.
+    * @param  mixed $permId Perm ID
+    * @return  mixed error object or true
     *
     * @access public
-    * @param  mixed Auth ID
-    * @return  mixed error object or true
     */
     function removeUser($permId)
     {
@@ -516,9 +581,9 @@ class LiveUser_Admin
     * @param  boolean if only one row should be returned
     * @return mixed Array with userinfo if found else error object
     */
-    function searchUsers($container = 'perm', $filter = array(), $first = false)
+    function getUsers($container = 'perm', $filter = array(), $first = false)
     {
-        if($container == 'perm') {
+        if ($container == 'perm') {
             return $this->_getUsersByPerm($filter, $first);
         }
         return $this->_getUsersByAuth($filter, $first);
@@ -527,10 +592,11 @@ class LiveUser_Admin
     /**
     * Finds and gets full userinfo by filtering inside the perm container
     *
-    * @access private
-    * @param  mixed perm filters (as for getUsers() from the perm container
-    * @param  boolean if only one row should be returned
+    * @param  mixed $permFilter perm filters (as for getUsers() from the perm container
+    * @param  boolean $first if only one row should be returned
     * @return mixed Array with userinfo if found else error object
+    *
+    * @access public
     */
     function _getUsersByPerm($permFilter = array(), $first = false)
     {
@@ -583,10 +649,12 @@ class LiveUser_Admin
     /**
     * Finds and gets full userinfo by filtering inside the auth container
     *
-    * @access private
+    *
     * @param  mixed auth filters (as for getUsers() from the auth container
     * @param  boolean if only one row should be returned
     * @return mixed Array with userinfo if found else error object
+    *
+    * @access public
     */
     function _getUsersByAuth($authFilter = array(), $first = false)
     {
@@ -626,8 +694,9 @@ class LiveUser_Admin
     /**
      * Wrapper method to get the Error Stack
      *
-     * @access public
      * @return array  an array of the errors
+     *
+     * @access public
      */
     function getErrors()
     {

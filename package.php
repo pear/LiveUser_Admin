@@ -32,18 +32,38 @@ $notes = <<<EOT
   removeGroup in Perm Complex container (before it was hardcoded to true,
   now defaults to false)
 - Tests for SubGroups and ImplyRights up and running
-- getGroup and getRight now work in Perm Complex Container, but getRight only works same
-  as the Perm Simple equal (i.e. no advance features yet)
+- getGroup and getRight now work in Perm Complex Container
 - added DB and MDB permission backends
 - added new function in the Complex container named addAreaAdmin
-- Complex container is now fully coded.
+- Complex container is now fully implemented.
 - addAreaAdmin and removeAreaAdmin where added to the Complex container
+- Admin.php getUser was removed and searchUser was renamed to getUsers and with new params
 EOT;
 
 $description = <<<EOT
   LiveUser_Admin is meant to be used with the LiveUser package.
   It is composed of all the classes necessary to administrate
   data used by LiveUser.
+  
+  You'll be able to add/edit/delete/get things like:
+  * Rights
+  * Users
+  * Groups
+  * Areas
+  * Applications
+  * Subgroups
+  * ImpliedRights
+  
+  And all other entities within LiveUser.
+  
+  At the moment we support the following storage containers:
+  * DB
+  * MDB
+  * MDB2
+  
+  But it takes no time to write up your own storage container,
+  so if you like to use native mysql functions straight, then it's possible
+  to do so in under a hour!
 EOT;
 
 $package = new PEAR_PackageFileManager();
@@ -56,7 +76,7 @@ $result = $package->setOptions(array(
     'state'             => 'beta',
     'license'           => 'LGPL',
     'filelistgenerator' => 'cvs',
-    'ignore'            => array('package.php', 'package.xml', 'TODO'),
+    'ignore'            => array('package.php', 'package.xml'),
     'notes'             => $notes,
     'changelogoldtonew' => false,
     'simpleoutput'      => true,

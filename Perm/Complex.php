@@ -1,26 +1,64 @@
 <?php
-// LiveUser: A framework for authentication and authorization in PHP applications
-// Copyright (C) 2002-2003 Markus Wolff
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
- * DB_Complex permission administration class
+ * A framework for authentication and authorization in PHP applications
  *
- * @package  LiveUser
+ * LiveUser_Admin is meant to be used with the LiveUser package.
+ * It is composed of all the classes necessary to administrate
+ * data used by LiveUser.
+ * 
+ * You'll be able to add/edit/delete/get things like:
+ * * Rights
+ * * Users
+ * * Groups
+ * * Areas
+ * * Applications
+ * * Subgroups
+ * * ImpliedRights
+ * 
+ * And all other entities within LiveUser.
+ * 
+ * At the moment we support the following storage containers:
+ * * DB
+ * * MDB
+ * * MDB2
+ * 
+ * But it takes no time to write up your own storage container,
+ * so if you like to use native mysql functions straight, then it's possible
+ * to do so in under a hour!
+ *
+ * PHP version 4 and 5 
+ *
+ * LICENSE: This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA  02111-1307  USA 
+ *
+ *
  * @category authentication
+ * @package  LiveUser_Admin
+ * @author  Markus Wolff <wolff@21st.de>
+ * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Lukas Smith <smith@backendmedia.com>
+ * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Christian Dickmann <dickmann@php.net>
+ * @author  Matt Scifo <mscifo@php.net>
+ * @author  Bjoern Kraus <krausbn@php.net>
+ * @copyright 2002-2005 Markus Wolff
+ * @license http://www.gnu.org/licenses/lgpl.txt
+ * @version CVS: $Id$
+ * @link http://pear.php.net/LiveUser_Admin
  */
 
 /**
@@ -28,17 +66,24 @@
  */
 require_once 'LiveUser/Admin/Perm/Medium.php';
 
+
 /**
+ * Complex permission administration class
+ *
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
  * backends/containers must be extensions of this base class.
  *
+ * @category authentication
+ * @package  LiveUser_Admin
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Markus Wolff <wolff@21st.de>
  * @author  Matt Scifo <mscifo@php.net>
  * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @version $Id$
- * @package LiveUser
+ * @copyright 2002-2005 Markus Wolff
+ * @license http://www.gnu.org/licenses/lgpl.txt
+ * @version Release: @package_version@
+ * @link http://pear.php.net/LiveUser_Admin
  */
 class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 {
@@ -60,11 +105,17 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     * Assign subgroup to parent group.
      *
-     *
+     * First checks if groupId and subgroupId are the same then if
+     * the child group is already assigned to the parent group and last if
+     * the child group does have a parent group already assigned to it.
+     * (Just to difference between what kinda error was hit)
+     * 
+     * If so it returns false and pushes the error into stack
      *
      * @param array $data
-     * @return
+     * @return mixed false on error, blah on success
      *
      * @access public
      */
@@ -132,7 +183,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Imply Right
      *
      *
      * @param array $data
@@ -142,7 +193,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function implyRight($data)
     {
-        if (isset($data['right_id']) && isset($data['implied_righ_id']) &&
+        if (isset($data['right_id']) && isset($data['implied_right_id']) &&
             $data['implied_right_id'] == $data['right_id']
         ) {
             $this->_stack->push(
@@ -188,7 +239,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Unimply Right
      *
      *
      * @param array $filters
@@ -217,7 +268,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Add Area Admin
      *
      *
      * @param array $data
@@ -276,11 +327,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     * Remove Area Admin
      *
      *
-     *
-     * @param array $filters
-     * @return
+     * @param array $filters Array containing the filters on what area admin(s)
+     *                       should be removed
+     * @return mixed
      *
      * @access public
      */
@@ -301,10 +353,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     * Remove Area
      *
      *
-     *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what area(s)
+     *                       should be removed
      * @return
      *
      * @access public
@@ -323,54 +376,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     * Remove Right
      *
      *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
-     *
-     * @access public
-     * @uses LiveUser_Admin_Perm_Complex::removeAreaAdmin
-     *       LiveUser_Admin_Perm_Simple::updateRight
-     */
-    function updateRight($data, $filters)
-    {
-        if (isset($data['perm_type']) && $data['perm_type']  < 3) {
-            if (!is_numeric($filters['perm_user_id'])) {
-                $this->_stack->push(
-                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                    array('key' => 'perm_user_id')
-                );
-                return false;
-            }
-
-            $params = array(
-                'fields' => array(
-                    'perm_type'
-                ),
-                'filters' => array(
-                    'perm_user_id' => $filters['perm_user_id']
-                )
-            );
-
-            $result = parent::getRight($params);
-            if ($result === false) {
-                return false;
-            }
-
-            if ($result['perm_type'] < 3) {
-                $this->removeAreaAdmin($params['filters']);
-            }
-        }
-        return parent::updateRight($data, $filters);
-    }
-
-    /**
-     *
-     *
-     
-     * @param array $filters
+     * @param array $filters Array containing the filters on what right(s)
+     *                       should be removed
      * @return
      *
      * @access public
@@ -397,10 +407,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
+     * Remove User
      *
      *
-     *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what user(s)
+     *                       should be removed
      * @return
      *
      * @access public
@@ -421,7 +432,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Get SubGroups
      *
      *
      * @param array $params
@@ -439,7 +450,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Get Implied Rights
      *
      *
      * @param array $params
@@ -461,7 +472,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * option recursive is passed on as true.
      *
      *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what group(s)
+     *                       should be removed
      * @return
      *
      * @access public
@@ -502,7 +514,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * Grant Group Rights
      *
      *
      * @param array $data
@@ -775,7 +787,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      *
      * @param array $params
-     * @return array
+     * @return mixed false for error and array with impliedRights on success
      *
      * @access private
      */
@@ -785,6 +797,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         $root_table = 'right_implied';
 
         $result = $this->_makeGet($params, $root_table, $selectable_tables);
+        if ($result === false) {
+            return false;
+        }
 
         $_rights = array();
         foreach ($result as $row) {
@@ -801,25 +816,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     *
+     * FIX ME!
      *
      *
      * @param array $params
-     * @return array
+     * @return mixed false for error and array with inheritedRights on success
      *
      * @access private
      */
     function _getInheritedRights($params = array())
     {
         if ($params['filters']['perm_user_id']) {
-            $select = array();
-            $root_table = 'groupusers';
+            $result = $this->getGroups($params);
         } else {
-            $select = array('group_subgroups');
-            $root_table = 'group_subgroups';
+            $result = $this->_getSubGroups($params);
         }
 
-        $result = $this->getGroup($params, $select, $root_table);
         if ($result === false) {
             return false;
         }

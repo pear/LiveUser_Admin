@@ -1,26 +1,64 @@
 <?php
-// LiveUser: A framework for authentication and authorization in PHP applications
-// Copyright (C) 2002-2003 Markus Wolff
-//
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
-//
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
-//
-// You should have received a copy of the GNU Lesser General Public
-// License along with this library; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+/* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
- * Medium container for permission handling
+ * A framework for authentication and authorization in PHP applications
  *
- * @package  LiveUser_Admin
+ * LiveUser_Admin is meant to be used with the LiveUser package.
+ * It is composed of all the classes necessary to administrate
+ * data used by LiveUser.
+ * 
+ * You'll be able to add/edit/delete/get things like:
+ * * Rights
+ * * Users
+ * * Groups
+ * * Areas
+ * * Applications
+ * * Subgroups
+ * * ImpliedRights
+ * 
+ * And all other entities within LiveUser.
+ * 
+ * At the moment we support the following storage containers:
+ * * DB
+ * * MDB
+ * * MDB2
+ * 
+ * But it takes no time to write up your own storage container,
+ * so if you like to use native mysql functions straight, then it's possible
+ * to do so in under a hour!
+ *
+ * PHP version 4 and 5 
+ *
+ * LICENSE: This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public 
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
+ * MA  02111-1307  USA 
+ *
+ *
  * @category authentication
+ * @package  LiveUser_Admin
+ * @author  Markus Wolff <wolff@21st.de>
+ * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Lukas Smith <smith@backendmedia.com>
+ * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Christian Dickmann <dickmann@php.net>
+ * @author  Matt Scifo <mscifo@php.net>
+ * @author  Bjoern Kraus <krausbn@php.net>
+ * @copyright 2002-2005 Markus Wolff
+ * @license http://www.gnu.org/licenses/lgpl.txt
+ * @version $Id$
+ * @link http://pear.php.net/LiveUser_Admin
  */
 
 define('LIVEUSER_GROUP_TYPE_ALL',   1);
@@ -33,16 +71,21 @@ define('LIVEUSER_GROUP_TYPE_USER',  3);
 require_once 'LiveUser/Admin/Perm/Simple.php';
 
 /**
+ * Medium container for permission handling
+ *
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
  * backends/containers must be extensions of this base class.
  *
+ * @category authentication
+ * @package  LiveUser_Admin
  * @author  Markus Wolff <wolff@21st.de>
  * @author  Bjoern Kraus <krausbn@php.net>
  * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @version $Id$
- * @package LiveUser
- * @category authentication
+ * @copyright 2002-2005 Markus Wolff
+ * @license http://www.gnu.org/licenses/lgpl.txt
+ * @version Release: @package_version@
+ * @link http://pear.php.net/LiveUser_Admin
  */
 class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 {
@@ -98,7 +141,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *
      *
      *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what group(s)
+     *                       should be removed
      * @return
      *
      * @access public
@@ -182,7 +226,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *
      *
      *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what right(s)
+     *                       should be removed from what group(s)
      * @return
      *
      * @access public
@@ -228,7 +273,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *
      *
      *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what user(s)
+     *                       should be removed from what group(s)
      * @return
      *
      * @access public
@@ -249,7 +295,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *
      *
      *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what right(s)
+     *                       should be removed
      * @return
      *
      * @access public
@@ -270,7 +317,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *
      *
      *
-     * @param array $filters
+     * @param array $filters Array containing the filters on what user(s)
+     *                       should be removed
      * @return
      *
      * @access public
