@@ -102,7 +102,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
 
     function implodeArray($array, $type)
     {
-        if (!is_array($array) || count($array) == 0) {
+        if (!is_array($array) || empty($array)) {
             return 'NULL';
         }
         foreach ($array as $value) {
