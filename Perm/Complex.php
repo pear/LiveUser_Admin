@@ -414,53 +414,61 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getGroups($params = array(), $extraSelectable = array(), $root_table = null)
     {
         !isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
+        !isset($params['subgroups']) ? $params['subgroups'] = true : '';
         $old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
 
-        $params['rekey'] = true;
+        if ($params['subgroups']) {
+            $params['rekey'] = true;
+        }
+
         $_groups = parent::getGroups($params, $extraSelectable, $root_table);
         if ($_groups === false) {
             return $_groups;
         }
 
-        $param = array(
-            'fields' => array(
-                'subgroup_id',
-                'group_id'
-            )
-        );
-        $subgroups = parent::getGroups($param, array('group_subgroups'), 'group_subgroups');
-        if ($subgroups === false) {
-            return $subgroups;
-        }
+        if ($params['subgroups']) {
+            $param = array(
+                'fields' => array(
+                    'subgroup_id',
+                    'group_id'
+                )
+            );
+            $subgroups = parent::getGroups($param, array('group_subgroups'), 'group_subgroups');
+            if ($subgroups === false) {
+                return $subgroups;
+            }
 
-        // first it will make all subgroups, then it will update all subgroups to keep
-        // everything up2date
-        for ($i = 0; $i < 2; $i++) {
-            foreach($subgroups as $subgroup) {
-                if (isset($_groups[$subgroup['group_id']])) {
-                    $_groups[$subgroup['group_id']]['subgroups'][$subgroup['subgroup_id']] = 
-                        $_groups[$subgroup['subgroup_id']];
+            // first it will make all subgroups, then it will update all subgroups to keep
+            // everything up2date
+            for ($i = 0; $i < 2; $i++) {
+                foreach($subgroups as $subgroup) {
+                    if (isset($_groups[$subgroup['group_id']])) {
+                        $_groups[$subgroup['group_id']]['subgroups'][$subgroup['subgroup_id']] = 
+                            $_groups[$subgroup['subgroup_id']];
+                    }
                 }
             }
-        }
 
-        if ($params['hierarchy']) {
-           foreach($subgroups as $subgroup) {
-                if ($_groups[$subgroup['subgroup_id']]) {
-                   unset($_groups[$subgroup['subgroup_id']]);
+            if ($params['hierarchy']) {
+               foreach($subgroups as $subgroup) {
+                    if ($_groups[$subgroup['subgroup_id']]) {
+                       unset($_groups[$subgroup['subgroup_id']]);
+                    }
                 }
             }
-        }
 
-        if ($old_rekey) {
-            return $_groups;
-        } else {
-            $groups = array();
-            foreach ($_groups as $key => $values) {
-                $groups[] = array_merge(array('group_id' => $key), $values);
+            if ($old_rekey) {
+                return $_groups;
+            } else {
+                $groups = array();
+                foreach ($_groups as $key => $values) {
+                    $groups[] = array_merge(array('group_id' => $key), $values);
+                }
+                return $groups;
             }
         }
-        return $groups;
+
+        return $_groups;
     }
 
     /**
@@ -472,7 +480,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getRights($params = array())
     {
-        !isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
+        //!isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
         /*$old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
 
         $params['rekey'] = true;*/
