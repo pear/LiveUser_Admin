@@ -26,6 +26,14 @@ $notes = <<<EOT
   to add autoincrement to the id fields in the applications, areas, groups,
   rights, and perm_users tables yourself)
 - example 1 now outputs all queries using an MDB2 debug handler
+- Subgroup now works (expect for in getGroup)
+- ImplyRights now works (expect for in getRights)
+- One can now remove groups recursively by passing recursive = true to 
+  removeGroup in Perm Complex container (before it was hardcoded to true,
+  now defaults to false)
+- Tests for SubGroups and ImplyRights up and running
+- getGroup and getRight now work in Perm Complex Container, but only the same
+  as their Perm Medium/Simple equals (i.e. no advance features yet)
 EOT;
 
 $description = <<<EOT
