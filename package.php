@@ -12,7 +12,8 @@ require_once 'Console/Getopt.php';
 $version = '0.1.0';
 
 $notes = <<<EOT
-- Refactored nto a separate package.
+- Refactored into a separate package.
+- severe BC breaks in the permission API
 EOT;
 
 $description = <<<EOT
