@@ -34,6 +34,7 @@ $notes = <<<EOT
 - Tests for SubGroups and ImplyRights up and running
 - getGroup and getRight now work in Perm Complex Container, but only the same
   as their Perm Medium/Simple equals (i.e. no advance features yet)
+- added DB and MDB permission backends
 EOT;
 
 $description = <<<EOT
