@@ -69,14 +69,69 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         parent::removeArea($filters);
     }
 
-    function assignSubGroup($data, $filters)
+    function assignSubGroup($data)
     {
+        if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'group_id')
+            );
+            return false;
+        }
 
+        if (!isset($data['subgroup_id']) || !is_numeric($data['subgroup_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'subgroup_id')
+            );
+            return false;
+        }
+
+        if ($data['subgroup_id'] == $data['group_id']) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Parent group id is the same as the subgroup id')
+            );
+            return false;
+        }
+
+        $filter = array('subgroup_id' => $filters['subgroup_id']);
+        $result = $this->_storage->selectOne('group_subgroups', 'group_id', $filter);
+        if (!$result) {
+            return $result;
+        }
+
+        if (!empty($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Child group already has a parent group')
+            );
+            return false;
+        }
+
+        if ($result['group_id'] == $data['group_id']) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'This child group is already a Parent of this group')
+            );
+            return false;
+        }
+
+        $result = $this->_storage->insert('group_subgroups', $data);
+        return $reslult;
     }
 
     function unassignSubGroup($filters)
     {
+        if (!isset($filters['subgroup_id']) || !is_numeric($filters['subgroup_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'subgroup_id')
+            );
+            return false;
+        }
 
+        $result = $this->_storage->delete('group_subgroup', $filters);
     }
 
     function removeGroup($filters)
@@ -99,7 +154,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         if ($filters['recursive']) {
             $filter = array('group_id' => $filters['subgroup_id']);
-            $result = $this->_storage->selectCol('group_subgroup', 'group_id', $filter);
+            $result = $this->_storage->selectCol('group_subgroups', 'group_id', $filter);
             if (!$result) {
                 return $result;
             }
@@ -235,6 +290,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantUserRight($data)
     {
         parent::grantUserRight($data);
+        // FIXME
         $this->_updateLevelStatus($data['right_id']);
 
         // Job done ...
@@ -244,6 +300,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantGroupRight($data)
     {
         parent::grantGroupRight($data);
+        // FIXME
         $this->_updateLevelStatus($data['right_id']);
 
         // Job done ...
