@@ -31,18 +31,6 @@ define('LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED', -5);
 define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
 /**#@-*/
 
-/**#@+
- * Section types
- *
- * @var integer
- */
-define('LIVEUSER_SECTION_APPLICATION',  1);
-define('LIVEUSER_SECTION_AREA',         2);
-define('LIVEUSER_SECTION_GROUP',        3);
-define('LIVEUSER_SECTION_LANGUAGE',     4);
-define('LIVEUSER_SECTION_RIGHT',        5);
-/**#@-*/
-
 /**
  * Attempt at a unified admin class
  *
@@ -445,8 +433,8 @@ class LiveUser_Admin
     {
         if (is_object($this->auth) && is_object($this->perm)) {
             $authData = $this->perm->getUsers(array(
-                'filters' => array($this->perm->alias['perm_user_id'] => $permId),
-                'fields' => array($this->perm->alias['auth_user_id']))
+                'filters' => array('perm_user_id' => $permId),
+                'fields' => array('auth_user_id'))
              );
 
             if (!$authData) {
@@ -454,7 +442,7 @@ class LiveUser_Admin
             }
 
             $authData = reset($authData);
-            $auth = $this->auth->updateUser($authData[$this->perm->alias['auth_user_id']], $handle, $password,
+            $auth = $this->auth->updateUser($authData['auth_user_id'], $handle, $password,
                                                              $optionalFields, $customFields);
 
             if (PEAR::isError($auth)) {
@@ -462,7 +450,7 @@ class LiveUser_Admin
             }
 
             $data = array(
-                $this->perm->alias['perm_type'] => $type
+                'perm_type' => $type
             );
             $filters = array('perm_user_id' => $permId);
             return $this->perm->updateUser($data, $filters);
@@ -485,8 +473,8 @@ class LiveUser_Admin
     {
         if (is_object($this->auth) && is_object($this->perm)) {
             $authData = $this->perm->getUsers(array(
-                'filters' => array($this->perm->alias['perm_user_id'] => $permId),
-                'fields' => array($this->perm->alias['auth_user_id']))
+                'filters' => array('perm_user_id' => $permId),
+                'fields' => array('auth_user_id'))
              );
 
             if (!$authData) {
@@ -494,13 +482,13 @@ class LiveUser_Admin
             }
 
             $authData = reset($authData);
-            $result = $this->auth->removeUser($authData[$this->perm->alias['auth_user_id']]);
+            $result = $this->auth->removeUser($authData['auth_user_id']);
 
             if (PEAR::isError($result)) {
                 return $result;
             }
 
-            $filters = array($this->perm->alias['perm_user_id'] => $permId);
+            $filters = array('perm_user_id' => $permId);
             return $this->perm->removeUser($filters);
         }
 
@@ -532,7 +520,7 @@ class LiveUser_Admin
             }
 
             foreach($search as $key => $user) {
-                $permFilter[$this->perm->alias['auth_user_id']] = $user['auth_user_id'];
+                $permFilter['auth_user_id'] = $user['auth_user_id'];
                 $permData = $this->perm->getUsers(array('filters' => $permFilter));
                 if (!$permData) {
                     return false;
@@ -560,7 +548,7 @@ class LiveUser_Admin
         $permOptions = array())
     {
         if (is_object($this->auth) && is_object($this->perm)) {
-            $permFilter[$this->perm->alias['perm_user_id']] = $permId;
+            $permFilter['perm_user_id'] = $permId;
             $permData = $this->perm->getUsers(array('filters' => $permFilter));
             if (!$permData) {
                 return false;
@@ -572,7 +560,7 @@ class LiveUser_Admin
                 array(
                     'name' => $this->auth->authTableCols['required']['auth_user_id']['name'],
                     'op' => '=',
-                    'value' => $permData[$this->perm->alias['auth_user_id']],
+                    'value' => $permData['auth_user_id'],
                     'cond' => 'AND',
                     'type' => $this->auth->authTableCols['required']['auth_user_id']['type'],
                 )
