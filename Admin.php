@@ -163,7 +163,7 @@ class LiveUser_Admin
      *
      * Sample usage:
      * <code>
-     * $lu_object = &LiveUser::singleton($conf);
+     * $lu_object = &LiveUser_Admin::singleton($conf);
      * $logger = &Log::factory('mail', 'bug@example.com',
      *      'myapp_debug_mail_log', array('from' => 'application_bug@example.com'));
      * $lu_object->addErrorLog($logger);
@@ -387,7 +387,9 @@ class LiveUser_Admin
                                                             $customFields, $id);
 
             if (PEAR::isError($authId)) {
-                return $authId;
+                $this->_stack->push(LIVEUSER_ADMIN_ERROR_, 'exception', array(),
+                "Configuration file does not exist in LiveUser::readConfig(): $conf");
+                return false;
             }
 
             $data = array(
@@ -397,7 +399,7 @@ class LiveUser_Admin
             );
             return $this->perm->addUser($data);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
     }
 
@@ -445,7 +447,7 @@ class LiveUser_Admin
             $filters = array('perm_user_id' => $permId);
             return $this->perm->updateUser($data, $filters);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
     }
 
@@ -476,7 +478,7 @@ class LiveUser_Admin
             $filters = array('perm_user_id' => $permId);
             return $this->perm->removeUser($filters);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
     }
 
@@ -505,7 +507,7 @@ class LiveUser_Admin
 
             return $search;
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
     }
 
@@ -550,7 +552,7 @@ class LiveUser_Admin
 
             return LiveUser::arrayMergeClobber($permData, $authData);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
     }
 
@@ -599,7 +601,7 @@ class LiveUser_Admin
         }
 
         if (empty($code)) {
-            $code = LIVEUSER_ERROR;
+            $code = LIVEUSER_ADMIN_ERROR;
         }
         $msg = LiveUser::errorMessage($code);
         return PEAR::raiseError("LiveUser Error: $msg", $code, $mode, $options, $userinfo);

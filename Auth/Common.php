@@ -163,7 +163,7 @@ class LiveUser_Admin_Auth_Common
                 break;
             case 'SHA1':
                 if (!function_exists('sha1')) {
-                    return LiveUser_Admin::raiseError(LIVEUSER_ERROR_NOT_SUPPORTED, null, null,
+                    return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
                         'SHA1 function doesn\'t exist. Upgrade your PHP version.');
                 }
                 $encryptedPW = sha1($plainPW);
@@ -203,7 +203,7 @@ class LiveUser_Admin_Auth_Common
     function addUser($handle, $password = '', $optionalFields = array(), 
                               $customFields = array(), $authId = null)
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR_NOT_SUPPORTED, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
             'addUser(): Method not supported by this container');
     }
 
@@ -216,7 +216,7 @@ class LiveUser_Admin_Auth_Common
      */
     function removeUser($authId)
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR_NOT_SUPPORTED, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
             'removeUser(): Method not supported by this container');
     }
 
@@ -234,7 +234,7 @@ class LiveUser_Admin_Auth_Common
     function updateUser($authId, $handle = '', $password = '',
                                    $optionalFields = array(), $customFields = array())
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR_NOT_SUPPORTED, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
             'updateUser(): Method not supported by this container');
     }
 
@@ -260,7 +260,7 @@ class LiveUser_Admin_Auth_Common
      */
     function getUsers($filters = array(), $order = null, $rekey = false)
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ERROR_NOT_SUPPORTED, null, null,
+        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
             'getUsers(): Method not supported by this container');
     }
 }
