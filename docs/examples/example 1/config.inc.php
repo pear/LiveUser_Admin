@@ -52,7 +52,7 @@ $conf =
                 'expireTime'    => 3600,
                 'idleTime'      => 1800,
                 'dsn'           => $dsn,
-                'allowDuplicateHandles' => 0,
+                'allowDuplicateHandles' => false,
                 'authTable'     => 'liveuser_users',
                     'authTableCols' => array(
                         'required' => array(
@@ -67,22 +67,23 @@ $conf =
                             'owner_group_id' => array('type' => 'integer',   'name' => 'owner_group_id')
                         ),
                         'custom' => array (
-                            'name' => array('type' => 'text',    'name' => 'name'),
-                            'email'      => array('type' => 'text',    'name' => 'email'),
+                            'name'  => array('type' => 'text',    'name' => 'name'),
+                            'email' => array('type' => 'text',    'name' => 'email'),
                         )
                     )
             )
         ),
         'permContainer' => array(
-            'type'  => 'Medium',
+            'type'  => 'Complex',
             'alias' => array(),
             'storage' => array(
                 'MDB2' => array(
                     'connection' => $db,
+                    //'dsn' => $dsn,
                     'prefix' => 'liveuser_',
                     'tables' => array(),
                     'fields' => array(),
-#                    'force_seq' => false,
+                    // 'force_seq' => false
                 ),
             ),
         ),
