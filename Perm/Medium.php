@@ -54,6 +54,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function LiveUser_Admin_Perm_Medium(&$confArray)
     {
+        $this->selectable_tables['getUsers'][] = 'groupusers';
+        $this->selectable_tables['getRights'][] = 'grouprights';
         $this->selectable_tables['getGroups'] = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
         $this->LiveUser_Admin_Perm_Simple($confArray);
     }
