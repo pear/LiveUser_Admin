@@ -159,9 +159,12 @@ class LiveUser_Admin_Perm_Simple
     {
         // Remove all user assignments to that right
         $filter_check = array('right_id' => $filters['right_id']);
-        $result = $this->_storage->delete('userrights', $filter_check);
-        if (!$result) {
-            return true;
+        $count = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
+        if ($count > 0) {
+            $result = $this->_storage->delete('userrights', $filter_check);
+            if (!$result) {
+                return true;
+            }
         }
 
         $result = $this->_storage->delete('rights', $filters);
@@ -209,9 +212,12 @@ class LiveUser_Admin_Perm_Simple
     {
         // Remove all rights under that area
         $filter_check = array('area_id' => $filters['area_id']);
-        $result = $this->_storage->delete('rights', $filter_check);
-        if (!$result) {
-            return false;
+        $count = $this->_storage->selectOne('rights', 'right_id', $filters, true);
+        if ($count > 0) {
+            $result = $this->_storage->delete('rights', $filter_check);
+            if (!$result) {
+                return false;
+            }
         }
 
         $result = $this->_storage->delete('areas', $filters);
@@ -284,9 +290,12 @@ class LiveUser_Admin_Perm_Simple
     {
         // Remove all areas under that application
         $filter_check = array('application_id' => $filters['application_id']);
-        $result = $this->_storage->delete('areas', $filter_check);
-        if (!$result) {
-            return false;
+        $count = $this->_storage->selectOne('areas', 'application_id', $filters, true);
+        if ($count > 0) {
+            $result = $this->_storage->delete('areas', $filter_check);
+            if (!$result) {
+                return false;
+            }
         }
 
         $result = $this->_storage->delete('applications', $filters);

@@ -97,9 +97,13 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeGroup($filters)
     {
         // Remove users from the group
-        $result = $this->_storage->delete('groupusers', $filters);
-        if (!$result) {
-            return false;
+        $filter_check = array('group_id' => $filters['group_id']);
+        $count = $this->_storage->selectOne('groupusers', 'group_id', $filter_check, true);
+        if ($count > 0) {
+            $result = $this->_storage->delete('groupusers', $filters);
+            if (!$result) {
+                return false;
+            }
         }
 
         // Delete group rights
