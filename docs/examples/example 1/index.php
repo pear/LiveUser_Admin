@@ -1,0 +1,61 @@
+<?php
+/*
+TODO:
+SubGroups
+ImplyRight
+*/
+require_once 'config.inc.php';
+include_once 'Var_Dump.php';
+Var_Dump::displayInit(
+	array('display_mode' => 'XHTML_Text'),
+	array('mode' => 'normal',
+			 'offset' => 4));
+
+?>
+
+<html>
+<style>
+
+    /* style for XHTML_Text */
+    table.var_dump          { border-collapse:separate; border:1px solid black; border-spacing:0; }
+	table.var_dump tr       { color:#006600; background:#F8F8F8; vertical-align:top; }
+    table.var_dump tr.alt   { color:#006600; background:#E8E8E8; }
+    table.var_dump th       { padding:4px; color:black; background:#CCCCCC; text-align:left; }
+	table.var_dump td       { padding:4px; }
+	table.var_dump caption  { caption-side:top; color:white; background:#339900; }
+	table.var_dump i        { color: #000000; background: transparent; font-style: normal; }
+
+	/* style for XHTML_Text */
+    pre.var_dump            { line-height:1.8em; }
+    pre.var_dump span.type  { color:#006600; background:transparent; }
+    pre.var_dump span.value { padding:2px; color:#339900; background:#F0F0F0; border: 1px dashed #CCCCCC; }
+
+</style>
+<body>
+<a href="Application.php">Application</a>    | <a href="Area.php">Area</a> | 
+<a href="Group.php">Group</a> 				    | <a href="GroupRights.php">GroupRights</a> | 
+<a href="ImplyRights.php">ImplyRights</a>  | <a href="User.php">User</a> | 
+<a href="Rights.php">Rights</a> 			        | <a href="Subgroups.php">Subgroups</a> | 
+<a href="UserGroup.php">UserGroup</a>     | <a href="UserRights.php">UserRights</a><br /><br />
+<?php
+if (isset($_GET['del']))  {
+	$db->query('DELETE FROM liveuser_applications');
+	$db->query('DELETE FROM liveuser_area_admin_areas');
+	$db->query('DELETE FROM liveuser_areas');
+	$db->query('DELETE FROM liveuser_group_subgroups');
+	$db->query('DELETE FROM liveuser_grouprights');
+	$db->query('DELETE FROM liveuser_groups');
+	$db->query('DELETE FROM liveuser_groupusers');
+	$db->query('DELETE FROM liveuser_perm_users');
+	$db->query('DELETE FROM liveuser_right_implied');
+	$db->query('DELETE FROM liveuser_rights ');
+	$db->query('DELETE FROM liveuser_userrights');
+	$db->query('DELETE FROM liveuser_users');
+	echo 'Reseted the database';
+	exit;
+} else {
+	echo '<a href="?del=1">Reset the database</a><br /><br /><br />';
+}
+?>
+</body>
+</html>
