@@ -1,16 +1,15 @@
 <?php
 /*
 TODO:
-SubGroups
+SubGroups (get recursive is left as well as remove groups recursivly as a option not hard coded)
 ImplyRight
 */
 require_once 'config.inc.php';
 include_once 'Var_Dump.php';
 Var_Dump::displayInit(
     array('display_mode' => 'XHTML_Text'),
-    array('mode' => 'normal',
-             'offset' => 4));
-
+    array('mode' => 'normal', 'offset' => 4)
+);
 ?>
 
 <html>
