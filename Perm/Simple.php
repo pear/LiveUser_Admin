@@ -492,6 +492,7 @@ class LiveUser_Admin_Perm_Simple
                     $method = 'getRights';
                 } elseif ($field == 'group_id') {
                     $method = 'getGroups';
+                    $params['subgroups'] = false;
                 } else {
                     break;
                 }
@@ -513,7 +514,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function getRights($params = array())
     {
-        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications', 'rights_implied');
+        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications', 'right_implied');
         $root_table = 'rights';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
@@ -525,6 +526,7 @@ class LiveUser_Admin_Perm_Simple
                     $method = 'getUsers';
                 } elseif ($field == 'group_id') {
                     $method = 'getGroups';
+                    $params['subgroups'] = false;
                 } else {
                     break;
                 }
