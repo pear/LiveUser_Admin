@@ -1,10 +1,5 @@
 <?php
     require_once 'conf.php';
-    require_once 'LiveUser/Admin/Perm/Container/DB_Simple.php';
-
-    $luadmin = new LiveUser_Admin_Perm_Container_DB_Simple($liveuserConfig['permContainer']);
-    $language = (isset($_GET['language'])) ? $_GET['language'] : 'en';
-    $luadmin->setCurrentLanguage($language);
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -40,13 +35,16 @@
     <table border="0" cellpadding="5">
 <?php
     // get the area_define_name and the area_name of each area in current language.
-    $areas = $luadmin->getAreas();
+    $areas = $luadmin->perm->getAreas(array(
+        'fields' => array('area_define_name', 'name'),
+        'filters' => array('language_id' => $language_selected)
+    ));
     // print navigation
     foreach ($areas as $row) {
 ?>
         <tr>
             <td><li></td>
-            <td><a href="<?php echo strtolower($row['define_name']); ?>.php" target="main"><?php echo $row['name']; ?></a></td>
+            <td><a href="<?php echo strtolower($row['area_define_name']); ?>.php" target="main"><?php echo $row['name']; ?></a></td>
         </tr>
 <?php
     }
@@ -56,13 +54,21 @@
     <form method="POST" action="example.php" target="_parent">
         <select name="language" size="1" onChange="submit()">
 <?php
-    // get a list of languages
-    $languages = $luadmin->getLanguages(array('with_translations' => true));
+    $languages = array(
+        'de' => array(
+            'de' => 'Deutsch',
+            'en' => 'Englisch'
+        ),
+        'en' => array(
+            'de' => 'German',
+            'en' => 'English'
+        ),
+    );
     // print language options
-    foreach ($languages as $code => $language) {
-        $code == $_GET['language'] ? $selected = ' selected' : $selected = '';
+    foreach ($languages[$language_selected] as $code => $language) {
+        $selected = $code == $language_selected ? ' selected="selected"' : '';
 ?>
-            <option value="<?php echo $code;?>"<?php echo $selected; ?>><?php echo $language['name']; ?></option>';
+            <option value="<?php echo $code;?>"<?php echo $selected; ?>><?php echo $language; ?></option>';
 <?php
     }
 ?>
