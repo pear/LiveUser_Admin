@@ -466,7 +466,8 @@ class LiveUser_Admin_Perm_Simple
         if ($count > 0) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'This user with perm id '.$data['perm_user_id'].' has already been granted the right id '.$data['right_id'])
+                array('msg' => 'This user with perm id '.$data['perm_user_id'].
+                    ' has already been granted the right id '.$data['right_id'])
             );
             return false;
         }
@@ -629,6 +630,7 @@ class LiveUser_Admin_Perm_Simple
         $filters = isset($params['filters']) ? $params['filters'] : array();
         $orders = isset($params['orders']) ? $params['orders'] : array();
         $rekey = isset($params['rekey']) ? $params['rekey'] : false;
+        $group = isset($params['group']) ? $params['group'] : false;
         $limit = isset($params['limit']) ? $params['limit'] : null;
         $offset = isset($params['offset']) ? $params['offset'] : null;
         $select = isset($params['select']) ? $params['select'] : 'all';
@@ -637,7 +639,7 @@ class LiveUser_Admin_Perm_Simple
         $fields = array_merge($fields, array_keys($with));
 
         return $this->_storage->select($select, $fields, $filters, $orders,
-            $rekey, $limit, $offset, $root_table, $selectable_tables);
+            $rekey, $group, $limit, $offset, $root_table, $selectable_tables);
     }
 
     /**

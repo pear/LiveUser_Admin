@@ -301,14 +301,16 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      *       empty, meaning that no conversion is performed.
      * @param boolean $rekey if set to true, the $all will have the first
      *       column as its first dimension
+     * @param boolean $group if set to true and $rekey is set to true, then
+     *      all values with the same first column will be wrapped in an array
      * @return boolean | array
      *
      * @access public
      * @uses MDB2::queryAll
      */
-    function queryAll($query, $types, $rekey)
+    function queryAll($query, $types, $rekey, $group)
     {
-        $result = $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
+        $result = $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey, false, $group);
         if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',

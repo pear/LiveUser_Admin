@@ -302,15 +302,17 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *       empty, meaning that no conversion is performed.
      * @param boolean $rekey if set to true, the $all will have the first
      *       column as its first dimension
+     * @param boolean $group if set to true and $rekey is set to true, then
+     *      all values with the same first column will be wrapped in an array
      * @return boolean | array
      *
      * @access public
      * @uses DB::getAll DB::getAssoc
      */
-    function queryAll($query, $types, $rekey)
+    function queryAll($query, $types, $rekey, $group)
     {
         if ($rekey) {
-            $result = $this->dbc->getAssoc($query, false, array(), DB_FETCHMODE_ASSOC);
+            $result = $this->dbc->getAssoc($query, false, array(), DB_FETCHMODE_ASSOC, $group);
         } else {
             $result = $this->dbc->getAll($query, array(), DB_FETCHMODE_ASSOC);
         }

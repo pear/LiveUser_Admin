@@ -331,6 +331,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param array $filters
      * @param array $orders
      * @param boolean $rekey
+     * @param boolean $group
      * @param integer $limit
      * @param integer $offset
      * @param string $root_table
@@ -339,7 +340,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      *
      * @access public
      */
-    function select($select, $fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
+    function select($select, $fields, $filters, $orders, $rekey, $group, $limit,
+        $offset, $root_table, $selectable_tables)
     {
         if (!is_array($fields) || empty($fields)) {
             $fields = array_keys($this->tables[$root_table]['fields']);
@@ -369,7 +371,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             break;
         }
 
-        return $this->queryAll($query, $types, $rekey);
+        return $this->queryAll($query, $types, $rekey, $group);
     }
 
     /**
@@ -467,11 +469,15 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
             if (is_array($value)) {
                 if (isset($value['value'])) {
-                    $value_quoted = $this->quote($value['value'], $type);
-                    if ($value_quoted === false) {
-                        return false;
+                    if (is_array($value['value'])) {
+                        $where[] = $tmp_field.' ' . $value['op'] . ' ('.$this->implodeArray($value['value'], $type).')';
+                    } else {
+                        $value_quoted = $this->quote($value['value'], $type);
+                        if ($value_quoted === false) {
+                            return false;
+                        }
+                        $where[] = $tmp_field. ' ' . $value['op'] . ' ' .$value_quoted;
                     }
-                    $where[] = $tmp_field. ' ' . $value['op'] . ' ' .$value_quoted;
                 } else {
                     $where[] = $tmp_field.' IN ('.$this->implodeArray($value, $type).')';
                 }
