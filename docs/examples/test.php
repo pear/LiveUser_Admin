@@ -25,7 +25,33 @@ $liveuserConfig = array(
 $lu =& LiveUser_Admin::factory($liveuserConfig, 'de');
 $lu->setAdminContainers();
 
-$user = $lu->perm->getUser();
-var_dump($user);
+$params = array(
+    'fields' => array(
+        'perm_user_id',
+        'right_define_name',
+        'right_id',
+        'right_level',
+    ),
+    'filters' => array(
+        'perm_type' => 1,
+        'auth_container_name' => '0',
+    ),
+    'orders' => array(
+        'perm_type' => 'DESC',
+        'auth_user_id' => 'ASC',
+    ),
+    'rekey' => true,
+    'limit' => 10,
+    'offset' => 0,
+);
+
+echo 'input';
+var_dump($params);
+echo '<hr>';
+echo 'output';
+var_dump($lu->perm->getUser($params));
+echo '<hr>';
+echo 'underlying query:';
+var_dump($lu->perm->_storage->dbc->last_query);
 
 ?>
