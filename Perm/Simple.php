@@ -23,18 +23,6 @@
  * @category authentication
  */
 
-/**#@+
- * Section types
- *
- * @var integer
- */
-define('LIVEUSER_SECTION_APPLICATION',  1);
-define('LIVEUSER_SECTION_AREA',         2);
-define('LIVEUSER_SECTION_GROUP',        3);
-define('LIVEUSER_SECTION_LANGUAGE',     4);
-define('LIVEUSER_SECTION_RIGHT',        5);
-/**#@-*/
-
 /**
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
@@ -48,30 +36,7 @@ define('LIVEUSER_SECTION_RIGHT',        5);
  */
 class LiveUser_Admin_Perm_Simple
 {
-    var $field_alias = array(
-        'perm_user_id' => null,
-        'auth_user_id' => null,
-        'auth_container_name' => null,
-        'perm_type' => null,
-        'right_id' => null,
-        'right_level' => null,
-        'area_id' => null,
-        'application_id' => null,
-        'right_define_name' => null,
-        'area_define_name' => null,
-        'application_define_name' => null,
-        'section_id' => null,
-        'section_type' => null,
-        'name' => null,
-        'description' => null,
-        'group_id' => null,
-        'group_type' => null,
-        'group_define_name' => null,
-        'is_active' => null,
-        'owner_user_id' => null,
-        'owner_group_id' => null,
-        'implied_right_id' => null,
-    );
+    var $alias = array();
 
     /**
      * Class constructor. Feel free to override in backend subclasses.
@@ -94,8 +59,8 @@ class LiveUser_Admin_Perm_Simple
      */
     function getAlias($name)
     {
-        if (isset($this->field_alias[$name])) {
-            return $this->field_alias[$name];
+        if (isset($this->alias[$name])) {
+            return $this->alias[$name];
         }
         return $name;
     }
