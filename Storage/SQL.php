@@ -567,7 +567,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if (!empty($fields_not_yet_linked)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'not all fields could be linked to a table')
+                array('reason' => 'not all fields ('.implode(', ', $fields_not_yet_linked).
+                    ') could be linked to a table ('.implode(', ', $selectable_tables).')')
             );
             return false;
         }
