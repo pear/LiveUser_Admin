@@ -266,7 +266,10 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
        
         $query = $this->createInsert($table, $fields, $values);
         if (!$query) {
-var_dump('query was not created');
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'query was not created')
+            );
             return false;
         }
         return $this->dbc->query($query);
@@ -290,7 +293,10 @@ var_dump('query was not created');
     
         $query = $this->createUpdate($table, $fields, $filters);
         if (!$query) {
-var_dump('query was not created');
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'query was not created')
+            );
             return false;
         }
         return $this->dbc->query($query);
@@ -315,11 +321,17 @@ var_dump('query was not created');
     function selectOne($table, $field, $filters, $count = false)
     {
         if (empty($field)) {
-var_dump('field is missing');
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'field is missing')
+            );
         }
 
         if (empty($table)) {
-var_dump('table is missing');
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'table is missing')
+            );
         }
 
         $query = 'SELECT ';
@@ -346,7 +358,10 @@ var_dump('table is missing');
 
         $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
         if (!$query) {
-var_dump('query was not created');
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'query was not created')
+            );
             return false;
         }
 
@@ -359,7 +374,10 @@ var_dump('query was not created');
         $tables = $this->findTables($fields, $filters, $orders, $selectable_tables);
 
         if (!$tables) {
-var_dump('no tables were found');
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'no tables were found')
+            );
             return false;
         }
 
@@ -370,7 +388,10 @@ var_dump('no tables were found');
             $joinfilters = array();
             $return = $this->createJoinFilter($root_table, $joinfilters, $tables, $selectable_tables);
             if (!$return) {
-var_dump('joins could not be set');
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => 'joins could not be set')
+                );
                 return false;
             }
             $joinfilters = $return[0];
@@ -424,7 +445,10 @@ var_dump('joins could not be set');
         foreach ($fields_not_yet_linked as $key => $field) {
             if (preg_match('/^(.*)\.(.+)$/', $field, $match)) {
                 if (!in_array($match[1], $selectable_tables)) {
-var_dump('explicit table does not exist: '.$match[1]);
+                    $this->_stack->push(
+                        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                        array('reason' => 'explicit table does not exist: ' . $match[1])
+                    );
                     return false;
                 }
                 $tables[$match[1]] = true;
@@ -461,7 +485,10 @@ var_dump('explicit table does not exist: '.$match[1]);
         }
 
         if (!empty($fields_not_yet_linked)) {
-var_dump('not all fields could be linked to a table');
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'not all fields could be linked to a table')
+            );
 var_dump($fields_not_yet_linked);
 var_dump($tables);
             return false;
@@ -474,15 +501,21 @@ var_dump($tables);
         if (empty($tables)) {
             return array($filters, null);
         }
+
         if (in_array($root_table, $visited)) {
-var_dump('infinite recursion detected: '.$root_table);
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'infinite recursion detected: ' . $root_table)
+            );
             return false;
         }
+
         $visited[] = $root_table;
         $tables_orig = $tables;
         $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), array_keys($tables));
+
         foreach ($direct_matches as $table) {
-            if (!in_array($table, $selectable_tables)) {
+            if (in_array($table, $selectable_tables)) {
                 continue;
             }
             if (isset($tables[$table])) {
@@ -498,7 +531,10 @@ var_dump('infinite recursion detected: '.$root_table);
                             $filters[$this->prefix.$root_table.'.'.$joinsource] =
                                 $this->quote($jointarget, $this->fields[$joinsource]['type']);
                         } else {
-var_dump('join structure incorrect, one of the two needs to be a field');
+                            $this->_stack->push(
+                                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                                array('reason' => 'join structure incorrect, one of the two needs to be a field')
+                            );
                             return false;
                         }
                     }
@@ -508,9 +544,11 @@ var_dump('join structure incorrect, one of the two needs to be a field');
                 }
             }
         }
+
         if (empty($tables)) {
             return array($filters, null);
         }
+
         foreach ($this->tables[$root_table]['joins'] as $table => $fields) {
             if (!in_array($table, $selectable_tables)) {
                 continue;
@@ -529,7 +567,10 @@ var_dump('join structure incorrect, one of the two needs to be a field');
                         $tmp_filters[$this->prefix.$root_table.'.'.$joinsource] =
                             $this->quote($jointarget, $this->fields[$joinsource]['type']);
                     } else {
-var_dump('join structure incorrect, one of the two needs to be a field');
+                        $this->_stack->push(
+                            LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                            array('reason' => 'join structure incorrect, one of the two needs to be a field')
+                        );
                         return false;
                     }
                 }
@@ -547,9 +588,11 @@ var_dump('join structure incorrect, one of the two needs to be a field');
                 $tables = $return[1];
             }
         }
+
         if ($tables_orig == $table) {
             return false;
         }
+
         return array($filters, $tables);
     }
 

@@ -75,10 +75,18 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($data['auth_container_name'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'auth_container_name')
+            );
             return false;
         }
 
         if (isset($data['perm_user_id']) && !is_numeric($data['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'perm_user_id')
+            );
             return false;
         }
 
@@ -103,6 +111,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'perm_user_id')
+            );
             return false;
         }
 
@@ -122,6 +134,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'perm_user_id')
+            );
             return false;
         }
         
@@ -141,6 +157,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($data['area_id']) || !is_numeric($data['area_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'area_id')
+            );
             return false;
         }
 
@@ -161,10 +181,18 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'right_id')
+            );
             return false;
         }
 
         if (isset($filters['area_id']) && !is_numeric($filters['area_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'area_id')
+            );
             return false;
         }
 
@@ -184,10 +212,18 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'right_id')
+            );
             return false;
         }
         
         if (isset($filters['area_id']) && !is_numeric($filters['area_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'area_id')
+            );
             return false;
         }
 
@@ -214,6 +250,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($data['application_id']) || !is_numeric($data['application_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'application_id')
+            );
             return false;
         }
 
@@ -234,10 +274,18 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'area_id')
+            );
             return false;
         }
 
         if (isset($data['application_id']) && !is_numeric($data['application_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'application_id')
+            );
             return false;
         }
 
@@ -257,6 +305,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'area_id')
+            );
             return false;
         }
         
@@ -307,6 +359,14 @@ class LiveUser_Admin_Perm_Simple
     function addApplication($data)
     {
         // sanity checks
+        if (isset($data['application_id']) && !is_numeric($data['application_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'application_id')
+            );
+            return false;
+        }
+
         $result = $this->_storage->insert('applications', $data);
         // notify observer
         return $result;
@@ -324,6 +384,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'application_id')
+            );
             return false;
         }
 
@@ -343,6 +407,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'application_id')
+            );
             return false;
         }
 
@@ -369,10 +437,18 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($data['perm_user_id']) || !is_numeric($data['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'perm_user_id')
+            );
             return false;
         }
 
         if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'right_id')
+            );
             return false;
         }
 
@@ -407,14 +483,26 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($data['right_level'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
+                array('key' => 'right_level')
+            );
             return false;
         }
 
         if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'perm_user_id')
+            );
             return false;
         }
         
         if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'right_id')
+            );
             return false;
         }
 
