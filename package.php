@@ -37,6 +37,7 @@ $notes = <<<EOT
 - added DB and MDB permission backends
 - added new function in the Complex container named addAreaAdmin
 - Complex container is now fully coded.
+- addAreaAdmin and removeAreaAdmin where added to the Complex container
 EOT;
 
 $description = <<<EOT
