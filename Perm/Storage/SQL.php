@@ -507,8 +507,6 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'not all fields could be linked to a table')
             );
-var_dump($fields_not_yet_linked);
-var_dump($tables);
             return false;
         }
         return $tables;
@@ -516,6 +514,9 @@ var_dump($tables);
 
     function createJoinFilter($root_table, $filters, $tables, $selectable_tables, $visited = array())
     {
+        // table has been joint
+        unset($tables[$root_table]);
+
         if (empty($tables)) {
             return array($filters, null);
         }
@@ -533,10 +534,10 @@ var_dump($tables);
         $tables_orig = $tables;
 
         // find tables that can be join directly with the root table
-        $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), array_keys($tables));
+        $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), $selectable_tables);
         foreach ($direct_matches as $table) {
             // verify that the table is in the selectable_tables list
-            if (!in_array($table, $selectable_tables)) {
+            if (!isset($tables[$table])) {
                 continue;
             }
             // handle multi column join
@@ -570,8 +571,16 @@ var_dump($tables);
                 $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
                     $this->prefix.$table.'.'.$this->tables[$root_table]['joins'][$table];
             }
-            // table has been joint
-            unset($tables[$table]);
+            $return = $this->createJoinFilter($table, $filters, $tables, $selectable_tables, $visited);
+            // check if the recursion was able to find a join that would reduce
+            // the number of to be joined tables
+            if ($return) {
+                if (!$return[1]) {
+                    return $return;
+                }
+                $filters = $return[0];
+                $tables = $return[1];
+            }
         }
 
         // all tables have been joined
@@ -617,8 +626,6 @@ var_dump($tables);
                 $tmp_filters[$this->prefix.$root_table.'.'.$fields] =
                     $this->prefix.$table.'.'.$fields;
             }
-            // table has been joint
-            unset($tmp_tables[$table]);
             // recurse
             $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
             // check if the recursion was able to find a join that would reduce
