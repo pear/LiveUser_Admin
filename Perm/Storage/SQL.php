@@ -143,6 +143,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
         $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
         if (!$query) {
+var_dump('query was not created');
             return false;
         }
 
@@ -155,22 +156,26 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         $tables = $this->findTables($fields, $filters, $orders, $selectable_tables);
 
         if (!$tables) {
+var_dump('no tables were found');
             return false;
         }
 
         $tables[$root_table] = true;
+        $joinfilters = false;
         if (count($tables) > 1) {
             // find join condition
-            $return = $this->createJoinFilter($root_table, $filters, $tables, $selectable_tables);
+            $joinfilters = array();
+            $return = $this->createJoinFilter($root_table, $joinfilters, $tables, $selectable_tables);
             if (!$return) {
+var_dump('joins could not be set');
                 return false;
             }
-            $filters = $return[0];
+            $joinfilters = $return[0];
         }
 
         $query = 'SELECT '.implode(', ', $fields);
         $query.= "\n".' FROM '.$this->prefix.implode(', '.$this->prefix, array_keys($tables));
-        $query.= $this->createWhere($filters);
+        $query.= $this->createWhere($filters, $joinfilters);
         if ($orders) {
             $query.= "\n".' ORDER BY ';
             $orderby = array();
@@ -182,12 +187,12 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         return $query;
     }
 
-    function createWhere($filters)
+    function createWhere($filters, $joinfilters = array())
     {
         if (empty($filters)) {
             return '';
         }
-        $where = array("\n".' WHERE ');
+        $where = array();
         foreach ($filters as $name => $value) {
             $type = 'text';
             if (preg_match('/^.*\.?(.+)$/', $name, $match)) {
@@ -201,18 +206,22 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
                 $where[] = $name.' = '.$this->quote($value, $type);
             }
         }
-        return implode("\n".'     AND ', $where);
+        foreach ($joinfilters as $name => $value) {
+            $where[] = $name.' = '.$value;
+        }
+        return "\n".' WHERE '.implode("\n".'     AND ', $where);
     }
 
     function findTables(&$fields, &$filters, &$orders, $selectable_tables)
     {
         $tables = array();
-        $fields_not_yet_linked = array_merge($fields, array_values($filters), array_values($orders));
+        $fields_not_yet_linked = array_merge($fields, array_keys($filters), array_keys($orders));
 
         // find explicit tables
         foreach ($fields_not_yet_linked as $key => $field) {
             if (preg_match('/^(.*)\.(.+)$/', $field, $match)) {
                 if (!in_array($match[1], $selectable_tables)) {
+var_dump('explicit table does not exist: '.$match[1]);
                     return false;
                 }
                 $tables[$match[1]] = true;
@@ -264,6 +273,9 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         }
 
         if (!empty($fields_not_yet_linked)) {
+var_dump('not all fields could be linked to a table');
+var_dump($fields_not_yet_linked);
+var_dump($tables);
             return false;
         }
         return $tables;
@@ -279,7 +291,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         foreach ($direct_matches as $table) {
             if (isset($tables[$table])) {
                 $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
-                    ' = '.$this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table];
+                    $this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table];
                 unset($tables[$table]);
             }
         }
@@ -289,18 +301,19 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         foreach ($this->tables[$root_table]['joins'] as $table => $field) {
             $tmp_filters = $filters;
             $tmp_tables = $tables;
-            if (is_array($this->tables[$root_table]['joins'][$table])) {
-                foreach ($this->tables[$root_table]['joins'][$table] as $joinfield) {
-                    if (isset($this->fields[$this->tables[$table]['joins'][$root_table]])) {
-                        $filter = ' = '.$this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table];
+            if (is_array($this->tables[$root_table]['joins'][$table][$field])) {
+var_dump('foo');
+                foreach ($this->tables[$root_table]['joins'][$table][$field] as $joinfield) {
+                    if (isset($this->fields[$joinfield])) {
+                        $filter = $this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table][$joinfield];
                     } else {
-                        $filter = ' = '.$this->quote($this->tables[$table]['joins'][$root_table], $this->fields[$joinfield]['type']);
+                        $filter = $this->quote($this->tables[$table]['joins'][$root_table][$joinfield], $this->fields[$joinfield]['type']);
                     }
                     $tmp_filters[$this->prefix.$root_table.'.'.$joinfield] = $filter;
                 }
             } else {
                 $tmp_filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
-                    ' = '.$this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table];
+                    $this->prefix.$table.'.'.$this->tables[$table]['joins'][$root_table];
             }
             unset($tmp_tables[$table]);
             $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables);
