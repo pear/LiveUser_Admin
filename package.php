@@ -12,8 +12,18 @@ require_once 'Console/Getopt.php';
 $version = '0.1.0';
 
 $notes = <<<EOT
-- Refactored into a separate package.
-- severe BC breaks in the permission API
+- refactored into a separate package from LiveUser
+- severe BC breaks in the permission API in order to unify the API
+- added ErrorStack
+- fixed outputRightsConstants() method
+- refactored storage layer to use an SQL query builder (DB and MDB support is
+  currently missing but will be added in the next minor update)
+- sql query builder should output more portable SQL code
+- sql query builder enables full aliasing of all field names
+- sql query builder only joins the necessary tables so the admin API does not
+  force the usage of any table (especially the translation table)
+- searchUser() now also fetches perm data
+- the complex container is currently not fully implemented
 EOT;
 
 $description = <<<EOT
