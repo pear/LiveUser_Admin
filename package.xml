@@ -5,7 +5,27 @@
   <summary>User authentication and permission management framework</summary>
   <description>  LiveUser_Admin is meant to be used with the LiveUser package.
   It is composed of all the classes necessary to administrate
-  data used by LiveUser.</description>
+  data used by LiveUser.
+  
+  You'll be able to add/edit/delete/get things like:
+  * Rights
+  * Users
+  * Groups
+  * Areas
+  * Applications
+  * Subgroups
+  * ImpliedRights
+  
+  And all other entities within LiveUser.
+  
+  At the moment we support the following storage containers:
+  * DB
+  * MDB
+  * MDB2
+  
+  But it takes no time to write up your own storage container,
+  so if you like to use native mysql functions straight, then it's possible
+  to do so in under a hour!</description>
   <maintainers>
     <maintainer>
       <user>mw21st</user>
@@ -34,7 +54,7 @@
   </maintainers>
   <release>
     <version>0.2.0</version>
-    <date>2005-01-06</date>
+    <date>2005-02-20</date>
     <license>LGPL</license>
     <state>beta</state>
     <notes>- perm container now also has a default init() method that is called in the factory
@@ -52,14 +72,24 @@
   rights, and perm_users tables yourself)
 - example 1 now outputs all queries using an MDB2 debug handler
 - Subgroups now work
-- ImplyRights now work (expect for getRights)
+- ImplyRights now work
 - One can now remove groups recursively by passing recursive = true to 
   removeGroup in Perm Complex container (before it was hardcoded to true,
   now defaults to false)
 - Tests for SubGroups and ImplyRights up and running
-- getGroup and getRight now work in Perm Complex Container, but getRight only works same
-  as the Perm Simple equal (i.e. no advance features yet)
-- added DB and MDB permission backends</notes>
+- getGroup and getRight now work in Perm Complex Container
+- added DB and MDB permission backends
+- Complex container is now fully implemented.
+- addAreaAdmin and removeAreaAdmin where added to the Complex container
+- Admin.php getUser was removed and searchUser was renamed to getUsers and with new params
+- give each example a unique database name
+- moved selectable tables into property so that they can be overwritten
+- fixed autoinit handling in factoray (bug #3133)
+- added missing PEAR error to error stack conversions
+- return false if we previously ensured that the value is false anyways for clarity
+- call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
+  the proper auth container is affected
+- updated the file headers as per the RFC</notes>
     <deps>
       <dep type="php" rel="ge" version="4.2.0" optional="no"/>
       <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
@@ -86,8 +116,8 @@
          <dir name="example 1">
           <file role="doc" name="Application.php"/>
           <file role="doc" name="Area.php"/>
+          <file role="doc" name="Area_Admin_Areas.php"/>
           <file role="doc" name="config.inc.php"/>
-          <file role="doc" name="create_db.sql"/>
           <file role="doc" name="extra_sql.sql"/>
           <file role="doc" name="Group.php"/>
           <file role="doc" name="GroupRights.php"/>
@@ -138,7 +168,7 @@
   <changelog>
     <release>
       <version>0.2.0</version>
-      <date>2005-01-06</date>
+      <date>2005-02-20</date>
       <license>LGPL</license>
       <state>beta</state>
       <notes>- perm container now also has a default init() method that is called in the factory
@@ -156,14 +186,24 @@
   rights, and perm_users tables yourself)
 - example 1 now outputs all queries using an MDB2 debug handler
 - Subgroups now work
-- ImplyRights now work (expect for getRights)
+- ImplyRights now work
 - One can now remove groups recursively by passing recursive = true to 
   removeGroup in Perm Complex container (before it was hardcoded to true,
   now defaults to false)
 - Tests for SubGroups and ImplyRights up and running
-- getGroup and getRight now work in Perm Complex Container, but getRight only works same
-  as the Perm Simple equal (i.e. no advance features yet)
-- added DB and MDB permission backends</notes>
+- getGroup and getRight now work in Perm Complex Container
+- added DB and MDB permission backends
+- Complex container is now fully implemented.
+- addAreaAdmin and removeAreaAdmin where added to the Complex container
+- Admin.php getUser was removed and searchUser was renamed to getUsers and with new params
+- give each example a unique database name
+- moved selectable tables into property so that they can be overwritten
+- fixed autoinit handling in factoray (bug #3133)
+- added missing PEAR error to error stack conversions
+- return false if we previously ensured that the value is false anyways for clarity
+- call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
+  the proper auth container is affected
+- updated the file headers as per the RFC</notes>
     </release>
     <release>
       <version>0.1.0</version>
