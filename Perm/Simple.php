@@ -125,6 +125,29 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
+    function _makeRemoveFilter($filters, $key, $method)
+    {
+        if (empty($filters) || !is_array($filters)) {
+            return 0;
+        }
+        if (!isset($filters[$key]) || count($filters) > 1) {
+            $params = array(
+                'fields' => array($key),
+                'filters' => $filters,
+                'select' => 'col',
+            );
+            $result = $this->$method($params);
+            if ($result === false) {
+                return false;
+            }
+            if (empty($result)) {
+                return 0;
+            }
+            $filters = array($key => $result);
+        }
+        return $filters;
+    }
+
     /**
      *
      *
@@ -134,11 +157,16 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeUser($filters)
     {
-        $filter = array('perm_user_id' => $filters['perm_user_id']);
-        $result = $this->revokeUserRight($filter);
+        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getUsers');
+        if (!$filters) {
+            return $filters;
+        }
+
+        $result = $this->revokeUserRight($filters);
         if ($result === false) {
             return false;
         }
+
         $result = $this->_storage->delete('perm_users', $filters);
         // notify observer
         return $result;
@@ -182,27 +210,14 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeRight($filters)
     {
-        // Remove all user assignments to that right
-        if (!empty($filters) && is_array($filters)) {
-            if (isset($filters['right_id']) && count($filters) == 1) {
-                $result = array($filters['right_id']);
-            } else {
-                $params = array(
-                    'fields' => array('right_id'),
-                    'filters' => $filters,
-                    'select' => 'col',
-                );
-                $result = $this->_storage->getRights($params);
-                if ($result === false) {
-                    return false;
-                }
-            }
-            if (!empty($result)) {
-                $result = $this->revokeUserRight(array('right_id' => $result));
-                if ($result === false) {
-                    return false;
-                }
-            }
+        $filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
+        if (!$filters) {
+            return $filters;
+        }
+
+        $result = $this->revokeUserRight(array('right_id' => $result));
+        if ($result === false) {
+            return false;
         }
 
         $result = $this->_storage->delete('rights', $filters);
@@ -248,14 +263,14 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeArea($filters)
     {
-        // Remove all rights under that area
-        $filter_check = array('area_id' => $filters['area_id']);
-        $count = $this->_storage->selectCount('rights', 'right_id', $filters);
-        if ($count > 0) {
-            $result = $this->removeRight($filter_check);
-            if ($result === false) {
-                return false;
-            }
+        $filters = $this->_makeRemoveFilter($filters, 'area_id', 'getAreas');
+        if (!$filters) {
+            return $filters;
+        }
+
+        $result = $this->removeRight(array('area_id' => $result));
+        if ($result === false) {
+            return false;
         }
 
         $result = $this->_storage->delete('areas', $filters);
@@ -326,14 +341,14 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeApplication($filters)
     {
-        // Remove all areas under that application
-        $filter_check = array('application_id' => $filters['application_id']);
-        $count = $this->_storage->selectCount('areas', 'application_id', $filters);
-        if ($count > 0) {
-            $result = $this->removeArea($filter_check);
-            if ($result === false) {
-                return false;
-            }
+        $filters = $this->_makeRemoveFilter($filters, 'application_id', 'getApplications');
+        if (!$filters) {
+            return $filters;
+        }
+
+        $result = $this->removeRight(array('application_id' => $result));
+        if ($result === false) {
+            return false;
         }
 
         $result = $this->_storage->delete('applications', $filters);

@@ -96,17 +96,16 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function removeGroup($filters)
     {
-        // Remove users from the group
-        $filter_check = array('group_id' => $filters['group_id']);
-        $count = $this->_storage->selectCount('groupusers', 'group_id', $filter_check);
-        if ($count > 0) {
-            $result = $this->removeUserFromGroup($filter_check);
-            if ($result === false) {
-                return false;
-            }
+        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getUsers');
+        if (!$filters) {
+            return $filters;
         }
 
-        // Delete group rights
+        $result = $this->removeUserFromGroup($filters);
+        if ($result === false) {
+            return false;
+        }
+
         $result = $this->revokeGroupRight($filters);
         if ($result === false) {
             return false;
@@ -225,8 +224,12 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function removeRight($filters)
     {
-        $filter = array('right_id' => $filters['right_id']);
-        $result = $this->revokeGroupRight($filter);
+        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getUsers');
+        if (!$filters) {
+            return $filters;
+        }
+
+        $result = $this->revokeGroupRight($filters);
         if ($result === false) {
             return false;
         }
