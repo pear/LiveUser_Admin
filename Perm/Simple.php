@@ -814,11 +814,11 @@ class LiveUser_Admin_Perm_Simple
         }
 
         if (isset($options['area'])) {
-            $opt['filter']['area_id'] = $options['area'];
+            $opt['filters']['area_id'] = $options['area'];
         }
 
         if (isset($options['application'])) {
-            $opt['filter']['application_id'] = $options['application'];
+            $opt['filters']['application_id'] = $options['application'];
         }
 
         $prefix = '';
