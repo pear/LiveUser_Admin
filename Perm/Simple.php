@@ -77,15 +77,15 @@ class LiveUser_Admin_Perm_Simple
         if (!isset($data['auth_container_name'])) {
             return false;
         }
-        
+
         if (isset($data['perm_user_id']) && !is_numeric($data['perm_user_id'])) {
             return false;
         }
-        
+
         if (!isset($data['perm_type'])) {
             $data['perm_type'] = LIVEUSER_USER_TYPE_ID;
         }
-        
+
         $result = $this->_storage->insert('perm_users', $data);
         // notify observer
         return $result;
@@ -131,11 +131,11 @@ class LiveUser_Admin_Perm_Simple
      */
     function addRight($data)
     {
-        // sanity checks
-        if (!isset($data['area_id'])) {
+        // sanity checks        
+        if (!isset($data['area_id']) && !is_numeric($data['area_id'])) {
             return false;
         }
-        
+
         $result = $this->_storage->insert('rights', $data);
         // notify observer
         return $result;
@@ -152,10 +152,6 @@ class LiveUser_Admin_Perm_Simple
     function updateRight($data, $filters)
     {
         // sanity checks
-        if (!isset($data['area_id'])) {
-            return false;
-        }
-        
         $result = $this->_storage->update('rights', $data, $filters);
         // notify observer
         return $result;
@@ -186,10 +182,10 @@ class LiveUser_Admin_Perm_Simple
     function addArea($data)
     {
         // sanity checks
-        if (!isset($data['application_id'])) {
+        if (!isset($data['application_id']) && !is_numeric($data['application_id'])) {
             return false;
         }
-        
+
         $result = $this->_storage->insert('areas', $data);
         // notify observer
         return $result;
@@ -278,7 +274,7 @@ class LiveUser_Admin_Perm_Simple
         if (!isset($data['perm_user_id'])) {
             return false;
         }
-        
+
         if (!isset($data['right_id'])) {
             return false;
         }
@@ -296,7 +292,7 @@ class LiveUser_Admin_Perm_Simple
         if (!isset($data['right_level'])) {
             return false;
         }
-        
+
         $result = $this->_storage->update('userrights', $data, $filters);
         // notify observer
         return $result;

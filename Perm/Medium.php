@@ -107,11 +107,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function grantGroupRight($data)
     {
         // sanity checks
-        if (!isset($data['group_id'])) {
+        if (!isset($data['group_id']) && !is_numeric($data['group_id'])) {
             return false;
         }
         
-        if (!isset($data['right_id'])) {
+        if (!isset($data['right_id']) && !is_numeric($data['right_id'])) {
             return false;
         }
         // check if already exists
@@ -145,11 +145,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function addUserToGroup($data)
     {
         // sanity checks
-        if (!isset($data['group_id'])) {
+        if (!isset($data['group_id']) && !is_numeric($data['group_id'])) {
             return false;
         }
         
-        if (!isset($data['perm_user_id'])) {
+        if (!isset($data['perm_user_id']) && !is_numeric($data['perm_user_id'])) {
             return false;
         }
         // check if already in group
