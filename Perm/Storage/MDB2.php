@@ -106,5 +106,10 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
     {
         return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
     }
+    
+    function queryOne($query)
+    {
+        return $this->dbc->queryOne($query);
+    }
 }
 ?>
