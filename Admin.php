@@ -263,7 +263,8 @@ class LiveUser_Admin
                 $authName,
                 'LiveUser_Admin_'
             );
-            if (PEAR::isError($this->_authContainers[$authName])) {
+            if (!$this->_authContainers[$authName]) {
+                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Could not create auth container instance'));
                 return false;
             }
         }
@@ -388,8 +389,7 @@ class LiveUser_Admin
             $authId = $this->auth->addUser($handle, $password, $optionalFields,
                                                             $customFields, $id);
 
-            if (PEAR::isError($authId)) {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Cannot add user, container returned' . $authId->getMessage()));
+            if (!$authId) {
                 return false;
             }
 
@@ -400,8 +400,9 @@ class LiveUser_Admin
             );
             return $this->perm->addUser($data);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
-                    'Perm or Auth container couldn\t be started.');
+
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
+        return false;
     }
 
     /**
@@ -448,8 +449,9 @@ class LiveUser_Admin
             $filters = array('perm_user_id' => $permId);
             return $this->perm->updateUser($data, $filters);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
-                    'Perm or Auth container couldn\t be started.');
+
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
+        return false;
     }
 
     /**
@@ -479,8 +481,9 @@ class LiveUser_Admin
             $filters = array('perm_user_id' => $permId);
             return $this->perm->removeUser($filters);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
-                    'Perm or Auth container couldn\t be started.');
+
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
+        return false;
     }
 
     /**
@@ -508,8 +511,9 @@ class LiveUser_Admin
 
             return $search;
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
-                    'Perm or Auth container couldn\t be started.');
+
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
+        return false;
     }
 
     /**
@@ -553,7 +557,8 @@ class LiveUser_Admin
 
             return LiveUser::arrayMergeClobber($permData, $authData);
         }
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, null, array('msg' => 'Perm or Auth container could not be started.');
+
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
         return false;
     }
 
@@ -566,45 +571,5 @@ class LiveUser_Admin
     function getErrors()
     {
         return $this->_stack->getErrors();
-    }
-
-    /**
-     * This method is used to communicate an error and invoke error
-     * callbacks etc.  Basically a wrapper for PEAR::raiseError
-     * without the message string.
-     *
-     * @param mixed    integer error code, or a PEAR error object (all
-     *                 other parameters are ignored if this parameter is
-     *                 an object
-     *
-     * @param int      error mode, see PEAR_Error docs
-     *
-     * @param mixed    If error mode is PEAR_ERROR_TRIGGER, this is the
-     *                 error level (E_USER_NOTICE etc).  If error mode is
-     *                 PEAR_ERROR_CALLBACK, this is the callback function,
-     *                 either as a function name, or as an array of an
-     *                 object and method name.  For other error modes this
-     *                 parameter is ignored.
-     *
-     * @param string   Extra debug information.  Defaults to the last
-     *                 query and native error code.
-     *
-     * @return object  a PEAR error object
-     *
-     * @see PEAR_Error
-     */
-    function &raiseError($code = null, $mode = null, $options = null,
-                         $userinfo = null)
-    {
-        // The error is yet a LiveUser error object
-        if (is_object($code)) {
-            return PEAR::raiseError($code, null, null, null, null, null, true);
-        }
-
-        if (empty($code)) {
-            $code = LIVEUSER_ADMIN_ERROR;
-        }
-        $msg = LiveUser::errorMessage($code);
-        return PEAR::raiseError("LiveUser Error: $msg", $code, $mode, $options, $userinfo);
     }
 }

@@ -81,6 +81,10 @@ class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Perm_Storage_SQL
                 $this->dbc =& MDB2::connect($storageConf['dsn'], $options);
             }
             if (PEAR::isError($this->dbc)) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                    array('msg' => 'could not create connection: '.$this->dbc->getMessage())
+                );
                 return false;
             }
         }

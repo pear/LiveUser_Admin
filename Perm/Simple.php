@@ -497,7 +497,7 @@ class LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
@@ -522,10 +522,18 @@ class LiveUser_Admin_Perm_Simple
     {
         // sanity checks
         if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'perm_user_id')
+            );
             return false;
         }
-        
+
         if (isset($filters['right_id']) && !is_numeric($filters['right_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'right_id')
+            );
             return false;
         }
 
@@ -764,6 +772,10 @@ class LiveUser_Admin_Perm_Simple
                 if (!isset($options['varname'])
                     || !preg_match('/^[a-zA-Z_0-9]+$/', $options['varname'])
                 ) {
+                    $this->_stack->push(
+                        LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                        array('msg' => 'varname is not a valid variable name in PHP: '.$options['varname'])
+                    );
                     return false;
                 }
                 $strDef .= sprintf("\$%s = %s;\n", $options['varname'], var_export($generate, true));
@@ -773,6 +785,10 @@ class LiveUser_Admin_Perm_Simple
         } else {
             foreach ($generate as $v => $k) {
                 if (!preg_match('/^[a-zA-Z_0-9]+$/', $v)) {
+                    $this->_stack->push(
+                        LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                        array('msg' => 'varname is not a valid variable name in PHP: '.$v)
+                    );
                     return false;
                 }
                 $v = strtoupper($v);
@@ -789,12 +805,20 @@ class LiveUser_Admin_Perm_Simple
 
         if ($mode == 'file') {
             if (!isset($options['filename']) || !$options['filename']) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                    array('msg' => 'no filename is set for output mode file')
+                );
                 return false;
             }
 
             $fp = @fopen($options['filename'], 'wb');
 
             if (!$fp) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                    array('msg' => 'file could not be opened: '.$options['filename'])
+                );
                 return false;
             }
 
