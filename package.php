@@ -17,6 +17,7 @@ $notes = <<<EOT
 - fixed type handling in updateUser()
 - update getErrors() with code from the LiveUser class
 - typo fix in outputRightsConstants() (bug #3897)
+- removed calls to make remove filter on delete of relationship tables (bug #3874)
 EOT;
 
 $description = <<<EOT
