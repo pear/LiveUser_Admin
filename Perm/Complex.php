@@ -52,92 +52,92 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     {
         $this->LiveUser_Perm_Simple($confArray);
     }
-    
+
     function removeArea($filters)
     {
         // remove admin areas stuff
         $this->_storage->delete('area_admin_areas', $filters);
         parent::removeArea();
     }
-    
+
     function assignSubGroup()
     {
-    
+
     }
-    
+
     function unassignSubGroup()
     {
-    
+
     }
-    
+
     function removeGroup()
     {
-    
+
     }
-    
+
     function getParentGroup()
     {
-    
+
     }
-    
+
     function _updateImpliedStatus()
     {
-    
+
     }
-    
+
     function implyRight()
     {
-    
+
     }
-    
+
     function unimplyRight()
     {
-    
+
     }
-    
+
     function removeRight()
     {
         parent::removeRight();
     }
-    
+
     function getGroups()
     {
-    
+
     }
-    
+
     function getRights()
     {
-    
+
     }
-    
+
     function getImpliedRights()
     {
-    
+
     }
-    
+
     function getInheritedRights()
     {
-    
+
     }
-    
+
     function removeUser()
     {
         parent::removeUser();
     }
-    
+
     function _updateLevelStatus()
     {
-    
+
     }
-    
+
     function grantUserRight()
     {
-    
+
     }
-    
+
     function grantGroupRight()
     {
-    
-    }    
+
+    }
 }
 ?>

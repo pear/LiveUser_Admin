@@ -3,8 +3,8 @@
 <?php
 $currentArea = $admin->perm->getAreas();
 if  (empty($currentArea)) {
-	echo 'Run the <b>Area</b> test first<br />';
-	exit;
+    echo 'Run the <b>Area</b> test first<br />';
+    exit;
 }
 // Add
 $areas = $admin->perm->getAreas();
@@ -13,18 +13,18 @@ if (!$areas) {
 }
 
 foreach ($areas as $row) {
-	for ($i = 1; $i < 20; $i++) {
-	    $data = array(
-	        'area_id' => $row['area_id'],
-	        'right_define_name' => 'RIGHT_' . $row['area_id'] . '_' . $i,
-	    );
-		$right_id = $admin->perm->addRight($data);
-		if (!$right_id) {
-  		    echo '<strong>Error</strong><br />';
-		} else {
-			echo 'Added right <b>Right_'.$row['area_id'].'_'.$i.'</b><br />';
-		}
-	}
+    for ($i = 1; $i < 20; $i++) {
+        $data = array(
+            'area_id' => $row['area_id'],
+            'right_define_name' => 'RIGHT_' . $row['area_id'] . '_' . $i,
+        );
+        $right_id = $admin->perm->addRight($data);
+        if (!$right_id) {
+              echo '<strong>Error</strong><br />';
+        } else {
+            echo 'Added right <b>Right_'.$row['area_id'].'_'.$i.'</b><br />';
+        }
+    }
 }
 
 // Get
@@ -33,9 +33,9 @@ $currentRights = $admin->perm->getRights();
 if (!$currentRights) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo 'These are our current rights:';
-	Var_Dump::display($currentRights);
-	echo '<br />';
+    echo 'These are our current rights:';
+    Var_Dump::display($currentRights);
+    echo '<br />';
 }
 
 // Remove
@@ -46,7 +46,7 @@ $rmRight = $admin->perm->removeRight($filters);
 if (!$rmRight) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo 'Right_' . $id . ' was removed<br />';
+    echo 'Right_' . $id . ' was removed<br />';
 }
 
 // Update
@@ -57,15 +57,15 @@ $upRight = $admin->perm->updateRight($data, $filters);
 if (!$upRight) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo 'Right_'. $id .' was updated<br />';
-	$params = array('filters' => array('right_id' => $currentRights[$id]['right_id']));
-	$result = $admin->perm->getRights($params);
+    echo 'Right_'. $id .' was updated<br />';
+    $params = array('filters' => array('right_id' => $currentRights[$id]['right_id']));
+    $result = $admin->perm->getRights($params);
 
-	if (!$result) {
-        echo '<strong>Error</strong><br />';	
-	} else {
-	    Var_Dump::display($result);
-	}
+    if (!$result) {
+        echo '<strong>Error</strong><br />';
+    } else {
+        Var_Dump::display($result);
+    }
 }
 
 // Get
@@ -74,8 +74,8 @@ $currentRights = $admin->perm->getRights();
 if (!$currentRights) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo 'These are our current rights:';
-	Var_Dump::display($currentRights);
-	echo '<br />';
+    echo 'These are our current rights:';
+    Var_Dump::display($currentRights);
+    echo '<br />';
 }
 echo '<hr />';

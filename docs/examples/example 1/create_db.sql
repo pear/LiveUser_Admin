@@ -158,6 +158,6 @@ INSERT INTO `news_seq` VALUES (3);
 INSERT INTO liveuser_languages (language_id, two_letter_name) VALUES (1, 'fr');
 INSERT INTO liveuser_languages (language_id, two_letter_name) VALUES (2, 'en');
 
-ALTER TABLE `liveuser_users` 
+ALTER TABLE `liveuser_users`
 ADD `name` VARCHAR( 50 ) NOT NULL ,
 ADD `email` VARCHAR( 100 ) NOT NULL ;

@@ -20,8 +20,8 @@ $allGroups = $admin->perm->getGroups();
 if (!$allGroups) {
     echo '<strong>Error</strong><br />';
 } else {
-	Var_Dump::display($allGroups);
-	echo '<br />';
+    Var_Dump::display($allGroups);
+    echo '<br />';
 }
 
 // Remove
@@ -32,7 +32,7 @@ $removed = $admin->perm->removeGroup($filters);
 if (!$removed) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo $allGroups[$id]['group_id'] . ' was deleted<br />';
+    echo $allGroups[$id]['group_id'] . ' was deleted<br />';
 }
 
 // Update
@@ -44,16 +44,16 @@ echo $admin->perm->_storage->dbc->last_query;
 if (!$updated) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo $allGroups[$id]['group_id'] . ' was updated<br />';
-	$params = array('filters' => array('group_id' => $allGroups[$id]['group_id']));
-	$group = $admin->perm->getGroups($params);
+    echo $allGroups[$id]['group_id'] . ' was updated<br />';
+    $params = array('filters' => array('group_id' => $allGroups[$id]['group_id']));
+    $group = $admin->perm->getGroups($params);
 
-	if (!$group) {
-	    echo '<strong>Error</strong><br />';
-	} else {
-		Var_Dump::display($group);
-		echo '<br />';
-	}
+    if (!$group) {
+        echo '<strong>Error</strong><br />';
+    } else {
+        Var_Dump::display($group);
+        echo '<br />';
+    }
 }
 
 // Get
@@ -63,7 +63,7 @@ $allGroups = $admin->perm->getGroups();
 if (!$allGroups) {
     echo '<strong>Error</strong><br />';
 } else {
-	Var_Dump::display($allGroups);
-	echo '<br />';
+    Var_Dump::display($allGroups);
+    echo '<br />';
 }
 echo '<hr />';

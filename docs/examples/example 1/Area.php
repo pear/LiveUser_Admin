@@ -3,9 +3,9 @@
 <?php
 $currentApps = $admin->perm->getApplications();
 if  (empty($currentApps)) {
-	echo 'Run the <b>Application</b> test first<br />';
-	exit;
-} 
+    echo 'Run the <b>Application</b> test first<br />';
+    exit;
+}
 
 // Add
 $id = array_rand($currentApps);
@@ -29,11 +29,11 @@ $currentAreas = $admin->perm->getAreas();
 if (!$currentAreas) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo 'These are our current areas:';
-	Var_Dump::display($currentAreas);
-	echo '<br />';
+    echo 'These are our current areas:';
+    Var_Dump::display($currentAreas);
+    echo '<br />';
 }
-	
+
 // Remove
 $id = array_rand($currentAreas);
 $filters = array('area_id' => $currentAreas[$id]['area_id']);
@@ -42,7 +42,7 @@ $rmArea = $admin->perm->removeArea($filters);
 if (!$rmArea) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo 'Area3 was removed<br />';
+    echo 'Area3 was removed<br />';
 }
 
 // Update
@@ -63,11 +63,11 @@ if (!$upArea) {
     $params = array('filters' => array('area_id' => $currentAreas[$id]['area_id']));
     $result = $admin->perm->getAreas($params);
 
-	if (!$result) {
+    if (!$result) {
         echo '<strong>Error</strong><br />';
-	} else {
-	    Var_Dump::display($result);
-	}
+    } else {
+        Var_Dump::display($result);
+    }
 }
 
 // Get
@@ -76,8 +76,8 @@ $currentAreas = $admin->perm->getAreas();
 if (!$currentAreas) {
     echo '<strong>Error</strong><br />';
 } else {
-	echo 'These are our current areas:';
-	Var_Dump::display($currentAreas);
-	echo '<br />';
+    echo 'These are our current areas:';
+    Var_Dump::display($currentAreas);
+    echo '<br />';
 }
 echo '<hr />';

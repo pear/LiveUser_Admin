@@ -207,7 +207,7 @@ class LiveUser_Admin_Perm_Simple
      * @access public
      * @param array $filters
      * @return
-     */    
+     */
     function removeRight($filters)
     {
         // sanity checks
@@ -218,7 +218,7 @@ class LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         if (isset($filters['area_id']) && !is_numeric($filters['area_id'])) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
@@ -300,7 +300,7 @@ class LiveUser_Admin_Perm_Simple
      * @access public
      * @param array $filters
      * @return
-     */    
+     */
     function removeArea($filters)
     {
         // sanity checks
@@ -311,7 +311,7 @@ class LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         // Remove all rights under that area
         $filter_check = array('area_id' => $filters['area_id']);
         $result = $this->_storage->delete('rights', $filter_check);

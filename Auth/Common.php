@@ -202,7 +202,7 @@ class LiveUser_Admin_Auth_Common
      * @param   mixed   If specificed no new ID will be automatically generated instead
      * @return  mixed   Users auth ID on success, DB error if not, false if not initialized
      */
-    function addUser($handle, $password = '', $optionalFields = array(), 
+    function addUser($handle, $password = '', $optionalFields = array(),
                               $customFields = array(), $authId = null)
     {
         return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
