@@ -31,6 +31,7 @@ $params = array(
         'right_define_name',
         'right_id',
         'right_level',
+        'name',
     ),
     'filters' => array(
         'perm_type' => 1,

@@ -23,6 +23,18 @@
  * @category authentication
  */
 
+/**#@+
+ * Section types
+ *
+ * @var integer
+ */
+define('LIVEUSER_SECTION_APPLICATION',  1);
+define('LIVEUSER_SECTION_AREA',         2);
+define('LIVEUSER_SECTION_GROUP',        3);
+define('LIVEUSER_SECTION_LANGUAGE',     4);
+define('LIVEUSER_SECTION_RIGHT',        5);
+/**#@-*/
+
 /**
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
@@ -78,7 +90,7 @@ class LiveUser_Admin_Perm_Simple
 
     function getUser($params = array())
     {
-        $selectable_tables = array('perm_users', 'userrights', 'rights');
+        $selectable_tables = array('perm_users', 'userrights', 'rights', 'translations');
         $root_table = 'perm_users';
 
         $fields = isset($params['fields']) ? $params['fields'] : null;
