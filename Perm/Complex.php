@@ -829,10 +829,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                             $_rights[$right['right_id']] = $right;
                         }
                     }
-                }
-
-                if (!isset($_rights[$id]['type']) || !$_rights[$id]['type']) {
-                    $_rights[$id]['type'] = 'granted';
+                    if (!isset($_rights[$id]['type']) || !$_rights[$id]['type']) {
+                        $_rights[$id]['type'] = 'granted';
+                    }
                 }
             }
         }
