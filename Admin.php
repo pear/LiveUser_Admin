@@ -533,7 +533,8 @@ class LiveUser_Admin
             return $search;
         }
 
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Perm or Auth container couldn\t be started.'));
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            array('msg' => 'Perm or Auth container couldn\t be started.'));
         return false;
     }
 
