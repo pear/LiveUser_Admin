@@ -290,10 +290,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return $result;
         }
         $filter = array('right_id' => $data['right_id']);
-        $this->_updateLevelStatus($filter);
+
         // notify observer
         // Job done ...
-        return true;
+        return $this->_updateLevelStatus($filter);
     }
 
     /**
@@ -310,10 +310,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return $result;
         }
         $filter = array('right_id' => $data['right_id']);
-        $this->_updateLevelStatus($filter);
+
         // notify observer
         // Job done ...
-        return true;
+        return $this->_updateLevelStatus($filter);
     }
 
     /**
@@ -352,13 +352,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
          // Add right level filter that will be used to get user and group count.
          $filters['right_level'] = array('op' => '<', 'value' => LIVEUSER_MAX_LEVEL);
 
-         $usercount = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
-         if (!$usercount) {
+         $usercount = $this->_storage->selectCount('userrights', 'right_id', $filters);
+         if ($usercount === false) {
              return false;
          }
 
-         $groupcount = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
-         if (!$groupcount) {
+         $groupcount = $this->_storage->selectCount('grouprights', 'right_id', $filters);
+         if ($groupcount === false) {
              return false;
          }
 
@@ -391,7 +391,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function getInheritedRights()
     {
-
+        getGroup();
     }
 }
 ?>
