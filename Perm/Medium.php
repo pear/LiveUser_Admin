@@ -39,6 +39,7 @@ require_once 'LiveUser/Admin/Perm/Simple.php';
  *
  * @author  Markus Wolff <wolff@21st.de>
  * @author  Bjoern Kraus <krausbn@php.net>
+ * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @version $Id$
  * @package LiveUser
  * @category authentication
@@ -63,9 +64,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function addGroup($data)
     {
@@ -77,10 +80,12 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateGroup($data, $filters)
     {
@@ -92,9 +97,13 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
+     * @uses LiveUser_Admin_Perm_Medium::removeUserFromGroup
+     *       LiveUser_Admin_Perm_Medium::revokeGroupRight
      */
     function removeGroup($filters)
     {
@@ -105,12 +114,12 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 
         $result = $this->removeUserFromGroup($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         $result = $this->revokeGroupRight($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         $result = $this->_storage->delete('groups', $filters);
@@ -121,9 +130,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function grantGroupRight($data)
     {
@@ -153,10 +164,12 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateGroupRight($data, $filters)
     {
@@ -168,12 +181,19 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function revokeGroupRight($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->_storage->delete('grouprights', $filters);
         // notify observer
         return $result;
@@ -182,9 +202,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     * @access public
      */
     function addUserToGroup($data)
     {
@@ -206,12 +227,19 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function removeUserFromGroup($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getGroups');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->_storage->delete('groupusers', $filters);
         // notify observer
         return $result;
@@ -220,20 +248,19 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
+     * @uses LiveUser_Admin_Perm_Simple::removeRight
+     *       LiveUser_Admin_Perm_Medium::revokeGroupRight
      */
     function removeRight($filters)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getUsers');
-        if (!$filters) {
-            return $filters;
-        }
-
         $result = $this->revokeGroupRight($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         return parent::removeRight($filters);
@@ -242,9 +269,13 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
+     * @uses LiveUser_Admin_Perm_Simple::removeUser
+     *       LiveUser_Admin_Perm_Medium::removeUserFromGroup
      */
     function removeUser($filters)
     {
@@ -255,7 +286,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 
         $result = $this->removeUserFromGroup($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         return parent::removeUser($filters);
@@ -264,9 +295,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $params
      * @return
+     *
+     * @access public
      */
     function getGroups($params = array())
     {
@@ -286,6 +319,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
                 } else {
                     break;
                 }
+
                 foreach ($data as $key => $row) {
                     $params['filters'][$field] = $row[$field];
                     $data[$key]['rights'] = $this->$method($params);

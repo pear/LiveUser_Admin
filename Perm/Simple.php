@@ -32,6 +32,7 @@ require_once 'LiveUser/Perm/Simple.php';
  *
  * @author  Markus Wolff <wolff@21st.de>
  * @author  Bjoern Kraus <krausbn@php.net>
+ * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @version $Id$
  * @package LiveUser
  * @category authentication
@@ -41,7 +42,8 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Error stack
      *
-     * @var PEAR_ErrorStack
+     * @var object PEAR_ErrorStack
+     * @access private
      */
     var $_stack = null;
 
@@ -49,6 +51,7 @@ class LiveUser_Admin_Perm_Simple
      * Storage Container
      *
      * @var object
+     * @access private
      */
     var $_storage = null;
 
@@ -82,9 +85,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Load the storage container
      *
-     * @access  public
+     *
      * @param  mixed         Name of array containing the configuration.
      * @return  boolean true on success or false on failure
+     *
+     * @access  public
      */
     function init(&$conf)
     {
@@ -103,9 +108,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function addUser($data)
     {
@@ -121,10 +128,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateUser($data, $filters)
     {
@@ -136,9 +145,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
+     * @uses LiveUser_Admin_Perm_Simple::revokeUserRight
      */
     function removeUser($filters)
     {
@@ -149,7 +161,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->revokeUserRight($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         $result = $this->_storage->delete('perm_users', $filters);
@@ -160,9 +172,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function addRight($data)
     {
@@ -174,10 +188,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateRight($data, $filters)
     {
@@ -189,9 +205,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
+     * @uses LiveUser_Admin_Perm_Simple::revokeUserRight
      */
     function removeRight($filters)
     {
@@ -202,7 +221,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->revokeUserRight($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         $result = $this->_storage->delete('rights', $filters);
@@ -213,9 +232,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function addArea($data)
     {
@@ -227,10 +248,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateArea($data, $filters)
     {
@@ -242,9 +265,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
+     * @uses LiveUser_Admin_Perm_Simple::removeRight
      */
     function removeArea($filters)
     {
@@ -255,7 +281,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->removeRight($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         $result = $this->_storage->delete('areas', $filters);
@@ -266,9 +292,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Set current application
      *
-     * @access public
+     *
      * @param  integer  id of application
      * @return boolean  always true
+     *
+     * @access public
      */
     function setCurrentApplication($applicationId)
     {
@@ -280,8 +308,10 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Get current application
      *
-     * @access public
+     *
      * @return string name of the current application
+     *
+     * @access public
      */
     function getCurrentApplication()
     {
@@ -291,9 +321,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function addApplication($data)
     {
@@ -305,10 +337,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateApplication($data, $filters)
     {
@@ -320,9 +354,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
+     * @uses LiveUser_Admin_Perm_Simple::removeArea
      */
     function removeApplication($filters)
     {
@@ -333,7 +370,7 @@ class LiveUser_Admin_Perm_Simple
 
         $result = $this->removeArea($filters);
         if ($result === false) {
-            return false;
+            return $result;
         }
 
         $result = $this->_storage->delete('applications', $filters);
@@ -344,9 +381,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function grantUserRight($data)
     {
@@ -377,10 +416,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateUserRight($data, $filters)
     {
@@ -392,12 +433,19 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function revokeUserRight($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getRights');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->_storage->delete('userrights', $filters);
         // notify observer
         return $result;
@@ -406,9 +454,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @return
+     *
+     * @access public
      */
     function addTranslation($data)
     {
@@ -420,10 +470,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $data
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function updateTranslation($data, $filters)
     {
@@ -435,9 +487,10 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
      * @param array $filters
      * @return
+     *
+     * @access public
      */
     function removeTranslation($filters)
     {
@@ -449,31 +502,36 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access private
      * @param mixed $filteres
      * @param string $key
      * @param string $method
      * @return array
+     *
+     * @access private
      */
     function _makeRemoveFilter($filters, $key, $method)
     {
         if (empty($filters) || !is_array($filters)) {
             return 0;
         }
+
         if (!isset($filters[$key]) || count($filters) > 1) {
             $params = array(
                 'fields' => array($key),
                 'filters' => $filters,
-                'select' => 'col',
+                'select' => 'all',
             );
             $result = $this->$method($params);
             if ($result === false) {
-                return false;
+                return $result;
             }
+
             if (empty($result)) {
                 return 0;
             }
-            $filters = array($key => $result);
+
+            $result = reset($result);
+            $filters = array($key => $result[$key]);
         }
         return $filters;
     }
@@ -481,11 +539,13 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access private
+     *
      * @param array $params
      * @param string $root_table
      * @param array $selectable_tables
      * @return
+     *
+     * @access private
      */
     function _makeGet($params, $root_table, $selectable_tables)
     {
@@ -507,9 +567,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $params
      * @return
+     *
+     * @access public
      */
     function getUsers($params = array())
     {
@@ -529,6 +591,7 @@ class LiveUser_Admin_Perm_Simple
                 } else {
                     break;
                 }
+
                 foreach ($data as $key => $row) {
                     $params['filters'][$field] = $row[$field];
                     $data[$key]['rights'] = $this->$method($params);
@@ -541,9 +604,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $params
      * @return
+     *
+     * @access public
      */
     function getRights($params = array())
     {
@@ -563,6 +628,7 @@ class LiveUser_Admin_Perm_Simple
                 } else {
                     break;
                 }
+
                 foreach ($data as $key => $row) {
                     $params['filters'][$field] = $row[$field];
                     $data[$key]['rights'] = $this->$method($params);
@@ -577,9 +643,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $params
      * @return
+     *
+     * @access public
      */
     function getAreas($params = array())
     {
@@ -607,9 +675,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      *
      *
-     * @access public
+     *
      * @param array $params
      * @return
+     *
+     * @access public
      */
     function getTranslations($params = array())
     {
@@ -638,11 +708,12 @@ class LiveUser_Admin_Perm_Simple
      *
      * If not prefix is given it will not be used to generate the constants
      *
-     * @access public
      * @param  string  type of output (constant or array)
      * @param  array   options for constants generation
      * @param  string  output mode desired (file or direct)
      * @return mixed   boolean, array or DB Error object
+     *
+     * @access public
      */
     function outputRightsConstants($type, $options = array(), $mode = null)
     {
