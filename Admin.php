@@ -553,8 +553,8 @@ class LiveUser_Admin
 
             return LiveUser::arrayMergeClobber($permData, $authData);
         }
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR, null, null,
-                    'Perm or Auth container couldn\t be started.');
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, null, array('msg' => 'Perm or Auth container could not be started.');
+        return false;
     }
 
     /**
