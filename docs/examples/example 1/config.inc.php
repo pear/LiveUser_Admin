@@ -104,6 +104,7 @@ $conf =
                     'prefix' => 'liveuser_',
                     'tables' => array(),
                     'fields' => array(),
+                    'alias' => array(),
                     // 'force_seq' => false
                 ),
             ),
