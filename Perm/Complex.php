@@ -255,6 +255,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+         // Add right level filter that will be used to get user and group count.
+         $filters['right_level'] = array('op' => '<', 'value' => LIVEUSER_MAX_LEVEL);
+
          $usercount = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
          if (!$usercount) {
              return false;
