@@ -52,6 +52,14 @@ class LiveUser_Admin_Perm_Simple
      */
     var $_storage = null;
 
+    var $selectable_tables = array(
+        'getUsers' => array('perm_users', 'userrights', 'rights', 'groupusers'),
+        'getRights' => array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications', 'right_implied'),
+        'getAreas' => array('areas', 'applications', 'translations'),
+        'getApplications' => array('applications', 'translations'),
+        'getTranslations' => array('translations'),
+    );
+
     /**
      * Class constructor. Feel free to override in backend subclasses.
      */
@@ -496,8 +504,8 @@ class LiveUser_Admin_Perm_Simple
      */
     function getUsers($params = array())
     {
-        $selectable_tables = array('perm_users', 'userrights', 'rights', 'groupusers');
-        $root_table = 'perm_users';
+        $selectable_tables = $this->selectable_tables['getUsers'];
+        $root_table = reset($selectable_tables);
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
@@ -530,8 +538,8 @@ class LiveUser_Admin_Perm_Simple
      */
     function getRights($params = array(), $root_table = null)
     {
-        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications', 'right_implied');
-        $root_table = !is_null($root_table) ? $root_table : 'rights';
+        $selectable_tables = $this->selectable_tables['getRights'];
+        $root_table = reset($selectable_tables);
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
@@ -566,8 +574,8 @@ class LiveUser_Admin_Perm_Simple
      */
     function getAreas($params = array())
     {
-        $selectable_tables = array('areas', 'applications', 'translations');
-        $root_table = 'areas';
+        $selectable_tables = $this->selectable_tables['getAreas'];
+        $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
     }
@@ -581,8 +589,8 @@ class LiveUser_Admin_Perm_Simple
      */
     function getApplications($params = array())
     {
-        $selectable_tables = array('applications', 'translations');
-        $root_table = 'applications';
+        $selectable_tables = $this->selectable_tables['getApplications'];
+        $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
     }
@@ -596,8 +604,8 @@ class LiveUser_Admin_Perm_Simple
      */
     function getTranslations($params = array())
     {
-        $selectable_tables = array('translations');
-        $root_table = 'translations';
+        $selectable_tables = $this->selectable_tables['getTranslations'];
+        $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
     }
