@@ -2,8 +2,6 @@
 require_once 'index.php';
 echo '<h3>Translation</h3>';
 
-// Get
-echo 'All the groups:<br />';
 $groups = $admin->perm->getGroups(
     array(
         'fields' => array('group_id'),
@@ -26,12 +24,18 @@ foreach ($groups as $group_id) {
         'name' => 'Name of '.$group_id.'is '.md5(uniqid(rand())),
         'description' => 'Description of '.$group_id.'is '.md5(uniqid(rand())),
     );
-    $translationId = $admin->perm->addTranslation($data);
+    $translation_id = $admin->perm->addTranslation($data);
+    if ($translation_id === false) {
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
+    } else {
+        echo 'added translation for group <strong>' . $group_id . '</strong> with
+              the translation id <strong>'. $translation_id .'</strong><br />';
+    }
 }
 
 // Get
 echo 'All the groups with translation:<br />';
-
 $groups = $admin->perm->getGroups(array('fields' => array('group_id', 'name', 'description')));
 if ($groups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
