@@ -262,6 +262,10 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         }
        
         $query = $this->createInsert($table, $fields, $values);
+        if (!$query) {
+var_dump('query was not created');
+            return false;
+        }
         return $this->dbc->query($query);
     }
 
@@ -271,6 +275,38 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         $query .= '(' . implode(', ', $fields) . ')' . "\n";
         $query .= 'VALUES (' . implode(', ', $values) . ')';
         return $query;
+    }
+
+    function update($table, $data, $filters)
+    {
+        $fields = array();
+        $values = array();
+        foreach ($data as $field => $value) {
+            $fields[] = $field . ' = ' . $this->quote($value, $this->fields[$field]['type']);
+        }
+    
+        $query = $this->createUpdate($table, $fields, $filters);
+        if (!$query) {
+var_dump('query was not created');
+            return false;
+        }
+        return $this->dbc->query($query);
+    }
+    
+    function createUpdate($table, $fields,  $filters)
+    {
+    
+        $query = 'UPDATE ' . $this->prefix . $table . ' SET'. "\n";
+        $query .= implode(",\n", $fields);
+        $query .= $this->createWhere($filters);
+        return $query;
+    }
+
+    function delete($table, $filters)
+    {
+        $query = 'DELETE FROM ' . $this->prefix . $table;
+        $query .= $this->createWhere($filters);
+        return $this->dbc->query($query);
     }
 
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)

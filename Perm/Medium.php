@@ -57,7 +57,60 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     {
         $this->LiveUser_Perm_Simple($confArray);
     }
-    
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
+    function addGroup($data)
+    {
+        // sanity checks
+        $result = $this->_storage->insert('groups', $data);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
+    function updateGroup($data, $filters)
+    {
+        // sanity checks
+        $result = $this->_storage->update('groups', $data, $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
+    function removeGroup($filters)
+    {
+        // sanity checks
+        $result = $this->_storage->delete('groups', $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return
+     */
     function getGroups($params = array())
     {
         $selectable_tables = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');

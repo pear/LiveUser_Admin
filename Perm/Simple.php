@@ -64,6 +64,13 @@ class LiveUser_Admin_Perm_Simple
         }
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
     function addUser($data)
     {
         // sanity checks
@@ -72,6 +79,14 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
     function updateUser($data, $filters)
     {
         // sanity checks
@@ -80,7 +95,14 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    function deleteUser($filters)
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
+    function removeUser($filters)
     {
         // sanity checks
         $result = $this->_storage->delete('perm_users', $filters);
@@ -88,6 +110,153 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
+    function addRight($data)
+    {
+        // sanity checks
+        $result = $this->_storage->insert('rights', $data);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
+    function updateRight($data, $filters)
+    {
+        // sanity checks
+        $result = $this->_storage->update('rights', $data, $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */    
+    function removeRight($filters)
+    {
+        // sanity checks
+        $result = $this->_storage->delete('rights', $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
+    function addArea($data)
+    {
+        // sanity checks
+        $result = $this->_storage->insert('areas', $data);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
+    function updateArea($data, $filters)
+    {
+        // sanity checks
+        $result = $this->_storage->update('areas', $data, $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */    
+    function removeArea($filters)
+    {
+        // sanity checks
+        $result = $this->_storage->delete('areas', $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
+    function addApplication($data)
+    {
+        // sanity checks
+        $result = $this->_storage->insert('applications', $data);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
+    function updateApplication($data, $filters)
+    {
+        // sanity checks
+        $result = $this->_storage->update('applications', $data, $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
+    function removeApplication($filters)
+    {
+        // sanity checks
+        $result = $this->_storage->delete('applications', $filters);
+        // notify observer
+        return $result;
+    }
+
+    /**
+     *
+     *
+     * @access private
+     * @param array $params
+     * @param string $root_table
+     * @param array $selectable_tables
+     * @return
+     */
     function _makeGet($params, $root_table, $selectable_tables)
     {
         $fields = isset($params['fields']) ? $params['fields'] : array();
@@ -104,6 +273,13 @@ class LiveUser_Admin_Perm_Simple
         return $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return
+     */
     function getUser($params = array())
     {
         $selectable_tables = array('perm_users', 'userrights', 'rights');
@@ -122,6 +298,13 @@ class LiveUser_Admin_Perm_Simple
         return $data;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return
+     */
     function getRights($params = array())
     {
         $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations');
@@ -140,6 +323,13 @@ class LiveUser_Admin_Perm_Simple
         return $data;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return
+     */
     function getAreas($params = array())
     {
         $selectable_tables = array('areas', 'applications', 'translations');
@@ -148,6 +338,13 @@ class LiveUser_Admin_Perm_Simple
         return $this->_makeGet($params, $root_table, $selectable_tables);        
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $params
+     * @return
+     */
     function getApplications($params = array())
     {
         $selectable_tables = array('applications', 'translations');
