@@ -12,26 +12,14 @@
  *
  * @version $Id$
  **/
-error_reporting(E_ALL);
-
-// right definitions
-define('READ_TESTS', 1);
-define('WRITE_TESTS', 2);
 
 // Include configuration.
 require_once 'conf.php';
 
-// The error handling stuff is not needed and used only for debugging
-// while LiveUser is not yet mature
-PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'eHandler');
-
-function eHandler($errObj)
-{
-    echo('<hr /><span style="color: red;">' . $errObj->getMessage() . ':<br />' . $errObj->getUserinfo() . '</span><hr />');
+if (!$LU) {
+    die('An unknown error occurred');
 }
 
-// Create new LiveUser object
-$LU = LiveUser::factory($liveuserConfig);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>

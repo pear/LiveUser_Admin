@@ -12,35 +12,12 @@
  *
  * @version $Id$
  **/
-error_reporting(E_ALL);
-
-// right definitions
-define('MAKE_COFFEE', 6);
-define('DRINK_COFFEE', 7);
 
 // Include configuration.
 require_once 'conf.php';
 
-// The error handling stuff is not needed and used only for debugging
-// while LiveUser is not yet mature
-PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'eHandler');
-
-function eHandler($errObj)
-{
-    echo('<hr /><span style="color: red;">' . $errObj->getMessage() . ':<br />' . $errObj->getUserinfo() . '</span><hr />');
-}
-
-// Create new LiveUser object
-$LU = LiveUser::factory($liveuserConfig);
-
 if (!$LU) {
     die('An unknown error occurred');
-}
-
-// we have an error stack
-if (is_array($LU)) {
-    echo 'One or more errors occurred, here is the array';
-    print_r($LU);
 }
 
 ?>
