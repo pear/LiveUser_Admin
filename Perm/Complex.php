@@ -50,6 +50,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function LiveUser_Admin_Perm_Complex(&$confArray)
     {
+        $this->selectable_tables['getRights'][] = 'right_implied';
         $this->LiveUser_Admin_Perm_Medium($confArray);
     }
 
@@ -589,7 +590,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getImpliedRights($params = array())
     {
-        $selectable_tables = array('right_implied');
+        $selectable_tables = $this->selectable_tables['getRights'];
         $root_table = 'right_implied';
 
         $result = $this->_makeGet($params, $root_table, $selectable_tables);
