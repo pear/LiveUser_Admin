@@ -60,8 +60,12 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     function LiveUser_Admin_Storage_MDB2(&$confArray, &$storageConf)
     {
         $this->LiveUser_Admin_Storage_SQL($confArray, $storageConf);
+    }
+
+    function init(&$storageConf)
+    {
         if (isset($storageConf['connection']) &&
-                MDB2::isConnection($storageConf['connection'])
+            MDB2::isConnection($storageConf['connection'])
         ) {
             $this->dbc = &$storageConf['connection'];
         } elseif (isset($storageConf['dsn'])) {
@@ -88,6 +92,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
                 return false;
             }
         }
+        return true;
     }
 
     function quote($value, $type)
@@ -110,7 +115,9 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     function setLimit($limit, $offset)
     {
-        return $this->dbc->setLimit($limit, $offset);
+        if ($limit || $offset) {
+            return $this->dbc->setLimit($limit, $offset);
+        }
     }
 
     function query($query)
