@@ -9,45 +9,11 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.2.0';
+$version = '0.2.1';
 
 $notes = <<<EOT
-- perm container now also has a default init() method that is called in the factory
-- delete/update now dont require a filter in the id field
-- delete/update now return the number of affected rows
-- use LiveUser::cryptRC4() for rc4 handling
-- added support to be able to query for single values, columns and rows next to
-  fetching multi dimensional arrays ('select' key in params array of get methods)
-- improved error handling in several places to not trigger on empty results
-- sequences are now named after the table they belong to
-- now requiring MDB2-2.0.0beta3
-- if the "force-seq" option is now set to false in the storage config
-  MDB2 will try to use autoincrement if supported by the RDBMS (you will need
-  to add autoincrement to the id fields in the applications, areas, groups,
-  rights, and perm_users tables yourself)
-- example 1 now outputs all queries using an MDB2 debug handler
-- Subgroups now work
-- ImplyRights now work
-- One can now remove groups recursively by passing recursive = true to 
-  removeGroup in Perm Complex container (before it was hardcoded to true,
-  now defaults to false)
-- Tests for SubGroups and ImplyRights up and running
-- getGroup and getRight now work in Perm Complex Container
-- added DB and MDB permission backends
-- Complex container is now fully implemented.
-- addAreaAdmin and removeAreaAdmin where added to the Complex container
-- Admin.php getUser was removed and searchUser was renamed to getUsers and with
-  new params (BC break!)
-- give each example a unique database name
-- moved selectable tables into property so that they can be overwritten
-- fixed autoinit handling in factoray (bug #3133)
-- added missing PEAR error to error stack conversions
-- return false if we previously ensured that the value is false anyways for clarity
-- call setAdminAuthContainer() in updateUser() and removeUser() to ensure that
-  the proper auth container is affected
-- updated the file headers as per the RFC
-- getGroups() in the complex container was refactored and subgroup handling
-  was reworked (BC break!)
+- typo fix in autoinit option (bug #3844)
+- updated LiveUser dependency to 0.15.0
 EOT;
 
 $description = <<<EOT
@@ -122,7 +88,7 @@ $package->addMaintainer(
 
 $package->addDependency('php',       '4.2.0',      'ge',  'php', false);
 $package->addDependency('PEAR',      '1.3.1',      'ge',  'pkg', false);
-$package->addDependency('LiveUser',  '0.14.0',     'ge',  'pkg', false);
+$package->addDependency('LiveUser',  '0.15.0',     'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0',      'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0',      'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4',      'ge',  'pkg', true);
