@@ -12,7 +12,7 @@ if ($groups === false) {
     exit;
 }
 
-$users = $admin->searchUsers();
+$users = $admin->getUsersByAuth();
 if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
