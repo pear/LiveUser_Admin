@@ -281,7 +281,12 @@ class LiveUser_Admin
                 return $authId;
             }
 
-            return $this->perm->addUser($authId, $this->authContainerName, $type);
+            $data = array(
+                'auth_user_id' => $authId,
+                'auth_container_name' => $this->authContainerName,
+                'perm_type' => $type
+            );
+            return $this->perm->addUser($data);
         }
         return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
@@ -323,7 +328,13 @@ class LiveUser_Admin
                 return $auth;
             }
 
-            return $this->perm->updateUser($permId, $authData['auth_user_id'], $this->authContainerName, $type);
+            $data = array(
+                'auth_user_id' => $authData['auth_user_id'],
+                'auth_container_name' => $this->authContainerName,
+                'perm_type' => $type
+            );
+            $filters = array('perm_user_id' => $permId);
+            return $this->perm->updateUser($data, $filters);
         }
         return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
@@ -353,7 +364,8 @@ class LiveUser_Admin
                 return $result;
             }
 
-            return $this->perm->removeUser($permId);
+            $filters = array('perm_user_id' => $permId);
+            return $this->perm->removeUser($filters);
         }
         return LiveUser_Admin::raiseError(LIVEUSER_ERROR, null, null,
                     'Perm or Auth container couldn\t be started.');
@@ -403,9 +415,9 @@ class LiveUser_Admin
     {
         if (is_object($this->auth) && is_object($this->perm)) {
             $permFilter['perm_user_id'] = $permId;
-            $permData = $this->perm->getUsers($permFilter, $permOptions);
-            if (PEAR::isError($permData)) {
-                return $permData;
+            $permData = $this->perm->getUsers(array('filters' => $permFilter));
+            if (!$permData) {
+                return false;
             }
 
             $permData = array_shift($permData);
