@@ -559,6 +559,11 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeTranslation($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'section_id', 'getTranslation');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->_storage->delete('translations', $filters);
         // notify observer
         return $result;
