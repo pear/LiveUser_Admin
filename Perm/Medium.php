@@ -100,7 +100,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         $filter_check = array('group_id' => $filters['group_id']);
         $count = $this->_storage->selectOne('groupusers', 'group_id', $filter_check, true);
         if ($count > 0) {
-            $result = $this->_storage->delete('groupusers', $filters);
+            $result = $this->removeUserFromGroup($filter_check);
             if (!$result) {
                 return false;
             }
@@ -222,12 +222,30 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeRight($filters)
     {
         $filter = array('right_id' => $filters['right_id']);
-        $result = $this->_storage->delete('grouprights', $filter);
+        $result = $this->revokeGroupRight($filter);
         if (!$result) {
             return false;
         }
 
         return parent::removeRight($filters);
+    }
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
+    function removeUser($filters)
+    {
+        $filter = array('perm_user_id' => $filters['perm_user_id']);
+        $result = $this->removeUserFromGroup($filter);
+        if (!$result) {
+            return false;
+        }
+
+        return parent::removeUser($filters);
     }
 
     /**

@@ -114,6 +114,11 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeUser($filters)
     {
+        $filter = array('perm_user_id' => $filters['perm_user_id']);
+        $result = $this->revokeUserRight($filter);
+        if (!$result) {
+            return false;
+        }
         $result = $this->_storage->delete('perm_users', $filters);
         // notify observer
         return $result;
@@ -161,7 +166,7 @@ class LiveUser_Admin_Perm_Simple
         $filter_check = array('right_id' => $filters['right_id']);
         $count = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
         if ($count > 0) {
-            $result = $this->_storage->delete('userrights', $filter_check);
+            $result = $this->revokeUserRights($filter_check);
             if (!$result) {
                 return true;
             }
@@ -214,7 +219,7 @@ class LiveUser_Admin_Perm_Simple
         $filter_check = array('area_id' => $filters['area_id']);
         $count = $this->_storage->selectOne('rights', 'right_id', $filters, true);
         if ($count > 0) {
-            $result = $this->_storage->delete('rights', $filter_check);
+            $result = $this->removeRight($filter_check);
             if (!$result) {
                 return false;
             }
@@ -292,7 +297,7 @@ class LiveUser_Admin_Perm_Simple
         $filter_check = array('application_id' => $filters['application_id']);
         $count = $this->_storage->selectOne('areas', 'application_id', $filters, true);
         if ($count > 0) {
-            $result = $this->_storage->delete('areas', $filter_check);
+            $result = $this->removeAreas($filter_check);
             if (!$result) {
                 return false;
             }
