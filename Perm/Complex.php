@@ -55,22 +55,110 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function removeArea($filters)
     {
+        // sanity checks
+        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'area_id')
+            );
+            return false;
+        }
+
         // remove admin areas stuff
         $this->_storage->delete('area_admin_areas', $filters);
-        parent::removeArea();
+        parent::removeArea($filters);
     }
 
-    function assignSubGroup()
+    function assignSubGroup($data, $filters)
     {
 
     }
 
-    function unassignSubGroup()
+    function unassignSubGroup($filters)
     {
 
     }
 
-    function removeGroup()
+    function removeGroup($filters)
+    {
+
+    }
+
+    function _updateImpliedStatus($filters)
+    {
+        // sanity checks
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'right_id')
+            );
+            return false;
+        }
+
+         $count = $this->_storage->selectOne('rights_implied', 'right_id', $filters, true);
+         if (!$count) {
+             return false;
+         }
+
+         $data = array();
+         $data['implied'] = (int)$count == '0' ? 'Y' : 'N';
+
+        $this->updateRight($data, $filters);
+        if (!$result) {
+            return false;
+        }
+        // notify observer
+        return true;
+    }
+
+    function implyRight($data, $filters)
+    {
+
+    }
+
+    function unimplyRight($filters)
+    {
+
+    }
+
+    function removeRight($filters)
+    {
+        // sanity checks
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'right_id')
+            );
+            return false;
+        }
+
+        $this->_storage->delete('rights_implied', $filters);
+        parent::removeRight($filters);
+        
+        return $this->_updateImpliedStatus($filters);
+    }
+
+    function removeUser($filters)
+    {
+        // sanity checks
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('key' => 'perm_user_id')
+            );
+            return false;
+        }
+
+        $data = array('owner_user_id' => 'NULL');
+        $result = $this->_storage->update('groups', $data, $filters);
+        if (!$result) {
+            return false;
+        }
+
+        parent::removeUser($filters);
+    }
+
+    function _updateLevelStatus()
     {
 
     }
@@ -78,26 +166,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getParentGroup()
     {
 
-    }
-
-    function _updateImpliedStatus()
-    {
-
-    }
-
-    function implyRight()
-    {
-
-    }
-
-    function unimplyRight()
-    {
-
-    }
-
-    function removeRight()
-    {
-        parent::removeRight();
     }
 
     function getGroups()
@@ -116,16 +184,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     function getInheritedRights()
-    {
-
-    }
-
-    function removeUser()
-    {
-        parent::removeUser();
-    }
-
-    function _updateLevelStatus()
     {
 
     }
