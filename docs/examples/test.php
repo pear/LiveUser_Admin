@@ -7,7 +7,6 @@ $dsn = 'mysql://root:@localhost/liveuser_test';
 $liveuserConfig = array(
     'login' => array(
         'force' => true,
-        'function' => 'loginFunction',
     ),
     'authContainers' => array(
         0 => array(

@@ -39,17 +39,10 @@ $conf =
             'varname'  => 'ludata'
         ),
         'login' => array(
-            'method'   => 'post',
-            'username' => 'handle',
-            'password' => 'passwd',
             'force'    => false,
-            'remember' => 'rememberMe'
         ),
         'logout' => array(
-            'trigger'  => 'logout',
-            'redirect' => '?',
             'destroy'  => true,
-            'method' => 'get',
         ),
         'authContainers' => array(
             array(
