@@ -36,7 +36,8 @@ Var_Dump::displayInit(
 <a href="Group.php">Group</a> 				    | <a href="GroupRights.php">GroupRights</a> | 
 <a href="ImplyRights.php">ImplyRights</a>  | <a href="User.php">User</a> | 
 <a href="Rights.php">Rights</a> 			        | <a href="Subgroups.php">Subgroups</a> | 
-<a href="UserGroup.php">UserGroup</a>     | <a href="UserRights.php">UserRights</a><br /><br />
+<a href="UserGroup.php">UserGroup</a>     | <a href="UserRights.php">UserRights</a> |
+<a href="OutputRightsConstants.php">OutputRightsConstants</a><br /><br /><br />
 <?php
 if (isset($_GET['del']))  {
 	$db->query('DELETE FROM liveuser_applications');

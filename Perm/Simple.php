@@ -599,7 +599,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function getRights($params = array())
     {
-        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations');
+        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications');
         $root_table = 'rights';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
@@ -650,6 +650,159 @@ class LiveUser_Admin_Perm_Simple
         $root_table = 'applications';
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
+    }
+
+    /**
+     * Generate the constants to a file or define them directly.
+     *
+     * $mode can be either 'file' or 'php'. File will write the constant
+     * in the given file, replacing/adding constants as needed. Php will
+     * call define() function to actually define the constants.
+     *
+     * $options can contain
+     * 'prefix'      => 'prefix_goes_here',
+     * 'area'        => 'specific area id to grab rights from',
+     * 'application' => 'specific application id to grab rights from'
+     * 'naming'      => LIVEUSER_SECTION_RIGHT for PREFIX_RIGHTNAME  <- DEFAULT
+     *                  LIVEUSER_SECTION_AREA for PREFIX_AREANAME_RIGHTNAME
+     *                  LIVEUSER_SECTION_APPLICATION for PREFIX_APPLICATIONNAME_AREANAME_RIGHTNAME
+     * 'filename'    => if $mode is file you must give the full path for the
+     *                  output file
+     *
+     * If not prefix is given it will not be used to generate the constants
+     *
+     * @access public
+     * @param  string  type of output (constant or array)
+     * @param  array   options for constants generation
+     * @param  string  output mode desired (file or direct)
+     * @return mixed   boolean, array or DB Error object
+     */
+    function outputRightsConstants($type, $options = array(), $mode = null)
+    {
+        $opt = array();
+
+        $opt['fields'] = array('right_id', 'right_define_name');
+
+        $naming = LIVEUSER_SECTION_RIGHT;
+        if (isset($options['naming'])) {
+            $naming = $options['naming'];
+            switch ($naming) {
+            case LIVEUSER_SECTION_AREA:
+                $opt['fields'][] = 'area_define_name';
+                break;
+            case LIVEUSER_SECTION_APPLICATION:
+                $opt['fields'][] = 'application_define_name';
+                $opt['fields'][] = 'area_define_name';
+                break;
+            }
+        }
+
+        if (isset($options['area'])) {
+            $opt['filter']['area_id'] = $options['area'];
+        }
+
+        if (isset($options['application'])) {
+            $opt['filter']['application_id'] = $options['application'];
+        }
+
+        $prefix = '';
+        if (isset($options['prefix'])) {
+            $prefix = $options['prefix'] . '_';
+        }
+
+        $rekey = false;
+        if ($type == 'array' && isset($options['rekey'])) {
+            $rekey = $options['rekey'];
+        }
+
+        $rights = $this->getRights($opt);
+
+        if ($rights === false) {
+            return false;
+        }
+
+        $generate = array();
+
+        switch ($naming) {
+        case LIVEUSER_SECTION_APPLICATION:
+            if ($rekey) {
+                foreach ($rights as $r) {
+                    $app_name = $prefix . $r['application_define_name'];
+                    $generate[$app_name][$r['area_define_name']][$r['right_define_name']] = $r['right_id'];
+                }
+            } else {
+                foreach ($rights as $r) {
+                    $key = $prefix . $r['application_define_name'] . '_'
+                        . $r['area_define_name'] . '_' . $r['right_define_name'];
+                    $generate[$key] = $r['right_id'];
+                }
+            }
+            break;
+        case LIVEUSER_SECTION_AREA:
+            if ($rekey) {
+                foreach ($rights as $r) {
+                    $generate[$prefix . $r['area_define_name']][$r['right_define_name']] = $r['right_id'];
+                }
+            } else {
+                foreach ($rights as $r) {
+                    $key = $prefix . $r['area_define_name'] . '_' . $r['right_define_name'];
+                    $generate[$key] = $r['right_id'];
+                }
+            }
+            break;
+        case LIVEUSER_SECTION_RIGHT:
+        default:
+            foreach ($rights as $r) {
+                $generate[$prefix . $r['right_define_name']] = $r['right_id'];
+            }
+            break;
+        }
+
+        $strDef = "<?php\n";
+        if ($type == 'array') {
+            if ($mode == 'file') {
+                if (!isset($options['varname'])
+                    || !preg_match('/^[a-zA-Z_0-9]+$/', $options['varname'])
+                ) {
+                    return false;
+                }
+                $strDef .= sprintf("\$%s = %s;\n", $options['varname'], var_export($generate, true));
+            } else {
+                return $generate;
+            }
+        } else {
+            foreach ($generate as $v => $k) {
+                if (!preg_match('/^[a-zA-Z_0-9]+$/', $v)) {
+                    return false;
+                }
+                $v = strtoupper($v);
+                if ($mode == 'file') {
+                    $strDef .= sprintf("define('%s', %s);\n", $v, $k);
+                } else {
+                    if(!defined($v)) {
+                        define($v, $k);
+                    }
+                }
+            }
+        }
+        $strDef .= '?>';
+
+        if ($mode == 'file') {
+            if (!isset($options['filename']) || !$options['filename']) {
+                return false;
+            }
+
+            $fp = @fopen($options['filename'], 'wb');
+
+            if (!$fp) {
+                return false;
+            }
+
+            fputs($fp, $strDef);
+            fclose($fp);
+        }
+
+        return true;
     }
 
     /**
