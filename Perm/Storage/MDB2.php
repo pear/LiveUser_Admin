@@ -92,6 +92,17 @@ require_once 'LiveUser/Perm/Storage/SQL.php';
  */
 class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Storage_MDB2
 {
+    /**
+     * Initializes database storage container.
+     * Merges tables/fields/aliases together if needed or set the default
+     * ones if any of those vars are empty.
+     *
+     * @param array &$storageConf Storage Configuration
+     * @return void
+     *
+     * @access public
+     * @uses LiveUser_Admin_Storage_MDB2::init
+     */
     function init(&$storageConf)
     {
         parent::init($storageConf);
