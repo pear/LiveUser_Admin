@@ -200,6 +200,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function addAreaAdmin($data)
     {
+        // needs more sanity checking, check if the perm_id is really perm_type 3 and so on
+        // make sure when removing rights or updating them that if the user goes down 
+        // below perm_type 3 that a entry from area_admins_areas is removed
         $result = $this->_storage->insert('area_admins_areas', $data);
 
         // notify observer
