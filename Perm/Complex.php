@@ -51,6 +51,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function LiveUser_Admin_Perm_Complex(&$confArray)
     {
         $this->selectable_tables['getRights'][] = 'right_implied';
+        $this->selectable_tables['getAreas'][] = 'area_admin_areas';
         $this->LiveUser_Admin_Perm_Medium($confArray);
     }
 
@@ -228,15 +229,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 'perm_user_id' => $data['perm_user_id']
             )
         );
-        $result = parent::getRight($params);
+        $result = parent::getUsers($params);
         if ($result === false) {
             return $result;
         }
 
-        if ($result['perm_type'] < 3) {
+        if ($result[0]['perm_type'] < 3) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'The user doesn\' have sufficient rights')
+                array('msg' => 'The user doesn\'t have sufficient rights')
             );
             return false;
         }
