@@ -305,12 +305,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $type = $this->fields[$tmp_field];
             if (is_array($value)) {
                 if (isset($value['value'])) {
-                    $where[] = $tmp_field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
+                    $where[] = $field. ' ' . $value['op'] . ' ' .$this->quote($value['value'], $type);
                 } else {
-                    $where[] = $tmp_field.' IN ('.$this->implodeArray($value, $type).')';
+                    $where[] = $field.' IN ('.$this->implodeArray($value, $type).')';
                 }
             } else {
-                $where[] = $tmp_field.' = '.$this->quote($value, $type);
+                $where[] = $field.' = '.$this->quote($value, $type);
             }
         }
         foreach ($joinfilters as $field => $value) {
