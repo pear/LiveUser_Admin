@@ -259,10 +259,12 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * @param array $params
      * @return
      */
-    function getGroups($params = array())
+    function getGroups($params = array(), $extraSelectable = array(), $root_table = null)
     {
-        $selectable_tables = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
-        $root_table = 'groups';
+        $selectable_tables = 
+            array_merge($extraSelectable, 
+                        array('groups', 'groupusers', 'grouprights', 'rights', 'translations'));
+        $root_table = !is_null($root_table) ? $root_table : 'groups';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
