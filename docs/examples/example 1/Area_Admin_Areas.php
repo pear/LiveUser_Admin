@@ -20,7 +20,7 @@ if ($areas === false) {
     exit;
 }
 
-$users = $admin->searchUsers('auth');
+$users = $admin->getUsers('auth');
 if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
