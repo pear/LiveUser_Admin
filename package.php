@@ -39,6 +39,7 @@ $result = $package->setOptions(array(
     'installexceptions' => array(
     ),
     'installas'         => array(
+        'Admin.php' => '/LiveUser/Admin.php'
     ),
     'exceptions'         => array(
         'lgpl.txt' => 'doc',
