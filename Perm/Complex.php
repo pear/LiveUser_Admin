@@ -112,11 +112,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function unassignSubGroup($filters)
     {
         $result = $this->_storage->delete('group_subgroups', $filters);
-        if ($result === false) {
-            return $result;
-        }
         // notify observer
-        return true;
+        return $result;
     }
 
     /**
@@ -150,7 +147,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->getRights($params);
         if ($result === false) {
-            return $result;
+            return false;
         }
 
         if (!empty($result)) {
@@ -163,11 +160,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->_storage->insert('right_implied', $data);
         if ($result === false) {
-            return $result;
+            return false;
         }
-        // notify observer
+
         $filter = array('right_id' => $data['right_id']);
-        return $this->_updateImpliedStatus($filter);
+        $this->_updateImpliedStatus($filter);
+
+        // notify observer
+        return $result;
     }
 
     /**
@@ -179,9 +179,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function unimplyRight($filters)
     {
-        $this->_storage->delete('right_implied', $filters);
+        $result = $this->_storage->delete('right_implied', $filters);
+        if ($result === false) {
+            return false;
+        }
+
+        $this->_updateImpliedStatus($filters);
+
         // notify observer
-        return $this->_updateImpliedStatus($filters);
+        return $result;
     }
 
     /**
@@ -193,13 +199,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeArea($filters)
     {
-        // remove admin areas stuff
-        $this->_storage->delete('area_admin_areas', $filters);
-        $result = parent::removeArea($filters);
+        $result = $this->_storage->delete('area_admin_areas', $filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
-        return true;
+
+        $result = parent::removeArea($filters);
+
+        // notify observer
+        return $result;
     }
 
     /**
@@ -220,8 +228,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         if ($result === false) {
             return false;
         }
+
+        $this->_updateImpliedStatus($filters);
+
         // notify observer
-        return $this->_updateImpliedStatus($filters);
+        return $result;
     }
 
     /**
@@ -234,11 +245,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function removeUser($filters)
     {
         $data = array('owner_user_id' => null);
-        $fitler = array('owner_user_id' => $filters['perm_user_id']);
+        $filter = array('owner_user_id' => $filters['perm_user_id']);
         $result = $this->updateGroup($data, $filter);
         if ($result === false) {
-            return $result;
+            return false;
         }
+
         // notify observer
         return parent::removeUser($filters);
     }
@@ -253,8 +265,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeGroup($filters)
     {
-        !isset($filters['recursive']) ? $filters['recursive'] = false : '';
-        if ($filters['recursive']) {
+        if (isset($filters['recursive'])) {
             $param = array(
                 'fields' => array(
                     'subgroup_id'
@@ -270,36 +281,20 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
             foreach ($result as $subGroupId) {
                 $filter = array('group_id' => $subGroupId['subgroup_id'], 'recursive' => true);
-                $res = $this->removeGroup($filter);
-                if ($res === false) {
-                    return $res;
+                $result = $this->removeGroup($filter);
+                if ($result === false) {
+                    return false;
                 }
             }
+            unset($filters['recursive']);
         }
 
-        unset($filters['recursive']);
-        $this->_storage->delete('group_subgroups', $filters);
-        return parent::removeGroup($filters);
-    }
-
-    /**
-     *
-     *
-     * @access public
-     * @param array $data
-     * @return
-     */
-    function grantUserRight($data)
-    {
-        $result = parent::grantUserRight($data);
+        $result = $this->_storage->delete('group_subgroups', $filters);
         if ($result === false) {
-            return $result;
+            return false;
         }
-        $filter = array('right_id' => $data['right_id']);
 
-        // notify observer
-        // Job done ...
-        return $this->_updateLevelStatus($filter);
+        return parent::removeGroup($filters);
     }
 
     /**
@@ -312,14 +307,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantGroupRight($data)
     {
         $result = parent::grantGroupRight($data);
-        if ($result === false) {
-            return $result;
-        }
-        $filter = array('right_id' => $data['right_id']);
-
         // notify observer
-        // Job done ...
-        return $this->_updateLevelStatus($filter);
+        return $result;
     }
 
     /**
@@ -376,39 +365,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $result = $this->updateRight($data, $filter);
         if ($result === false) {
-            return $result;
+            return false;
         }
+
         // notify observer
-        return true;
-    }
-
-    /**
-     *
-     *
-     * @access public
-     * @param array $filters
-     * @return
-     */
-    function _updateLevelStatus($filters)
-    {
-         // Add right level filter that will be used to get user and group count.
-         $filters['right_level'] = array('op' => '<', 'value' => LIVEUSER_MAX_LEVEL);
-
-         $usercount = $this->_storage->selectCount('userrights', 'right_id', $filters);
-         if ($usercount === false) {
-             return false;
-         }
-
-         $groupcount = $this->_storage->selectCount('grouprights', 'right_id', $filters);
-         if ($groupcount === false) {
-             return false;
-         }
-
-        $data = array('has_level' => (bool)($usercount + $groupcount > 0));
-        $filter = array('right_id' => $filters['right_id']);
-        $this->_storage->update('rights', $data, $filter);
-        // notify observer
-        return true;
+        return $result;
     }
 
     /**
@@ -435,14 +396,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             ),
             'filters' => array(
                 'subgroup_id' => $subGroupId
-            )
+            ),
+            'select' => 'one'
         );
         $result = parent::getGroups($params, array('group_subgroups'), 'group_subgroups');
-        if ($result === false) {
-            return false;
-        }
 
-        return reset($result);
+        return $result;
     }
 
     /**
@@ -454,8 +413,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getGroups($params = array(), $extraSelectable = array(), $root_table = null)
     {
-        !isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
-        !isset($params['subgroups']) ? $params['subgroups'] = true : '';
+        !isset($params['hierarchy']) ? $params['hierarchy'] = false : null;
+        !isset($params['subgroups']) ? $params['subgroups'] = true : null;
         $old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
 
         if ($params['subgroups']) {
@@ -537,9 +496,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getInheritedRights($params = array())
     {
         getGroup();
-        
         $_rights = array();
-        
         return $_rights;
     }
 }
