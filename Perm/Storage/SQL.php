@@ -151,8 +151,14 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         ),
         'rights_implied' => array(
             'fields' => array(
-                'right_id',
-                'implied_right_id',
+                'right_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
+                'implied_right_id' => array(
+                    'type' => 'integer',
+                    'required' => true,
+                ),
             ),
             'joins' => array(
                 'rights' => array(
