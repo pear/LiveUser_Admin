@@ -119,23 +119,16 @@ class LiveUser_Admin
      */
     var $_log = null;
 
-    /**
-     * For lazy loading of PEAR::Log
-     *
-     * @acess private
-     * @var   boolean
-     */
-    var $_log_loaded = false;
-
     function LiveUser_Admin()
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
 
         if ($GLOBALS['_LIVEUSER_DEBUG']) {
-            if (!$this->_log_loaded) {
+            if (!is_object($this->_log)) {
                 $this->loadPEARLog();
             }
-            $this->_log->addChild(Log::factory('win', 'LiveUser_Admin'));
+            $winlog = &Log::factory('win', 'LiveUser_Admin');
+            $this->_log->addChild($winlog);
         }
 
         $this->_stack->setErrorMessageTemplate($this->_errorMessages);
@@ -149,10 +142,9 @@ class LiveUser_Admin
      */
     function loadPEARLog()
     {
-        require 'Log.php';
+        require_once 'Log.php';
         $this->_log = &Log::factory('composite');
         $this->_stack->setLogger($this->_log);
-        $this->_log_loaded = true;
     }
 
     /**
@@ -177,7 +169,7 @@ class LiveUser_Admin
      */
     function addErrorLog(&$log)
     {
-        if (!$this->_log_loaded) {
+        if (!is_object($this->_log)) {
             $this->loadPEARLog();
         }
         return $this->_log->addChild($log);
@@ -258,15 +250,17 @@ class LiveUser_Admin
             if (!isset($this->_conf['authContainers'][$authName])) {
                 return false;
             }
-            $this->_authContainers[$authName] = &LiveUser::authFactory(
+            $auth = &LiveUser::authFactory(
                 $this->_conf['authContainers'][$authName],
                 $authName,
                 'LiveUser_Admin_'
             );
-            if (!$this->_authContainers[$authName]) {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception', array('msg' => 'Could not create auth container instance'));
+            if (!is_object($auth)) {
+                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => 'Could not create auth container instance'));
                 return false;
             }
+            $this->_authContainers[$authName] = &$auth;
         }
         $this->authContainerName = $authName;
         $this->auth = &$this->_authContainers[$authName];
@@ -291,7 +285,10 @@ class LiveUser_Admin
             return false;
         }
 
-        $this->perm = &LiveUser::permFactory($this->_conf['permContainer'], 'LiveUser_Admin_');
+        $this->perm = &LiveUser::permFactory(
+            $this->_conf['permContainer'],
+            'LiveUser_Admin_'
+        );
         return true;
     }
 
@@ -320,17 +317,23 @@ class LiveUser_Admin
                 reset($this->_conf['authContainers']);
                 $authName = key($this->_conf['authContainers']);
             } else {
-                foreach ($this->_conf['authContainers'] as $k => $v) {
-                    if (!isset($this->_authContainers[$k]) ||
-                        !is_object($this->_authContainers[$k])
+                foreach ($this->_conf['authContainers'] as $key => $value) {
+                    if (!isset($this->_authContainers[$key]) ||
+                        !is_object($this->_authContainers[$key])
                     ) {
-                        $this->_authContainers[$k] = &$this->authFactory($v, $k, 'LiveUser_Admin_');
+                        $this->_authContainers[$key] = &LiveUser::authFactory(
+                            $value,
+                            $key,
+                            'LiveUser_Admin_'
+                        );
                     }
 
                     if (!is_null($authId)) {
-                        $match = $this->_authContainers[$k]->getUsers(array('auth_user_id' => $authId));
+                        $match = $this->_authContainers[$key]->getUsers(
+                            array('auth_user_id' => $authId)
+                        );
                         if (is_array($match) && sizeof($match) > 0) {
-                            $authName = $k;
+                            $authName = $key;
                             break;
                         }
                     }
@@ -445,8 +448,8 @@ class LiveUser_Admin
             $auth = $this->auth->updateUser($authData['auth_user_id'], $handle, $password,
                                                              $optionalFields, $customFields);
 
-            if (PEAR::isError($auth)) {
-                return $auth;
+            if ($auth === false) {
+                return false;
             }
 
             $data = array(
@@ -484,7 +487,7 @@ class LiveUser_Admin
             $authData = reset($authData);
             $result = $this->auth->removeUser($authData['auth_user_id']);
 
-            if (PEAR::isError($result)) {
+            if ($result === false) {
                 return $result;
             }
 
@@ -515,11 +518,11 @@ class LiveUser_Admin
         if (is_object($this->auth) && is_object($this->perm)) {
             $search = $this->auth->getUsers($filters, $order, $rekey);
 
-            if (PEAR::isError($search)) {
+            if ($search === false) {
                 return $search;
             }
 
-            foreach($search as $key => $user) {
+            foreach ($search as $key => $user) {
                 $permFilter['auth_user_id'] = $user['auth_user_id'];
                 $permData = $this->perm->getUsers(array('filters' => $permFilter));
                 if (!$permData) {
@@ -567,7 +570,7 @@ class LiveUser_Admin
             );
 
             $authData = $this->auth->getUsers($authFilter);
-            if (PEAR::isError($authData)) {
+            if ($authData === false) {
                 return $authData;
             }
 
