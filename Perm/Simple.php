@@ -58,7 +58,6 @@ class LiveUser_Admin_Perm_Simple
     function LiveUser_Admin_Perm_Simple(&$confArray)
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
-        $this->_storage = LiveUser::storageFactory($confArray, 'LiveUser_Admin_');
         if (is_array($confArray)) {
             foreach ($confArray as $key => $value) {
                 if (isset($this->$key)) {
@@ -70,6 +69,27 @@ class LiveUser_Admin_Perm_Simple
                 }
             }
         }
+    }
+
+    /**
+     * Load the storage container
+     *
+     * @access  public
+     * @param  mixed         Name of array containing the configuration.
+     * @return  boolean true on success or false on failure
+     */
+    function init(&$conf)
+    {
+        if (!isset($conf['storage'])) {
+            return false;
+        }
+
+        $this->_storage = LiveUser::storageFactory($conf['storage'], 'LiveUser_Admin_');
+        if ($this->_storage === false) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -116,7 +136,7 @@ class LiveUser_Admin_Perm_Simple
     {
         $filter = array('perm_user_id' => $filters['perm_user_id']);
         $result = $this->revokeUserRight($filter);
-        if (!$result) {
+        if ($result === false) {
             return false;
         }
         $result = $this->_storage->delete('perm_users', $filters);
@@ -163,12 +183,25 @@ class LiveUser_Admin_Perm_Simple
     function removeRight($filters)
     {
         // Remove all user assignments to that right
-        $filter_check = array('right_id' => $filters['right_id']);
-        $count = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
-        if ($count > 0) {
-            $result = $this->revokeUserRights($filter_check);
-            if (!$result) {
-                return true;
+        if (!empty($filters) && is_array($filters)) {
+            if (isset($filters['right_id']) && count($filters) == 1) {
+                $result = array($filters['right_id']);
+            } else {
+                $params = array(
+                    'fields' => array('right_id'),
+                    'filters' => $filters,
+                    'select' => 'col',
+                );
+                $result = $this->_storage->getRights($params);
+                if ($result === false) {
+                    return false;
+                }
+            }
+            if (!empty($result)) {
+                $result = $this->revokeUserRight(array('right_id' => $result));
+                if ($result === false) {
+                    return false;
+                }
             }
         }
 
@@ -217,10 +250,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // Remove all rights under that area
         $filter_check = array('area_id' => $filters['area_id']);
-        $count = $this->_storage->selectOne('rights', 'right_id', $filters, true);
+        $count = $this->_storage->selectCount('rights', 'right_id', $filters);
         if ($count > 0) {
             $result = $this->removeRight($filter_check);
-            if (!$result) {
+            if ($result === false) {
                 return false;
             }
         }
@@ -295,10 +328,10 @@ class LiveUser_Admin_Perm_Simple
     {
         // Remove all areas under that application
         $filter_check = array('application_id' => $filters['application_id']);
-        $count = $this->_storage->selectOne('areas', 'application_id', $filters, true);
+        $count = $this->_storage->selectCount('areas', 'application_id', $filters);
         if ($count > 0) {
             $result = $this->removeAreas($filter_check);
-            if (!$result) {
+            if ($result === false) {
                 return false;
             }
         }
@@ -326,7 +359,7 @@ class LiveUser_Admin_Perm_Simple
                        'perm_user_id' => $data['perm_user_id'],
                        'right_id'     => $data['right_id'],
                    );
-        $count = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
+        $count = $this->_storage->selectCount('userrights', 'right_id', $filters);
         if ($count > 0) {
             return false;
         }
@@ -426,11 +459,12 @@ class LiveUser_Admin_Perm_Simple
         $rekey = isset($params['rekey']) ? $params['rekey'] : false;
         $limit = isset($params['limit']) ? $params['limit'] : null;
         $offset = isset($params['offset']) ? $params['offset'] : null;
+        $select = isset($params['select']) ? $params['select'] : 'all';
 
         // ensure that all $with fields are fetched
         $fields = array_merge($fields, array_keys($with));
 
-        return $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+        return $this->_storage->select($select, $fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
     }
 
     /**
