@@ -77,6 +77,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     var $fields = array();
 
+    var $alias = array();
+
     /**
      * Constructor
      *
@@ -97,7 +99,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 if ($required == 'seq' && !isset($data[$field])) {
                     $data[$field] = $this->nextId($this->prefix . $field, true);
                 }
-                if(!isset($data[$field]) || $data[$field] === '') {
+                if (!isset($data[$field]) || $data[$field] === '') {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                         array('reason' => 'field may not be empty: '.$field)
@@ -126,16 +128,16 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             );
             return false;
         }
-        $return = $this->query($query);
-        if (PEAR::isError($return)) {
+        $result = $this->query($query);
+        if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $return->getMessage() . '-' . $return->getUserinfo())
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
             return false;
         }
         if (isset($this->tables[$table]['ids'])) {
-            return $data[$this->tables[$table]['ids']];
+            return $data[reset($this->tables[$table]['ids'])];
         }
         return true;
     }
@@ -164,7 +166,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         // id filter checks .. we could actually remove this to be more flexible
         if (isset($this->tables[$table]['ids'])) {
             foreach ($this->tables[$table]['ids'] as $field) {
-                if(!isset($filters[$field]) || $filters[$field] === '') {
+                if (!isset($filters[$field]) || $filters[$field] === '') {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                         array('reason' => 'filter for id field may not be empty: '.$field)
@@ -192,11 +194,11 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             );
             return false;
         }
-        $return = $this->query($query);
-        if (PEAR::isError($return)) {
+        $result = $this->query($query);
+        if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $return->getMessage() . '-' . $return->getUserinfo())
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
             return false;
         }
@@ -216,7 +218,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         // id filter checks .. we could actually remove this to be more flexible
         if (isset($this->tables[$table]['ids'])) {
             foreach ($this->tables[$table]['ids'] as $field) {
-                if(!isset($filters[$field]) || $filters[$field] === '') {
+                if (!isset($filters[$field]) || $filters[$field] === '') {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                         array('reason' => 'filter for id field may not be empty: '.$field)
@@ -229,11 +231,11 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $query = 'DELETE FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
 
-        $return = $this->query($query);
-        if (PEAR::isError($return)) {
+        $result = $this->query($query);
+        if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $return->getMessage() . '-' . $return->getUserinfo())
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
             return false;
         }
@@ -335,15 +337,15 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if (count($tables) > 1) {
             // find join condition
             $joinfilters = array();
-            $return = $this->createJoinFilter($root_table, $joinfilters, $tables, $selectable_tables);
-            if (!$return) {
+            $result = $this->createJoinFilter($root_table, $joinfilters, $tables, $selectable_tables);
+            if (!$result) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'joins could not be set')
                 );
                 return false;
             }
-            $joinfilters = $return[0];
+            $joinfilters = $result[0];
         }
 
         // build SELECT query
@@ -544,15 +546,15 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
                     $this->prefix.$table.'.'.$this->tables[$root_table]['joins'][$table];
             }
-            $return = $this->createJoinFilter($table, $filters, $tables, $selectable_tables, $visited);
+            $result = $this->createJoinFilter($table, $filters, $tables, $selectable_tables, $visited);
             // check if the recursion was able to find a join that would reduce
             // the number of to be joined tables
-            if ($return) {
-                if (!$return[1]) {
-                    return $return;
+            if ($result) {
+                if (!$result[1]) {
+                    return $result;
                 }
-                $filters = $return[0];
-                $tables = $return[1];
+                $filters = $result[0];
+                $tables = $result[1];
             }
         }
 
@@ -608,15 +610,15 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     $this->prefix.$table.'.'.$fields;
             }
             // recurse
-            $return = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
+            $result = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
             // check if the recursion was able to find a join that would reduce
             // the number of to be joined tables
-            if ($return) {
-                if (!$return[1]) {
-                    return $return;
+            if ($result) {
+                if (!$result[1]) {
+                    return $result;
                 }
-                $filters = $return[0];
-                $tables = $return[1];
+                $filters = $result[0];
+                $tables = $result[1];
             }
         }
 

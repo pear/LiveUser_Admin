@@ -50,12 +50,6 @@ require_once 'LiveUser/Perm/Storage/SQL.php';
  */
 class LiveUser_Admin_Perm_Storage_MDB2 extends LiveUser_Admin_Storage_MDB2
 {
-    var $tables = array();
-
-    var $fields = array();
-
-    var $alias = array();
-
     /**
      * Constructor
      *
