@@ -605,11 +605,13 @@ class LiveUser_Admin_Perm_Simple
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
-        if (!empty($with) && is_array($data)) {
-            foreach($with as $field => $params) {
+        if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
+            foreach($params['with'] as $field => $params) {
                 // this is lame and needs to be made more flexible
                 if ($field == 'perm_user_id' || $field == 'group_id') {
                     $method = 'getRights';
+                } elseif ($field == 'group_id') {
+                    $method = 'getGroups';
                 } else {
                     break;
                 }
@@ -636,11 +638,13 @@ class LiveUser_Admin_Perm_Simple
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
 
-        if (!empty($with) && is_array($data)) {
-            foreach($with as $field => $params) {
+        if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
+            foreach($params['with'] as $field => $params) {
                 // this is lame and needs to be made more flexible
                 if ($field == 'right_id') {
                     $method = 'getUsers';
+                } elseif ($field == 'group_id') {
+                    $method = 'getGroups';
                 } else {
                     break;
                 }
