@@ -1,5 +1,6 @@
 <?php require_once 'index.php'; ?>
 <h3>User</h3>
+<h4>for this test to work you need to add a "name" and an "email" field to your auth user table</h4>
 <?php
 // Add
 for ($i = 1; $i < 10; $i++) {
