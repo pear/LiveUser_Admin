@@ -281,7 +281,7 @@ class LiveUser_Admin
      */
     function setAdminPermContainer()
     {
-        if (!is_array($this->_conf)) {
+        if (!isset($this->_conf['permContainer'])) {
             return false;
         }
 
@@ -289,7 +289,8 @@ class LiveUser_Admin
             $this->_conf['permContainer'],
             'LiveUser_Admin_'
         );
-        return true;
+
+        return $this->perm;
     }
 
     /**
@@ -518,7 +519,7 @@ class LiveUser_Admin
         if (is_object($this->auth) && is_object($this->perm)) {
             $search = $this->auth->getUsers($filters, $order, $rekey);
 
-            if ($search === false) {
+            if (!$search) {
                 return $search;
             }
 
@@ -570,7 +571,7 @@ class LiveUser_Admin
             );
 
             $authData = $this->auth->getUsers($authFilter);
-            if ($authData === false) {
+            if (!$authData) {
                 return $authData;
             }
 
