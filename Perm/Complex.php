@@ -658,74 +658,37 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getGroups($params = array())
     {
-        $subgroup = true;
+        $subgroup = false;
         if (isset($params['subgroups'])) {
             $subgroup = $params['subgroups'];
             unset($params['subgroups']);
         }
 
         if (!$subgroup
-            && isset($params['select'])
-            && ($params['select'] == 'one' || $params['select'] == 'row')
+            || (isset($params['select'])
+                && ($params['select'] == 'one' || $params['select'] == 'row')
+            )
         ) {
             return parent::getGroups($params);
         }
 
         if ($subgroup === 'hierachy') {
-            if ((!isset($params['rekey']) || !$params['rekey'])
-                || (isset($params['group']) && $params['group'])
-                || (isset($params['select']) && $params['select'] != 'all')
-                || (isset($params['fields']) && reset($tmp_params['fields']) !== 'group_id')
-            ) {
-                $this->_stack->push(
-                    LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => "Setting 'subgroups' to 'hierachy' is only allowed if 'rekey' is enabled, ".
-                        "'group' is disabled, 'select' is 'all' and the first field is 'group_id'")
-                );
-                return false;
-            }
-            $groups = parent::getGroups($params);
-
-            if ($groups === false) {
-                return false;
-            }
-            $group_ids = array_keys($groups);
-
-            $tmp_params = array(
-                'fields' => array(
-                    'group_id',
-                    'subgroup_id',
-                ),
-                'filters' => array(
-                    'group_id' => $group_ids,
-                    'subgroup_id' => array(
-                        'value' => $group_ids,
-                        'op' => 'NOT IN',
-                    ),
-                ),
-                'rekey' => true,
-                'group' => true,
-            );
-
-            $subgroups = $this->_getSubGroups($tmp_params);
-            if ($subgroups === false) {
-                return false;
-            }
-
-            foreach ($subgroups as $group_id => $subgroup_ids) {
-                $tmp_params = $params;
-                $tmp_params['subgroups'] = 'hierachy';
-                $tmp_params['filters'] = array('group_id' => $subgroup_ids);
-                $subgroup_data = parent::getGroups($tmp_params);
-                if ($subgroup_data === false) {
-                    return false;
-                }
-                $groups[$group_id]['subgroups'] = $subgroup_data;
-            }
-
-            return $groups;
+            return $this->_getGroupsWithHierachy($params);
         }
 
+        return $this->_getGroupsWithSubgroups($params);
+    }
+
+    /**
+     * Helper method to fetch all groups including the subgroups
+     *
+     * @param array $params
+     * @return boolean | array
+     *
+     * @access private
+     */
+    function _getGroupsWithSubgroups($params)
+    {
         $tmp_params = array(
             'fields' => array('group_id'),
             'select' => 'col',
@@ -767,7 +730,74 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         } while(!empty($subgroups) && $count <= $new_count);
 
         $params['filters'] = array('group_id' => $groups);
+
         return parent::getGroups($params);
+    }
+
+    /**
+     * Helper method to fetch all groups including the subgroups in a 
+     * hierachy tree structure
+     *
+     * @param array $params
+     * @return boolean | array
+     *
+     * @access private
+     */
+
+    function _getGroupsWithHierachy($params)
+    {
+        if ((!isset($params['rekey']) || !$params['rekey'])
+            || (isset($params['group']) && $params['group'])
+            || (isset($params['select']) && $params['select'] != 'all')
+            || (isset($params['fields']) && reset($tmp_params['fields']) !== 'group_id')
+        ) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => "Setting 'subgroups' to 'hierachy' is only allowed if 'rekey' is enabled, ".
+                    "'group' is disabled, 'select' is 'all' and the first field is 'group_id'")
+            );
+            return false;
+        }
+
+        $groups = parent::getGroups($params);
+        if ($groups === false) {
+            return false;
+        }
+
+        $group_ids = array_keys($groups);
+        $tmp_params = array(
+            'fields' => array(
+                'group_id',
+                'subgroup_id',
+            ),
+            'filters' => array(
+                'group_id' => $group_ids,
+                'subgroup_id' => array(
+                    'value' => $group_ids,
+                    'op' => 'NOT IN',
+                ),
+            ),
+            'rekey' => true,
+            'group' => true,
+        );
+
+        $subgroups = $this->_getSubGroups($tmp_params);
+        if ($subgroups === false) {
+            return false;
+        }
+
+        foreach ($subgroups as $group_id => $subgroup_ids) {
+            $tmp_params = $params;
+            $tmp_params['subgroups'] = 'hierachy';
+            $tmp_params['filters'] = array('group_id' => $subgroup_ids);
+            $subgroup_data = parent::getGroups($tmp_params);
+            if ($subgroup_data === false) {
+                return false;
+            }
+            $groups[$group_id]['subgroups'] = $subgroup_data;
+        }
+
+        return $groups;
     }
 
     /**
