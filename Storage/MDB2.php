@@ -94,11 +94,14 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     var $force_seq = true;
 
     /**
+     * Initializes database storage container.
+     * Connects to database or uses existing database connection.
      *
      * @param array &$storageConf Storage Configuration
-     * @return
+     * @return boolean false on failure and true on success
      *
      * @access public
+     * @uses LiveUser_Admin_Storage_SQL::init
      */
     function init(&$storageConf)
     {
@@ -136,10 +139,13 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * Convert a text value into a DBMS specific format that is suitable to
+     * compose query statements.
      *
-     * @param string $value
-     * @param string $type
-     * @return string
+     * @param string $value text string value that is intended to be converted.
+     * @param string $type type to which the value should be converted to
+     * @return stringtext string that represents the given argument value in
+     *       a DBMS specific format.
      *
      * @access public
      * @uses MDB2::quote
@@ -181,8 +187,8 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
-     *
-     * @param string $query
+     * Execute query
+     * @param string $query query
      * @return boolean | integer
      *
      * @access public
@@ -202,9 +208,15 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * Execute the specified query, fetch the value from the first column of
+     * the first row of the result set and then frees
+     * the result set.
      *
-     * @param string $query
-     * @param string $type
+     * @param string $query the SELECT query statement to be executed.
+     * @param string $type argument that specifies the expected
+     *       datatype of the result set field, so that an eventual conversion
+     *       may be performed. The default datatype is text, meaning that no
+     *       conversion is performed
      * @return boolean | array
      *
      * @access public
@@ -224,9 +236,15 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * Execute the specified query, fetch the values from the first
+     * row of the result set into an array and then frees
+     * the result set.
      *
-     * @param string $query
-     * @param string $type
+     * @param string $query the SELECT query statement to be executed.
+     * @param string $type array argument that specifies a list of
+     *       expected datatypes of the result set columns, so that the eventual
+     *       conversions may be performed. The default list of datatypes is
+     *       empty, meaning that no conversion is performed.
      * @return boolean | array
      *
      * @access public
@@ -246,9 +264,14 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * Execute the specified query, fetch the value from the first column of
+     * each row of the result set into an array and then frees the result set.
      *
-     * @param string $query
-     * @param string $type
+     * @param string $query the SELECT query statement to be executed.
+     * @param string $type argument that specifies the expected
+     *       datatype of the result set field, so that an eventual conversion
+     *       may be performed. The default datatype is text, meaning that no
+     *       conversion is performed
      * @return boolean | array
      *
      * @access public
@@ -268,10 +291,16 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * Execute the specified query, fetch all the rows of the result set into
+     * a two dimensional array and then frees the result set.
      *
-     * @param string $query
-     * @param array $types
-     * @param boolean $rekey
+     * @param string $query the SELECT query statement to be executed.
+     * @param array $types array argument that specifies a list of
+     *       expected datatypes of the result set columns, so that the eventual
+     *       conversions may be performed. The default list of datatypes is
+     *       empty, meaning that no conversion is performed.
+     * @param boolean $rekey if set to true, the $all will have the first
+     *       column as its first dimension
      * @return boolean | array
      *
      * @access public
@@ -291,9 +320,11 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * returns the next free id of a sequence
      *
-     * @param string $seqname
-     * @param boolean $ondemand
+     * @param string $seqname name of the sequence
+     * @param boolean $ondemand when true the seqence is
+     *                           automatic created, if it not exists
      * @return boolean | integer
      *
      * @access public
@@ -313,9 +344,12 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * returns the next free id of a sequence if the RDBMS
+     * does not support auto increment
      *
-     * @param string $table
-     * @param boolean $ondemand
+     * @param string $table name of the table into which a new row was inserted
+     * @param boolean $ondemand when true the seqence is
+     *                          automatic created, if it not exists
      * @return boolean | integer
      *
      * @access public
@@ -340,10 +374,10 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * returns the autoincrement ID if supported or $id
      *
-     *
-     * @param string $id
-     * @param string $table
+     * @param string $id value as returned by getBeforeId()
+     * @param string $table name of the table into which a new row was inserted
      * @return  boolean | integer returns the id that the users passed via params
      *
      * @access public
