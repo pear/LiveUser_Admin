@@ -147,6 +147,30 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         return true;
     }
 
+    function _updateLevelStatus($filters)
+    {
+         // Add right level filter that will be used to get user and group count.
+         $filters['right_level'] = array('op' => '<', 'value' => LIVEUSER_MAX_LEVEL);
+
+         $usercount = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
+         if (!$usercount) {
+             return false;
+         }
+
+         $grouprcount = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
+         if (!$groupcount) {
+             return false;
+         }
+
+        $count = $usercount + $groupcount;
+
+        $data = array('has_level' => ($count > 0));
+        $filter = array('right_id' => $filters['right_id']);
+        $this->_storage->update('rights', $data, $filter);
+
+        return true;
+    }
+
     function implyRight($data)
     {
         $result = $this->_storage->insert('rights_implied', $data);
@@ -186,8 +210,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function grantUserRight($data)
     {
         $result = parent::grantUserRight($data);
-        if (!$return) {
-            return $return;
+        if (!$result) {
+            return $result;
         }
         $this->_updateLevelStatus($data['right_id']);
 
@@ -197,55 +221,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function grantGroupRight($data)
     {
-        $return = parent::grantGroupRight($data);
-        if (!$return) {
-            return $return;
+        $result = parent::grantGroupRight($data);
+        if (!$result) {
+            return $result;
         }
         $this->_updateLevelStatus($data['right_id']);
 
         // Job done ...
-        return true;
-    }
-
-    function _updateImpliedStatus($filters)
-    {
-         $count = $this->_storage->selectOne('rights_implied', 'right_id', $filters, true);
-         if (!$count) {
-             return false;
-         }
-
-         $data = array();
-         $data['implied'] = (int)$count == '0' ? 'Y' : 'N';
-
-        $this->updateRight($data, $filters);
-        if (!$result) {
-            return false;
-        }
-        // notify observer
-        return true;
-    }
-
-    function _updateLevelStatus($filters)
-    {
-         // Add right level filter that will be used to get user and group count.
-         $filters['right_level'] = array('op' => '<', 'value' => LIVEUSER_MAX_LEVEL);
-
-         $usercount = $this->_storage->selectOne('userrights', 'right_id', $filters, true);
-         if (!$usercount) {
-             return false;
-         }
-
-         $grouprcount = $this->_storage->selectOne('grouprights', 'right_id', $filters, true);
-         if (!$groupcount) {
-             return false;
-         }
-
-        $count = $usercount + $groupcount;
-
-        $data = array('has_level' => ($count > 0));
-        $filter = array('right_id' => $filters['right_id']);
-        $this->_storage->update('rights', $data, $filter);
-
         return true;
     }
 
