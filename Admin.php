@@ -441,17 +441,20 @@ class LiveUser_Admin
             return false;
         }
 
-        $authData = $this->perm->getUsers(array(
-            'filters' => array('perm_user_id' => $permId),
-            'fields' => array('auth_user_id')
-            'select' => 'row')
+        $permData = $this->perm->getUsers(
+            array(
+                'fields' => array('auth_user_id', 'auth_container_name'),
+                'filters' => array('perm_user_id' => $permId),
+                'select' => 'row',
+            )
          );
 
-        if (!$authData) {
+        if (!$permData) {
             return false;
         }
 
-        $auth = $this->auth->updateUser($authData['auth_user_id'], $handle,
+        $this->setAdminAuthContainer($permData['auth_container_name']);
+        $auth = $this->auth->updateUser($permData['auth_user_id'], $handle,
             $password, $optionalFields, $customFields);
 
         if ($auth === false) {
@@ -482,18 +485,20 @@ class LiveUser_Admin
             return false;
         }
 
-        $authData = $this->perm->getUsers(array(
-            'filters' => array('perm_user_id' => $permId),
-            'fields' => array('auth_user_id')
-            'select' => 'row')
+        $permData = $this->perm->getUsers(
+            array(
+                'fields' => array('auth_user_id', 'auth_container_name'),
+                'filters' => array('perm_user_id' => $permId),
+                'select' => 'row',
+            )
          );
 
-
-        if (!$authData) {
+        if (!$permData) {
             return false;
         }
 
-        $result = $this->auth->removeUser($authData['auth_user_id']);
+        $this->setAdminAuthContainer($permData['auth_container_name']);
+        $result = $this->auth->removeUser($permData['auth_user_id']);
 
         if ($result === false) {
             return false;
@@ -582,14 +587,14 @@ class LiveUser_Admin
 
         $users = array();
         foreach($authUsers as $authData) {
-            $permUsers = $this->perm->getUsers(array(
+            $permData = $this->perm->getUsers(array(
                 'filters' => array(
                     'auth_user_id' => $authData['auth_user_id'],
                     'auth_container_name' => $this->authContainerName,
-                    'select' => 'row',
                 ),
+                'select' => 'row',
             ));
-            if (!$permUsers) {
+            if (!$permData) {
                 continue;
             }
 
