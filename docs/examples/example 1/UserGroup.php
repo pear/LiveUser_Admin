@@ -18,9 +18,9 @@ $groups = $admin->perm->getGroups();
 
 foreach ($groups as $group) {
     $rand = array_rand($users);
-    $return = $admin->perm->addUserToGroup(array('perm_user_id' => $users[$rand]['perm_user_id'], 'group_id' => $group['group_id']));
+    $result = $admin->perm->addUserToGroup(array('perm_user_id' => $users[$rand]['perm_user_id'], 'group_id' => $group['group_id']));
 
-    if (!$return) {
+    if ($result === false) {
         echo '<strong>Error</strong><br />';
     } else {
         echo $users[$rand]['name'].' was added to group <b>'.$group['group_id'].'</b><br />';

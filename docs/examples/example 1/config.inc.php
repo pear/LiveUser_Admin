@@ -17,6 +17,7 @@ $db = MDB2::connect($dsn);
 
 if (PEAR::isError($db)) {
     echo $db->getMessage() . ' ' . $db->getUserInfo();
+    die();
 }
 
 $db->setFetchMode(MDB2_FETCHMODE_ASSOC);
