@@ -566,7 +566,7 @@ class LiveUser_Admin_Perm_Simple
      * @param array $params
      * @return
      */
-    function getUser($params = array())
+    function getUsers($params = array())
     {
         $selectable_tables = array('perm_users', 'userrights', 'rights', 'groupusers');
         $root_table = 'perm_users';
@@ -575,9 +575,15 @@ class LiveUser_Admin_Perm_Simple
 
         if (!empty($with) && is_array($data)) {
             foreach($with as $field => $params) {
+                // this is lame and needs to be made more flexible
+                if ($field == 'perm_user_id' || $field == 'group_id') {
+                    $method = 'getRights';
+                } else {
+                    break;
+                }
                 foreach($data as $key => $row) {
                     $params['filters'][$field] = $row[$field];
-                    $data[$key]['rights'] = $this->getRights($params);
+                    $data[$key]['rights'] = $this->$method($params);
                 }
             }
         }
@@ -600,10 +606,17 @@ class LiveUser_Admin_Perm_Simple
 
         if (!empty($with) && is_array($data)) {
             foreach($with as $field => $params) {
-                foreach($data as $key => $row) {
-                    $params['filter'][$field] = $row[$field];
-                    $data[$key]['users'] = $this->getUser($params);
+                // this is lame and needs to be made more flexible
+                if ($field == 'right_id') {
+                    $method = 'getUsers';
+                } else {
+                    break;
                 }
+                foreach($data as $key => $row) {
+                    $params['filters'][$field] = $row[$field];
+                    $data[$key]['rights'] = $this->$method($params);
+                }
+
             }
         }
         return $data;
