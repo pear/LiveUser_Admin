@@ -117,6 +117,10 @@ class LiveUser_Admin_Perm_Simple
     function removeUser($filters)
     {
         // sanity checks
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            return false;
+        }
+        
         $result = $this->_storage->delete('perm_users', $filters);
         // notify observer
         return $result;
@@ -131,8 +135,8 @@ class LiveUser_Admin_Perm_Simple
      */
     function addRight($data)
     {
-        // sanity checks        
-        if (!isset($data['area_id']) && !is_numeric($data['area_id'])) {
+        // sanity checks
+        if (!isset($data['area_id']) || !is_numeric($data['area_id'])) {
             return false;
         }
 
@@ -167,6 +171,10 @@ class LiveUser_Admin_Perm_Simple
     function removeRight($filters)
     {
         // sanity checks
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->delete('rights', $filters);
         // notify observer
         return $result;
@@ -182,7 +190,7 @@ class LiveUser_Admin_Perm_Simple
     function addArea($data)
     {
         // sanity checks
-        if (!isset($data['application_id']) && !is_numeric($data['application_id'])) {
+        if (!isset($data['application_id']) || !is_numeric($data['application_id'])) {
             return false;
         }
 
@@ -202,6 +210,14 @@ class LiveUser_Admin_Perm_Simple
     function updateArea($data, $filters)
     {
         // sanity checks
+        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+            return false;
+        }
+
+        if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->update('areas', $data, $filters);
         // notify observer
         return $result;
@@ -217,6 +233,12 @@ class LiveUser_Admin_Perm_Simple
     function removeArea($filters)
     {
         // sanity checks
+        if (!isset($filters['area_id']) || !is_numeric($filters['area_id'])) {
+            return false;
+        }
+        
+        // Check for rights and remove them
+        
         $result = $this->_storage->delete('areas', $filters);
         // notify observer
         return $result;
@@ -263,19 +285,32 @@ class LiveUser_Admin_Perm_Simple
     function removeApplication($filters)
     {
         // sanity checks
+        if (!isset($filters['application_id']) || !is_numeric($filters['application_id'])) {
+            return false;
+        }
+
+        // check for areas and remove them also if they exist
+
         $result = $this->_storage->delete('applications', $filters);
         // notify observer
         return $result;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
     function grantUserRight($data)
     {
         // sanity checks
-        if (!isset($data['perm_user_id'])) {
+        if (!isset($data['perm_user_id']) || !is_numeric($data['perm_user_id'])) {
             return false;
         }
 
-        if (!isset($data['right_id'])) {
+        if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
             return false;
         }
 
@@ -288,7 +323,15 @@ class LiveUser_Admin_Perm_Simple
         // notify observer
         return $result;
     }
-    
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
     function updateUserRight($data, $filters)
     {
         // sanity checks
@@ -296,14 +339,37 @@ class LiveUser_Admin_Perm_Simple
             return false;
         }
 
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            return false;
+        }
+        
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->update('userrights', $data, $filters);
         // notify observer
         return $result;
     }
-    
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
     function revokeUserRight($filters)
     {
         // sanity checks
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            return false;
+        }
+        
+        if (isset($filters['right_id']) && !is_numeric($filters['right_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->delete('userrights', $filters);
         // notify observer
         return $result;

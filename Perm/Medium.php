@@ -84,6 +84,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroup($data, $filters)
     {
         // sanity checks
+        if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->update('groups', $data, $filters);
         // notify observer
         return $result;
@@ -99,19 +103,44 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeGroup($filters)
     {
         // sanity checks
+        if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
+            return false;
+        }
+
+        // Remove users from the group
+        $result = $this->removeUserFromGroup($filters);
+
+        if (!$result) {
+            return false;
+        }
+
+        // Delete group rights
+        $result = $this->revokeGroupRight($filters);
+
+        if (!$result) {
+            return false;
+        }
+        
         $result = $this->_storage->delete('groups', $filters);
         // notify observer
         return $result;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
     function grantGroupRight($data)
     {
         // sanity checks
-        if (!isset($data['group_id']) && !is_numeric($data['group_id'])) {
+        if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
             return false;
         }
 
-        if (!isset($data['right_id']) && !is_numeric($data['right_id'])) {
+        if (!isset($data['right_id']) || !is_numeric($data['right_id'])) {
             return false;
         }
 
@@ -124,35 +153,73 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         // notify observer
         return $result;
     }
-    
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @param array $filters
+     * @return
+     */
     function updateGroupRight($data, $filters)
     {
         // sanity checks
         if (!isset($data['right_level'])) {
             return false;
         }
+
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+            return false;
+        }
         
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->update('grouprights', $data, $filters);
         // notify observer
         return $result;
     }
-    
+
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
     function revokeGroupRight($filters)
     {
         // sanity checks
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+            return false;
+        }
+        
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            return false;
+        }
+        
         $result = $this->_storage->delete('grouprights', $filters);
         // notify observer
         return $result;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $data
+     * @return
+     */
     function addUserToGroup($data)
     {
         // sanity checks
-        if (!isset($data['group_id']) && !is_numeric($data['group_id'])) {
+       if (!isset($data['group_id']) || !is_numeric($data['group_id'])) {
             return false;
         }
         
-        if (!isset($data['perm_user_id']) && !is_numeric($data['perm_user_id'])) {
+        if (!isset($data['perm_user_id']) || !is_numeric($data['perm_user_id'])) {
             return false;
         }
         // check if already in group
@@ -162,16 +229,43 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         return $result;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
     function removeUserFromGroup($filters)
     {
         // sanity checks
+        if (!isset($filters['group_id']) || !is_numeric($filters['group_id'])) {
+            return false;
+        }
+        
+        if (!isset($filters['perm_user_id']) || !is_numeric($filters['perm_user_id'])) {
+            return false;
+        }
+
         $result = $this->_storage->delete('groupusers', $filters);
         // notify observer
         return $result;
     }
 
+    /**
+     *
+     *
+     * @access public
+     * @param array $filters
+     * @return
+     */
     function removeRight($filters)
     {
+        // sanity checks
+        if (!isset($filters['right_id']) || !is_numeric($filters['right_id'])) {
+            return false;
+        }
+
         $result = $this->revokeGroupRight($filters);
         if (!result) {
             return false;
