@@ -90,17 +90,60 @@ class LiveUser_Admin_Perm_Simple
 
     function getUser($params = array())
     {
-        $selectable_tables = array('perm_users', 'userrights', 'rights', 'translations');
+        $selectable_tables = array('perm_users', 'userrights', 'rights');
         $root_table = 'perm_users';
 
-        $fields = isset($params['fields']) ? $params['fields'] : null;
+        $fields = isset($params['fields']) ? $params['fields'] : array();
+        $with = isset($params['with']) ? $params['with'] : array();
         $filters = isset($params['filters']) ? $params['filters'] : array();
         $orders = isset($params['orders']) ? $params['orders'] : array();
         $rekey = isset($params['rekey']) ? $params['rekey'] : false;
         $limit = isset($params['limit']) ? $params['limit'] : null;
         $offset = isset($params['offset']) ? $params['offset'] : null;
 
-        return $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+        // ensure that all with fields are fetched
+        $fields = array_merge($fields, array_keys($with));
+
+        $data = $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+
+        if (!empty($with) && is_array($data)) {
+            foreach($with as $field => $params) {
+                foreach($data as $key => $row) {
+                    $params['filters'][$field] = $row[$field];
+                    $data[$key]['rights'] = $this->getRights($params);
+                }
+            }
+        }
+        return $data;
+    }
+
+    function getRights($params = array())
+    {
+        $selectable_tables = array('rights', 'userrights', 'translations');
+        $root_table = 'rights';
+
+        $fields = isset($params['fields']) ? $params['fields'] : array();
+        $with = isset($params['with']) ? $params['with'] : array();
+        $filters = isset($params['filters']) ? $params['filters'] : array();
+        $orders = isset($params['orders']) ? $params['orders'] : array();
+        $rekey = isset($params['rekey']) ? $params['rekey'] : false;
+        $limit = isset($params['limit']) ? $params['limit'] : null;
+        $offset = isset($params['offset']) ? $params['offset'] : null;
+
+        // ensure that all with fields are fetched
+        $fields = array_merge($fields, array_keys($with));
+
+        $data = $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
+
+        if (!empty($with) && is_array($data)) {
+            foreach($with as $field => $params) {
+                foreach($data as $key => $row) {
+                    $params['filter'][$field] = $row[$field];
+                    $data[$key]['users'] = $this->getUser($params);
+                }
+            }
+        }
+        return $data;
     }
 
     /**
