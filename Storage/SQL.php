@@ -555,7 +555,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $tables[$table] = true;
             // remove fields that have been dealt with
             $fields_not_yet_linked = array_diff($fields_not_yet_linked, $current_fields);
-            if ($prefix && (!empty($fields_not_yet_linked) || count($table) !== 1)) {
+            if ($prefix && (!empty($fields_not_yet_linked) || count($tables) !== 1)) {
                 foreach ($current_fields as $field) {
                     // append table name to all selected fields for this table
                     for ($i = 0, $j = count($fields); $i < $j; $i++) {
