@@ -33,7 +33,6 @@ $conf =
             'username' => 'handle',
             'password' => 'passwd',
             'force'    => false,
-            'function' => '',
             'remember' => 'rememberMe'
         ),
         'logout' => array(
@@ -41,7 +40,6 @@ $conf =
             'redirect' => '?',
             'destroy'  => true,
             'method' => 'get',
-            'function' => ''
         ),
         'authContainers' => array(
             array(
