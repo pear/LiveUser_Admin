@@ -100,33 +100,13 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
         )
     );
 
-    /**
-     * Constructor
-     *
-     * The second parameters expects an array containing the parameters
-     * for the given container.
-     *
-     * This class expects only the array containing
-     * configuration options of the auth container you wish
-     * to administrate. This is done in case you have several
-     * DB based auth containers.
-     *
-     * See PEAR::DB documentation for DSN specifications.
-     *
-     * @see    LiveUser::factory The configuration array is explained there
-     * @access protected
-     * @param  array  full liveuser conf array
-     * @return void
-     */
-    function LiveUser_Admin_Auth_DB(&$connectOptions, $name = null)
+    function init(&$connectOptions)
     {
-        parent::LiveUser_Admin_Auth_Common($connectOptions, $name);
         if (is_array($connectOptions)) {
-            if (isset($connectOptions['connection'])  &&
-                    DB::isConnection($connectOptions['connection'])
+            if (isset($connectOptions['connection']) &&
+                DB::isConnection($connectOptions['connection'])
             ) {
                 $this->dbc     = &$connectOptions['connection'];
-                $this->init_ok = true;
             } elseif (isset($connectOptions['dsn'])) {
                 $this->dsn = $connectOptions['dsn'];
                 $options = null;
@@ -135,13 +115,14 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
                 }
                 $options['portability'] = DB_PORTABILITY_ALL;
                 $this->dbc =& DB::connect($connectOptions['dsn'], $options);
-                if (DB::isError($this->dbc)) {
-                    $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error', array('container' => 'could not connect: '.$this->dbc->getMessage()));
-                } else {
-                    $this->init_ok = true;
+                if (PEAR::isError($this->dbc)) {
+                    $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                        array('container' => 'could not connect: '.$this->dbc->getMessage()));
+                    return false;
                 }
             }
         }
+        return true;
     } // end func LiveUser_Admin_Auth_DB
 
     /**
@@ -158,10 +139,6 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
     function addUser($handle, $password = '', $optionalFields = array(),
                               $customFields = array(), $authId = null)
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         // Generate new user ID
         if (is_null($authId)) {
             $authId = $this->dbc->nextId($this->authTable, true);
@@ -216,8 +193,12 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
 
         $result = $this->dbc->query($query);
 
-        if (DB::isError($result)) {
-            return $result;
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
         }
 
         return $authId;
@@ -232,21 +213,22 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
      */
     function removeUser($authId)
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         // Delete user from auth table (DB/Auth)
         $query = '
             DELETE FROM
                 ' . $this->authTable . '
             WHERE
-                '.$this->authTableCols['required']['auth_user_id']['name'].'='.$this->dbc->quoteSmart($authId);
+                '.$this->authTableCols['required']['auth_user_id']['name'].'=' .
+                    $this->dbc->quoteSmart($authId);
 
         $result = $this->dbc->query($query);
 
-        if (DB::isError($result)) {
-            return $result;
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
         }
 
         return true;
@@ -266,10 +248,6 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
     function updateUser($authId, $handle = '', $password = '',
                                    $optionalFields = array(), $customFields = array())
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         $updateValues = array();
         // Create query.
         $query = '
@@ -279,7 +257,8 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
 
         if (!empty($handle)) {
             $updateValues[] =
-                $this->authTableCols['required']['handle']['name'] . ' = ' . $this->dbc->quoteSmart($handle);
+                $this->authTableCols['required']['handle']['name'] . ' = ' .
+                    $this->dbc->quoteSmart($handle);
         }
 
         if (!empty($password)) {
@@ -314,12 +293,17 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
         }
 
         $query .= ' WHERE
-            ' . $this->authTableCols['required']['auth_user_id']['name'] . ' = ' . $this->dbc->quoteSmart($authId);
+            ' . $this->authTableCols['required']['auth_user_id']['name'] . ' = '
+                . $this->dbc->quoteSmart($authId);
 
         $result = $this->dbc->query($query);
 
-        if (DB::isError($result)) {
-            return $result;
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;;
         }
 
         return true;
@@ -365,10 +349,6 @@ class LiveUser_Admin_Auth_DB extends LiveUser_Admin_Auth_Common
      */
     function getUsers($filters = array(), $order = null, $rekey = false)
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         $fields = $where = '';
         $customFields = array();
 

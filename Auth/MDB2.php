@@ -100,38 +100,18 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
         )
     );
 
-    /**
-     * Constructor
-     *
-     * The second parameters expects an array containing the parameters
-     * for the given container.
-     *
-     * This class expects only the array containing
-     * configuration options of the auth container you wish
-     * to administrate. This is done in case you have several
-     * MDB2 based auth containers.
-     *
-     * See PEAR::MDB2 documentation for DSN specifications.
-     *
-     * @see    LiveUser::factory The configuration array is explained there
-     * @access protected
-     * @param  array  full liveuser conf array
-     * @return void
-     */
-    function LiveUser_Admin_Auth_MDB2(&$connectOptions, $name = null)
+    function init(&$connectOptions)
     {
-        $this->LiveUser_Admin_Auth_Common($connectOptions, $name);
         if (is_array($connectOptions)) {
             foreach ($connectOptions as $key => $value) {
                 if (isset($this->$key)) {
                     $this->$key = $value;
                 }
             }
-            if (isset($connectOptions['connection'])  &&
-                    MDB2::isConnection($connectOptions['connection'])
+            if (isset($connectOptions['connection']) &&
+                MDB2::isConnection($connectOptions['connection'])
             ) {
                 $this->dbc     = &$connectOptions['connection'];
-                $this->init_ok = true;
             } elseif (isset($connectOptions['dsn'])) {
                 $this->dsn = $connectOptions['dsn'];
                 $function = null;
@@ -148,13 +128,14 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
                 } else {
                     $this->dbc =& MDB2::connect($connectOptions['dsn'], $options);
                 }
-                if (MDB2::isError($this->dbc)) {
-                    $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error', array('container' => 'could not connect: '.$this->dbc->getMessage()));
-                } else {
-                    $this->init_ok = true;
+                if (PEAR::isError($this->dbc)) {
+                    $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                        array('container' => 'could not connect: '.$this->dbc->getMessage()));
+                    return false;
                 }
             }
         }
+        return true;
     } // end func LiveUser_Admin_Auth_MDB2
 
     /**
@@ -171,10 +152,6 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
     function addUser($handle, $password = '', $optionalFields = array(),
                               $customFields = array(), $authId = null)
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         // Generate new user ID
         if (is_null($authId)) {
             $authId = $this->dbc->nextId($this->authTable, true);
@@ -227,8 +204,12 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
 
         $result = $this->dbc->query($query);
 
-        if (MDB2::isError($result)) {
-            return $result;
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
         }
 
         return $authId;
@@ -243,21 +224,22 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
      */
     function removeUser($authId)
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         // Delete user from auth table (MDB2/Auth)
         $query = '
             DELETE FROM
                 ' . $this->authTable . '
             WHERE
-                '.$this->authTableCols['required']['auth_user_id']['name'].'=' . $this->dbc->quote($authId, $this->authTableCols['required']['auth_user_id']['type']);
+                '.$this->authTableCols['required']['auth_user_id']['name'].'=' .
+                    $this->dbc->quote($authId, $this->authTableCols['required']['auth_user_id']['type']);
 
         $result = $this->dbc->query($query);
 
-        if (MDB2::isError($result)) {
-            return $result;
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
         }
 
         return true;
@@ -277,10 +259,6 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
     function updateUser($authId, $handle = '', $password = '',
                                    $optionalFields = array(), $customFields = array())
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         $updateValues = array();
         // Create query.
         $query = '
@@ -328,8 +306,12 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
 
         $result = $this->dbc->query($query);
 
-        if (MDB2::isError($result)) {
-            return $result;
+        if (PEAR::isError($result)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+            );
+            return false;
         }
 
         return true;
@@ -375,10 +357,6 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
      */
     function getUsers($filters = array(), $order = null, $rekey = false)
     {
-        if (!$this->init_ok) {
-            return false;
-        }
-
         $fields = $where = '';
         $customFields = array();
 
