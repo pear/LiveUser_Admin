@@ -227,6 +227,15 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         'owner_group_id' => array('type' => 'integer'),
     );
 
+    var $ids = array(
+        'rights' => 'right_id',
+        'areas' => 'area_id',
+        'applications' => 'application_id',
+        'perm_users' => 'perm_user_id',
+        'translations' => 'translation_id',
+        'groups' => 'group_id',
+    );
+
     /**
      * Constructor
      *
@@ -241,13 +250,27 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
     function insert($table, $data)
     {
-        
+        if (!isset($data[$this->ids[$table]])) {
+            $data[$this->ids[$table]] = $this->dbc->nextId($this->prefix . $table, true);
+        }
+      
+        $fields = array();
+        $values = array();
+        foreach ($data as $field => $value) {
+            $fields[] = $field;
+            $values[] = $this->quote($value, $this->fields[$field]['type']);
+        }
+       
+        $query = $this->createInsert($table, $fields, $values);
+        return $this->dbc->query($query);
     }
 
-    function createInsert()
+    function createInsert($table, $fields, $values)
     {
-        $query = 'INSERT INTO '.$table."\n";
-        
+        $query = 'INSERT INTO ' . $this->prefix . $table . "\n";
+        $query .= '(' . implode(', ', $fields) . ')' . "\n";
+        $query .= 'VALUES (' . implode(', ', $values) . ')';
+        return $query;
     }
 
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)

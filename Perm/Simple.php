@@ -64,18 +64,18 @@ class LiveUser_Admin_Perm_Simple
         }
     }
 
-    function addUser($data, $id = null)
+    function addUser($data)
     {
         // sanity checks
-        $result = $this->_storage->insert('perm_user', $data, $id);
+        $result = $this->_storage->insert('perm_users', $data);
         // notify observer
         return $result;
     }
 
-    function updateUser($filters, $data)
+    function updateUser($data, $filters)
     {
         // sanity checks
-        $result = $this->_storage->update('perm_user', $data, $filters);
+        $result = $this->_storage->update('perm_users', $data, $filters);
         // notify observer
         return $result;
     }
@@ -83,7 +83,7 @@ class LiveUser_Admin_Perm_Simple
     function deleteUser($filters)
     {
         // sanity checks
-        $result = $this->_storage->delete('perm_user', $filters);
+        $result = $this->_storage->delete('perm_users', $filters);
         // notify observer
         return $result;
     }
