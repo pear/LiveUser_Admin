@@ -140,7 +140,7 @@ class LiveUser_Admin_Perm_Simple
             );
             return false;
         }
-        
+
         $result = $this->_storage->delete('perm_users', $filters);
         // notify observer
         return $result;
@@ -553,7 +553,7 @@ class LiveUser_Admin_Perm_Simple
         $limit = isset($params['limit']) ? $params['limit'] : null;
         $offset = isset($params['offset']) ? $params['offset'] : null;
 
-        // ensure that all with fields are fetched
+        // ensure that all $with fields are fetched
         $fields = array_merge($fields, array_keys($with));
 
         return $this->_storage->selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables);
@@ -621,7 +621,7 @@ class LiveUser_Admin_Perm_Simple
         $selectable_tables = array('areas', 'applications', 'translations');
         $root_table = 'areas';
 
-        return $this->_makeGet($params, $root_table, $selectable_tables);        
+        return $this->_makeGet($params, $root_table, $selectable_tables);
     }
 
     /**

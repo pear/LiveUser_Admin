@@ -256,14 +256,14 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         if (isset($this->ids[$table]) && !isset($data[$this->ids[$table]])) {
             $data[$this->ids[$table]] = $this->dbc->nextId($this->prefix . $table, true);
         }
-      
+
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
             $fields[] = $field;
             $values[] = $this->quote($value, $this->fields[$field]['type']);
         }
-       
+
         $query = $this->createInsert($table, $fields, $values);
         if (!$query) {
             $this->_stack->push(
@@ -290,7 +290,7 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         foreach ($data as $field => $value) {
             $fields[] = $field . ' = ' . $this->quote($value, $this->fields[$field]['type']);
         }
-    
+
         $query = $this->createUpdate($table, $fields, $filters);
         if (!$query) {
             $this->_stack->push(
@@ -301,10 +301,9 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
         }
         return $this->dbc->query($query);
     }
-    
+
     function createUpdate($table, $fields,  $filters)
     {
-    
         $query = 'UPDATE ' . $this->prefix . $table . ' SET'. "\n";
         $query .= implode(",\n", $fields);
         $query .= $this->createWhere($filters);
@@ -336,13 +335,13 @@ class LiveUser_Admin_Perm_Storage_SQL extends LiveUser_Admin_Perm_Storage
 
         $query = 'SELECT ';
         if ($count) {
-            $query .= 'count(' . $field . ')';
+            $query .= 'COUNT(' . $field . ')';
         } else {
             $query .= $field;
         }
         $query .= "\n" . 'FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
-        return $this->queryOne($query);
+        return $this->queryOne($query, 'integer');
     }
 
     function selectAll($fields, $filters, $orders, $rekey, $limit, $offset, $root_table, $selectable_tables)
