@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
+<package version="1.0">
+  <name>LiveUser_Admin</name>
+  <summary>User authentication and permission management framework</summary>
+  <description>  LiveUser_Admin is meant to be used with the LiveUser package.
+  It is composed of all the classes necessary to administrate
+  data used by LiveUser.</description>
+  <maintainers>
+    <maintainer>
+      <user>mw21st</user>
+      <name>Markus Wolff</name>
+      <email>mw21st@php.net</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>arnaud</user>
+      <name>Arnaud Limbourg</name>
+      <email>arnaud@php.net</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>lsmith</user>
+      <name>Lukas Kahwe Smith</name>
+      <email>smith@backendmedia.com</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>dufuz</user>
+      <name>Helgi Þormar</name>
+      <email>dufuz@php.net</email>
+      <role>developer</role>
+    </maintainer>
+  </maintainers>
+  <release>
+    <version>0.14.0</version>
+    <date>2004-11-17</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- Refactored nto a separate package.</notes>
+    <deps>
+      <dep type="php" rel="ge" version="4.2.0" optional="no"/>
+      <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
+      <dep type="pkg" rel="ge" version="0.14.0" optional="no">LiveUser</dep>
+      <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
+      <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
+      <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
+      <dep type="pkg" rel="ge" version="2.0.0beta2" optional="yes">MDB2</dep>
+      <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
+      <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
+    </deps>
+    <filelist>
+      <dir baseinstalldir="/LiveUser/Admin" name="/">
+       <dir name="Perm">
+        <file role="php" name="Simple.php"/>
+        <file role="php" name="Storage.php"/>
+        <dir name="Storage">
+         <file role="php" name="MDB2.php"/>
+         <file role="php" name="SQL.php"/>
+        </dir> <!-- Perm/Storage -->
+       </dir> <!-- Perm -->
+       <file role="php" install-as="./Admin.php" name="Admin.php"/>
+      </dir> <!-- / -->
+    </filelist>
+  </release>
+  <changelog>
+    <release>
+      <version>0.14.0</version>
+      <date>2004-11-17</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- Refactored nto a separate package.</notes>
+    </release>
+  </changelog>
+</package>

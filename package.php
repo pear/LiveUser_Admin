@@ -12,6 +12,7 @@ require_once 'Console/Getopt.php';
 $version = '0.14.0';
 
 $notes = <<<EOT
+- Refactored nto a separate package.
 EOT;
 
 $description = <<<EOT
@@ -39,7 +40,7 @@ $result = $package->setOptions(array(
     'installexceptions' => array(
     ),
     'installas'         => array(
-        'Admin.php' => '/LiveUser/Admin.php'
+        'Admin.php' => './Admin.php'
     ),
     'exceptions'         => array(
         'lgpl.txt' => 'doc',
