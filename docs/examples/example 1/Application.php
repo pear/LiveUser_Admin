@@ -4,13 +4,13 @@
 // Add
 for ($i = 1; $i < 4; $i++) {
     $data = array('application_define_name' => 'APP'.rand());
-    $appAdd = $admin->perm->addApplication($data);
+    $appId = $admin->perm->addApplication($data);
 
-    if ($appAdd === false) {
+    if ($appId === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo 'Added application<br />';
+        echo 'Created Application id <b>' . $appId . '</b><br />';
     }
 }
 
@@ -40,7 +40,7 @@ $removeApp = $admin->perm->removeApplication($filters);
 if ($removeApp === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'App3 was removed<br />';
+    echo '<b>App3</b> was removed<br />';
     unset($currentApps[$id]);
 }
 
@@ -53,7 +53,7 @@ $updateApp = $admin->perm->updateApplication($data, $filters);
 if ($updateApp === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'App2 was updated<br />';
+    echo '<b>App2</b> was updated<br />';
     $params = array('filters' => array('application_id' => $currentApps[$id]['application_id']));
     $result = $admin->perm->getApplications($params);
 

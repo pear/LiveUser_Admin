@@ -13,7 +13,7 @@ for ($i = 1; $i < 10; $i++) {
     if ($user_id === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
-        echo 'Created User Id ' . $user_id . '<br />';
+        echo 'Created User Id <b>' . $user_id . '</b><br />';
     }
 }
 
@@ -29,10 +29,10 @@ if ($allUsers === false) {
     echo '<br />';
 }
 
-$i = array_rand($allUsers);
+$id = array_rand($allUsers);
 // single user
 echo 'This user will be removed:<br />';
-$user = $admin->getUser($allUsers[$i]['perm_user_id']);
+$user = $admin->getUser($allUsers[$id]['perm_user_id']);
 if ($user === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
@@ -41,23 +41,23 @@ if ($user === false) {
 }
 
 // Remove
-$removed = $admin->removeUser($allUsers[$i]['perm_user_id']);
+$removed = $admin->removeUser($allUsers[$id]['perm_user_id']);
 
 if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo $i.' was deleted<br />';
-    unset($allUsers[$i]);
+    echo '<b>' . $id . '</b> was deleted<br />';
+    unset($allUsers[$id]);
 }
 
 // Update
-$i = array_rand($allUsers);
-$updateUser = $allUsers[$i]['perm_user_id'];
+$id = array_rand($allUsers);
+$updateUser = $allUsers[$id]['perm_user_id'];
 $updated = $admin->updateUser($updateUser, 'updated_user'.rand(), 'foo', array(), $custom);
 if ($updated === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo $updateUser.' was updated<br />';
+    echo '<b>' . $updateUser . '</b> was updated<br />';
     $user = $admin->getUser($updateUser);
 
     if ($user === false) {

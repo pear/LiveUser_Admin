@@ -56,7 +56,7 @@ $allGroupRights = $admin->perm->getRights($params);
 if ($allGroupRights === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo '<hr />Here is/are ' . count($allGroupRights) . ' group right(s) for the group ' . $groups[$group]['group_id'] . ':<br />';
+    echo '<hr />Here is/are <b>' . count($allGroupRights) . '</b> group right(s) for the group <b>' . $groups[$group]['group_id'] . '</b>:<br />';
     Var_Dump::display($allGroupRights);
     echo '<br />';
 }
@@ -100,7 +100,7 @@ if ($rights_group === false) {
     if ($updated === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
-        echo 'Updated the right level of <b>'.$groups[$group]['group_id'].'</b><br />';
+        echo 'Updated the right level of <b>' . $groups[$group]['group_id'] . '</b><br />';
         $params = array(
             'fields' => array(
                 'right_id'

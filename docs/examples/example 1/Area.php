@@ -14,12 +14,12 @@ for ($i = 1; $i < 4; $i++) {
         'application_id' => $currentApps[$id]['application_id'],
         'area_define_name' => 'AREA'.rand(),
     );
-    $areaAdd  = $admin->perm->addArea($data);
+    $areaId  = $admin->perm->addArea($data);
 
-    if ($areaAdd === false) {
+    if ($areaId === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
-        echo 'Added area<br />';
+        echo 'Created Area Id <b>' . $areaId . '</b><br />';
     }
 }
 
@@ -42,7 +42,7 @@ $rmArea = $admin->perm->removeArea($filters);
 if ($rmArea === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'Area3 was removed<br />';
+    echo '<b>Area3</b> was removed<br />';
     unset($currentAreas[$id]);
 }
 
@@ -61,7 +61,7 @@ $upArea = $admin->perm->updateArea($data, $filters);
 if ($upArea === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'Area2 was updated<br />';
+    echo '<b>Area2</b> was updated<br />';
     $params = array('filters' => array('area_id' => $currentAreas[$id]['area_id']));
     $result = $admin->perm->getAreas($params);
 

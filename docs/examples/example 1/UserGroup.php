@@ -23,7 +23,7 @@ foreach ($groups as $group) {
     if ($result === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
-        echo $users[$rand]['name'].' was added to group <b>'.$group['group_id'].'</b><br />';
+        echo '<b>' . $users[$rand]['name'] . '</b> was added to group <b>' . $group['group_id'] . '</b><br />';
     }
 }
 // Get users from one group
@@ -39,7 +39,7 @@ $usersGroup = $admin->perm->getUsers($params);
 if ($usersGroup === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'Perm ID\'s of the users in group '.$groups[$randGroup]['group_id'].'<br />';
+    echo 'Perm ID\'s of the users in group <b>' . $groups[$randGroup]['group_id'] . '</b><br />';
     Var_Dump::display($usersGroup);
     echo '<br />';
 }
@@ -57,7 +57,7 @@ $removed = $admin->perm->removeUserFromGroup($filters);
 if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo $users[$user]['name'].' was removed from group <b>'.$groups[$randGroup]['group_id'].'</b><br />';
+    echo '<b>' . $users[$user]['name'] . '</b> was removed from group <b>'.$groups[$randGroup]['group_id'].'</b><br />';
 }
 
 // Remove user from all his groups
@@ -70,7 +70,7 @@ $removed = $admin->perm->removeUserFromGroup($filters);
 if ($removed === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo $users[$randUser]['name'].' was removed from <b>ALL</b> his groups<br />';
+    echo '<b>' . $users[$randUser]['name'] . '</b> was removed from <b>ALL</b> his groups<br />';
 }
 
 // Get users from all groups
@@ -85,7 +85,7 @@ foreach ($groups as $group) {
     if ($usersGroup === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
-        echo 'Perm ID\'s of the users in group '.$group['group_id'].'<br />';
+        echo 'Perm ID\'s of the users in group <b>' . $group['group_id'] . '</b><br />';
         Var_Dump::display($usersGroup);
         echo '<br />';
     }

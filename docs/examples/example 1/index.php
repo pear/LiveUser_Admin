@@ -15,7 +15,18 @@ Var_Dump::displayInit(
 
 <html>
 <style>
-
+    a {
+        color: #006600;
+        text-decoration: none;
+    }
+    
+    a:visisted {
+        text-decoration: none;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
     /* style for XHTML_Text */
     table.var_dump          { border-collapse:separate; border:1px solid black; border-spacing:0; }
     table.var_dump tr       { color:#006600; background:#F8F8F8; vertical-align:top; }
@@ -32,12 +43,14 @@ Var_Dump::displayInit(
 
 </style>
 <body>
+
 <a href="Application.php">Application</a>    | <a href="Area.php">Area</a> |
 <a href="Group.php">Group</a>                     | <a href="GroupRights.php">GroupRights</a> |
 <a href="ImplyRights.php">ImplyRights</a>  | <a href="User.php">User</a> |
 <a href="Rights.php">Rights</a>                     | <a href="Subgroups.php">Subgroups</a> |
 <a href="UserGroup.php">UserGroup</a>     | <a href="UserRights.php">UserRights</a> |
-<a href="OutputRightsConstants.php">OutputRightsConstants</a><br /><br /><br />
+<a href="OutputRightsConstants.php">OutputRightsConstants</a><br />
+So that these test will run you have to have <a href="http://pear.php.net/package/Var_Dump">Var_Dump</a> installed<br /><br />
 <?php
 if (isset($_GET['del']))  {
     $db->query('DELETE FROM liveuser_applications');
@@ -55,7 +68,7 @@ if (isset($_GET['del']))  {
     echo 'Reseted the database';
     exit;
 } else {
-    echo '<a href="?del=1">Reset the database</a><br /><br /><br />';
+    echo '<a href="?del=1">Reset the database</a><br /><br />';
 }
 ?>
 </body>

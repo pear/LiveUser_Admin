@@ -18,11 +18,11 @@ foreach ($areas as $row) {
             'area_id' => $row['area_id'],
             'right_define_name' => 'RIGHT_' . $row['area_id'] . '_' . rand(),
         );
-        $right_id = $admin->perm->addRight($data);
-        if ($right_id === false) {
+        $rightId = $admin->perm->addRight($data);
+        if ($rightId === false) {
               echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
         } else {
-            echo 'Added right<br />';
+            echo 'Created Right Id <b>'.$rightId.'</b><br />';
         }
     }
 }
@@ -46,7 +46,7 @@ $rmRight = $admin->perm->removeRight($filters);
 if ($rmRight === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'Right_' . $id . ' was removed<br />';
+    echo '<b>Right_' . $id . '</b> was removed<br />';
 }
 
 // Update
@@ -57,7 +57,7 @@ $upRight = $admin->perm->updateRight($data, $filters);
 if ($upRight === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'Right_'. $id .' was updated<br />';
+    echo '<b>Right_'. $id .'</b> was updated<br />';
     $params = array('filters' => array('right_id' => $currentRights[$id]['right_id']));
     $result = $admin->perm->getRights($params);
 

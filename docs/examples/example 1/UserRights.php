@@ -29,7 +29,7 @@ for ($i = 1; $i < 30; $i++) {
     if ($granted === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
-        echo $users[$randUser]['name'].' was granted the right <b>'.$rights[$randRight]['right_id'].'</b><br />';
+        echo '<b>' . $users[$randUser]['name'] . '</b> was granted the right <b>' . $rights[$randRight]['right_id'] . '</b><br />';
     }
     unset($rights[$randRight]);
     $rights = array_values($rights);
@@ -46,7 +46,7 @@ $revoked = $admin->perm->revokeUserRight($filters);
 if ($revoked === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'The right <b>'.$rights[$randRight]['right_id'].'</b> has been revoked from <b>'.$users[$randUser]['name'].'</b><br />';
+    echo 'The right <b>' . $rights[$randRight]['right_id'] . '</b> has been revoked from <b>' . $users[$randUser]['name'] . '</b><br />';
 }
 
 $randUser = array_rand($users);
@@ -72,7 +72,7 @@ if ($user_rights === false) {
     if ($update === false) {
         echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
     } else {
-        echo 'The right <b>'.$user_rights[$randRight]['right_id'].'</b> has been updated to Level 3 for <b>'.$users[$randUser]['name'].'</b><br />';
+        echo 'The right <b>' . $user_rights[$randRight]['right_id'] . '</b> has been updated to Level 3 for <b>' . $users[$randUser]['name'] . '</b><br />';
         $params = array(
             'filters' => array(
                 'right_id' => $user_rights[$randRight]['right_id'],
@@ -111,7 +111,7 @@ $singleRight = $admin->perm->getRights($params);
 if ($singleRight === false) {
     echo '<strong>Error on line: '.__LINE__.' last query: '.$admin->perm->_storage->dbc->last_query.'</strong><br />';
 } else {
-    echo 'These are the user rights for <b>'.$users[$randUser]['name'].'</b>:<br />';
+    echo 'These are the user rights for <b>' . $users[$randUser]['name'] . '</b>:<br />';
     Var_Dump::display($singleRight);
     echo '<br />';
 }
