@@ -109,39 +109,39 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Class constructor. Feel free to override in backend subclasses.
      */
-    function LiveUser_Admin_Perm_Simple(&$confArray)
+    function LiveUser_Admin_Perm_Simple()
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
-        if (is_array($confArray)) {
-            foreach ($confArray as $key => $value) {
-                if (isset($this->$key)) {
-                    if (empty($this->$key) || !is_array($this->$key)) {
-                        $this->$key =& $confArray[$key];
-                    } else {
-                        $this->$key = array_merge($this->$key, $value);
-                    }
-                }
-            }
-        }
     }
 
     /**
      * Load the storage container
      *
-     *
+     * @access  public
      * @param  mixed         Name of array containing the configuration.
      * @return  boolean true on success or false on failure
-     *
-     * @access  public
      */
     function init(&$conf)
     {
         if (!isset($conf['storage'])) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Missing storage configuration array'));
             return false;
+        }
+
+        if (is_array($conf)) {
+            $keys = array_keys($conf);
+            foreach ($keys as $key) {
+                if (isset($this->$key)) {
+                    $this->$key =& $conf[$key];
+                }
+            }
         }
 
         $this->_storage = LiveUser::storageFactory($conf['storage'], 'LiveUser_Admin_');
         if ($this->_storage === false) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Could not instanciate storage container'));
             return false;
         }
 
