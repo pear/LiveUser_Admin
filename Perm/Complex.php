@@ -654,65 +654,49 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getGroups($params = array())
     {
-        !isset($params['hierarchy']) ? $params['hierarchy'] = false : null;
-        !isset($params['subgroups']) ? $params['subgroups'] = false : null;
-
-        $old_rekey = false;
-        if ($params['subgroups']) {
-            $old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
-            $params['rekey'] = true;
+        if (isset($params['subgroups']) && !$params['subgroups']
+            && isset($params['select'])
+            && ($params['select'] == 'one' || $params['select'] == 'row')
+        ) {
+            return parent::getGroups($params);
         }
 
-        $_groups = parent::getGroups($params);
-        if ($_groups === false) {
-            return false;
+        $tmp_params = $params;
+        $tmp_params['fields'] = array('group_id');
+        $tmp_params['select'] = 'col';
+
+        $_groups = parent::getGroups($tmp_params);
+        if (!$_groups) {
+            return $_groups;
         }
 
-        if ($params['subgroups']) {
-            $param = array(
+        $subgroups = $_groups;
+        $new_count = count($subgroups);
+
+        do {
+            $count = $new_count;
+
+            $tmp_params = array(
                 'fields' => array(
                     'subgroup_id',
-                    'group_id'
-                )
+                ),
+                'filters' => array(
+                    'group_id' => $subgroups
+                 ),
+                'select' => 'col',
             );
-            $subgroups = $this->_getSubGroups($param);
+
+            $subgroups = $this->_getSubGroups($tmp_params);
             if ($subgroups === false) {
                 return false;
             }
 
-            // first it will make all subgroups, then it will update all subgroups to keep
-            // everything up2date
-            for ($i = 0; $i < 2; $i++) {
-                foreach($subgroups as $subgroup) {
-                    if (isset($_groups[$subgroup['group_id']]) && 
-                        isset($_groups[$subgroup['subgroup_id']])
-                    ) {
-                        $_groups[$subgroup['group_id']]['subgroups'][$subgroup['subgroup_id']] = 
-                            $_groups[$subgroup['subgroup_id']];
-                    }
-                }
-            }
+            $_groups= array_merge($_groups, $subgroups);
+            $new_count = count($subgroups);
+        } while(!empty($subgroups) && $count <= $new_count);
 
-            if ($params['hierarchy']) {
-               foreach($subgroups as $subgroup) {
-                    if ($_groups[$subgroup['subgroup_id']]) {
-                       unset($_groups[$subgroup['subgroup_id']]);
-                    }
-                }
-            }
-
-            if ($old_rekey) {
-                return $_groups;
-            } else {
-                $groups = array();
-                foreach ($_groups as $key => $values) {
-                    $groups[] = array_merge(array('group_id' => $key), $values);
-                }
-                return $groups;
-            }
-        }
-
-        return $_groups;
+        $params['filters'] = array('group_id' => $_groups);
+        return parent::getGroups($params);
     }
 
     /**
