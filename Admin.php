@@ -23,10 +23,10 @@ require_once 'LiveUser.php';
  *
  * @var integer
  */
-define('LIVEUSER_ADMIN_ERROR', -1);
-define('LIVEUSER_ADMIN_ERROR_FILTER', -2);
-define('LIVEUSER_ADMIN_ERROR_DATA', -3);
-define('LIVEUSER_ADMIN_ERROR_QUERY_BUILDER', -4);
+define('LIVEUSER_ADMIN_ERROR',                  -1);
+define('LIVEUSER_ADMIN_ERROR_FILTER',           -2);
+define('LIVEUSER_ADMIN_ERROR_DATA',             -3);
+define('LIVEUSER_ADMIN_ERROR_QUERY_BUILDER',    -4);
 define('LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED', -5);
 /**#@-*/
 
@@ -101,10 +101,10 @@ class LiveUser_Admin
      * @var    array
      */
     var $_errorMessages = array(
-        LIVEUSER_ADMIN_ERROR => 'Unknown error',
-        LIVEUSER_ADMIN_ERROR_FILTER => 'There\'s something obscure with the filter array, key %key%',
-        LIVEUSER_ADMIN_ERROR_DATA => 'There\'s something obscure with the data array, key %key%',
-        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER => 'Couldn\'t create the query, reason: %reason%',
+        LIVEUSER_ADMIN_ERROR                  => 'Unknown error',
+        LIVEUSER_ADMIN_ERROR_FILTER           => 'There\'s something obscure with the filter array, key %key%',
+        LIVEUSER_ADMIN_ERROR_DATA             => 'There\'s something obscure with the data array, key %key%',
+        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER    => 'Couldn\'t create the query, reason: %reason%',
         LIVEUSER_ADMIN_ERROR_ALREADY_ASSIGNED => 'That given %field1% has already been assigned to %field2%',
     );
 
@@ -181,6 +181,11 @@ class LiveUser_Admin
         return $this->_log->addChild($log);
     }
 
+    /**
+     *
+     * @access public
+     * @return object
+     */
     function &factory($conf)
     {
         $obj = &new LiveUser_Admin;
@@ -196,6 +201,11 @@ class LiveUser_Admin
         return $obj;
     }
 
+    /**
+     *
+     * @access public
+     * @return object
+     */
     function &singleton($conf)
     {
         static $instance;
