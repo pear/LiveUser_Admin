@@ -278,6 +278,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      */
     function delete($table, $filters)
     {
+        $fields = $orders = array();
+        $selectable_tables = array($table);
+        $result = $this->findTables($fields, $filters, $orders, $selectable_tables);
+        if ($result === false) {
+            return false;
+        }
         $query = 'DELETE FROM ' . $this->prefix . $table;
         $query .= $this->createWhere($filters);
 
@@ -512,6 +518,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     {
         $tables = array();
         $fields_not_yet_linked = array_merge($fields, array_keys($filters), array_keys($orders));
+        $prefix = (bool)(count($selectable_tables) !== 1);
 
         // find tables that the user explicitly requested by using field names
         // like [tablename].[fieldname]
@@ -532,6 +539,13 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         // find the required tables for all other fields
         foreach ($selectable_tables as $table) {
+            if (!isset($this->tables[$table]['fields'])) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => 'table is not defined in the schema structure: '.$table)
+                );
+                return false;
+            }
             // find all fields linked in the current table
             $current_fields = array_intersect($fields_not_yet_linked, array_keys($this->tables[$table]['fields']));
             if (empty($current_fields)) {
@@ -539,26 +553,28 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             }
             // add table to the list of tables to include in the FROM
             $tables[$table] = true;
-            foreach ($current_fields as $field) {
-                // append table name to all selected fields for this table
-                for ($i = 0, $j = count($fields); $i < $j; $i++) {
-                    if ($field == $fields[$i]) {
-                        $fields[$i] = $this->prefix.$table.'.'.$this->alias[$fields[$i]].' AS '.$field;
-                    }
-                }
-                // append table name to all filter fields for this table
-                if (isset($filters[$field])) {
-                    $filters[$this->prefix.$table.'.'.$this->alias[$field]] = $filters[$field];
-                    unset($filters[$field]);
-                }
-                // append table name to all order by fields for this table
-                if (isset($orders[$field])) {
-                    $orders[$this->prefix.$table.'.'.$this->alias[$field]] = $orders[$field];
-                    unset($orders[$field]);
-                }
-            }
             // remove fields that have been dealt with
             $fields_not_yet_linked = array_diff($fields_not_yet_linked, $current_fields);
+            if ($prefix && (!empty($fields_not_yet_linked) || count($table) !== 1)) {
+                foreach ($current_fields as $field) {
+                    // append table name to all selected fields for this table
+                    for ($i = 0, $j = count($fields); $i < $j; $i++) {
+                        if ($field == $fields[$i]) {
+                            $fields[$i] = $this->prefix.$table.'.'.$this->alias[$fields[$i]].' AS '.$field;
+                        }
+                    }
+                    // append table name to all filter fields for this table
+                    if (isset($filters[$field])) {
+                        $filters[$this->prefix.$table.'.'.$this->alias[$field]] = $filters[$field];
+                        unset($filters[$field]);
+                    }
+                    // append table name to all order by fields for this table
+                    if (isset($orders[$field])) {
+                        $orders[$this->prefix.$table.'.'.$this->alias[$field]] = $orders[$field];
+                        unset($orders[$field]);
+                    }
+                }
+            }
             if (empty($fields_not_yet_linked)) {
                 break;
             }
