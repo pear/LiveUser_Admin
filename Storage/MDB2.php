@@ -125,19 +125,24 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
         return $this->dbc->query($query);
     }
 
-    function queryAll($query, $types, $rekey)
-    {
-        return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
-    }
-
     function queryOne($query, $type)
     {
         return $this->dbc->queryOne($query, $type);
     }
 
+    function queryRow($query, $type)
+    {
+        return $this->dbc->queryRow($query, $type);
+    }
+
     function queryCol($query, $type)
     {
-        return $this->dbc->queryCol($query, $type);    
+        return $this->dbc->queryCol($query, $type);
+    }
+
+    function queryAll($query, $types, $rekey)
+    {
+        return $this->dbc->queryAll($query, $types, MDB2_FETCHMODE_ASSOC, $rekey);
     }
 
     function nextId($seqname, $ondemand)
