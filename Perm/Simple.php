@@ -607,7 +607,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function getRights($params = array())
     {
-        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications');
+        $selectable_tables = array('rights', 'userrights', 'grouprights', 'translations', 'areas', 'applications', 'rights_implied');
         $root_table = 'rights';
 
         $data = $this->_makeGet($params, $root_table, $selectable_tables);
