@@ -33,8 +33,8 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>0.14.0</version>
-    <date>2004-12-11</date>
+    <version>0.1.0</version>
+    <date>2004-12-13</date>
     <license>LGPL</license>
     <state>beta</state>
     <notes>- Refactored nto a separate package.</notes>
@@ -98,6 +98,13 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.1.0</version>
+      <date>2004-12-13</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- Refactored nto a separate package.</notes>
+    </release>
     <release>
       <version>0.14.0</version>
       <date>2004-12-11</date>
