@@ -376,7 +376,63 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function getGroups($params = array())
     {
-        return parent::getGroups($params);
+        !isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
+        $old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
+
+        $params['rekey'] = true;
+        $_groups = parent::getGroups($params);
+        if ($_groups === false) {
+            return $_groups;
+        }
+
+        $param = array(
+            'fields' => array(
+                'subgroup_id',
+                'group_id'
+            ),
+            'rekey' => true
+        );
+        /*$subgroups = parent::getGroups($param);
+        if ($subgroups === false) {
+            return $subgroups;
+        }*/
+
+        $query = 'SELECT
+                      subgroups.group_id as group_id,
+                      subgroups.subgroup_id as subgroup_id
+                 FROM
+                     liveuser_group_subgroups subgroups';
+
+        $subgroups = $this->_storage->dbc->queryAll($query, null, MDB2_FETCHMODE_ASSOC);
+
+        // first it will make all subgroups, then it will update all subgroups to keep
+        // everything up2date
+        for ($i = 0; $i < 2; $i++) {
+            foreach($subgroups as $subgroup) {
+                if (isset($_groups[$subgroup['group_id']])) {
+                    $_groups[$subgroup['group_id']]['subgroups'][$subgroup['subgroup_id']] = 
+                        $_groups[$subgroup['subgroup_id']];
+                }
+            }
+        }
+
+        if ($params['hierarchy']) {
+           foreach($subgroups as $subgroup) {
+                if ($_groups[$subgroup['subgroup_id']]) {
+                   unset($_groups[$subgroup['subgroup_id']]);
+                }
+            }
+        }
+
+        if ($old_rekey) {
+            return $_groups;
+        } else {
+            $groups = array();
+            foreach ($_groups as $key => $values) {
+                $groups[] = array_merge(array('group_id' => $key), $values);
+            }
+        }
+        return $groups;
     }
 
     function getRights($params = array())
@@ -392,6 +448,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getInheritedRights()
     {
         getGroup();
+        
+        $_rights = array();
+        
+        return $_rights;
     }
 }
 ?>
