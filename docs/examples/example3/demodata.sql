@@ -1,22 +1,13 @@
 # $Id$
 
 #
-# Table structure for table 'liveuser_languages'
-#
-CREATE TABLE `liveuser_languages` (
-    `language_id` smallint(5) unsigned NOT NULL default '0', 
-    `two_letter_name` char(2) NOT NULL default '',
-    PRIMARY KEY (`language_id`),
-    UNIQUE KEY `two_letter_name` (`two_letter_name`)
-);
-
-#
 # Table structure for table 'liveuser_translations'
 #
+DROP TABLE IF EXISTS `liveuser_translations`;
 CREATE TABLE `liveuser_translations` (
     `section_id` int(11) unsigned NOT NULL default '0',
     `section_type` tinyint(3) unsigned NOT NULL default '0',
-    `language_id` smallint(5) unsigned NOT NULL default '0',
+    `language_id` varchar(2) NOT NULL default '',
     `name` varchar(50) NOT NULL default '',
     `description` varchar(255) default NULL,
     PRIMARY KEY (`section_id`,`section_type`, `language_id`)
@@ -65,13 +56,6 @@ INSERT INTO liveuser_groupusers (perm_user_id, group_id) VALUES (1, 2);
 INSERT INTO liveuser_groupusers (perm_user_id, group_id) VALUES (2, 1);
 
 #
-# Dumping data for table `liveuser_languages`
-#
-
-INSERT INTO liveuser_languages (language_id, two_letter_name) VALUES (1, 'de');
-INSERT INTO liveuser_languages (language_id, two_letter_name) VALUES (2, 'en');
-
-#
 # Dumping data for table `liveuser_perm_users`
 #
 
@@ -101,41 +85,29 @@ INSERT INTO liveuser_userrights (perm_user_id, right_id, right_level) VALUES (1,
 # Dumping data for table `liveuser_translations`
 #
 
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 2, 1, 'TestGebiet', 'Ein G
-ebiet zum testen.');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 2, 2, 'TestArea', 'An Area
- for testing.');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 2, 1, 'Area51', 'Jeder ken
-nt dieses Gebiet.');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 2, 2, 'Area51', 'Everybody
- knows this area.');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 2, 1, 'Kaffeemaschine', 'K
-affeemaschine Typ 165-X');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 2, 2, 'Coffeemaker', 'Coff
-eemaker type 165-X.');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 2, 'de', 'TestGebiet', 'Ein Gebiet zum testen.');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 2, 'en', 'TestArea', 'An Area for testing.');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 2, 'de', 'Area51', 'Jeder kennt dieses Gebiet.');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 2, 'en', 'Area51', 'Everybody knows this area.');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 2, 'de', 'Kaffeemaschine', 'Kaffeemaschine Typ 165-X');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 2, 'en', 'Coffeemaker', 'Coffeemaker type 165-X.');
 
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 3, 1, 'Dummies', 'Die Dumm
-y-Gruppe');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 3, 2, 'Dummies', 'The dummy group');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 3, 1, 'Genies', 'Die wahren Genies (verkannt, aber brilliant)');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 3, 2, 'Genies', 'The true genii (unrecognized but brilliant)');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 3, 'de', 'Dummies', 'Die Dummy-Gruppe');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 3, 'en', 'Dummies', 'The dummy group');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 3, 'de', 'Genies', 'Die wahren Genies (verkannt, aber brilliant)');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 3, 'en', 'Genies', 'The true genii (unrecognized but brilliant)');
 
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 5, 1, 'Lesen', 'Der Benutzer darf etwas lesen.');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 5, 1, 'Schreiben', 'Der Benutzer darf etwas schreiben.');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 5, 1, 'Zugangang', '"Sesam ?ffne dich"-Recht');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (4, 5, 1, 'Feuer', 'Atombombe z?nden');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (5, 5, 1, 'Lift up', 'Alien Raumschiff fliegen');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (6, 5, 1, 'Kaffee machen', 'Kaffeepulver, Wasser, einschalten, warten ...');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (7, 5, 1, 'Kaffee trinken', 'Ahh, Koffein');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 5, 2, 'Read', 'Read authority');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 5, 2, 'Write', 'Write something new');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 5, 2, 'Access', 'Open the doors');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (4, 5, 2, 'Fire', 'Launch the atomic bombs');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (5, 5, 2, 'Lift up', 'Let\'s fly an alian space craft');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (6, 5, 2, 'Make coffee', 'coffee, water, switch it on, wait ...');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (7, 5, 2, 'Drink coffee', 'Ahh, caffeine');
-
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 4, 1, 'Deutsch', 'Deutsche Sprache');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 4, 2, 'English', 'English language');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 4, 2, 'Englisch', 'Englische Sprache');
-INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 4, 1, 'German', 'German language');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 5, 'de', 'Lesen', 'Der Benutzer darf etwas lesen.');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 5, 'de', 'Schreiben', 'Der Benutzer darf etwas schreiben.');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 5, 'de', 'Zugangang', '"Sesam ?ffne dich"-Recht');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (4, 5, 'de', 'Feuer', 'Atombombe z?nden');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (5, 5, 'de', 'Lift up', 'Alien Raumschiff fliegen');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (6, 5, 'de', 'Kaffee machen', 'Kaffeepulver, Wasser, einschalten, warten ...');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (7, 5, 'de', 'Kaffee trinken', 'Ahh, Koffein');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (1, 5, 'en', 'Read', 'Read authority');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (2, 5, 'en', 'Write', 'Write something new');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (3, 5, 'en', 'Access', 'Open the doors');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (4, 5, 'en', 'Fire', 'Launch the atomic bombs');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (5, 5, 'en', 'Lift up', 'Let\'s fly an alian space craft');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (6, 5, 'en', 'Make coffee', 'coffee, water, switch it on, wait ...');
+INSERT INTO liveuser_translations (section_id, section_type, language_id, name, description) VALUES (7, 5, 'en', 'Drink coffee', 'Ahh, caffeine');
