@@ -199,6 +199,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeArea($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'area_id', 'getAreas');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->_storage->delete('area_admin_areas', $filters);
         if ($result === false) {
             return false;
@@ -219,6 +224,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeRight($filters)
     {
+        $filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
+        if (!$filters) {
+            return $filters;
+        }
+
         $result = $this->_storage->delete('right_implied', $filters);
         if ($result === false) {
             return false;
@@ -480,23 +490,142 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getRights($params = array())
     {
-        //!isset($params['hierarchy']) ? $params['hierarchy'] = false : '';
+        !isset($params['hierarchy']) ? $params['hierarchy'] = false : null;
+        !isset($params['inherited']) ? $params['inherited'] = false : null;
+        !isset($params['implied']) ? $params['implied'] = false : null;
         /*$old_rekey = isset($params['rekey']) ?  $params['rekey'] : false;
 
         $params['rekey'] = true;*/
+        $rights = parent::getRights($params);
+        if ($rights === false) {
+            return $rights;
+        }
 
-        return parent::getRights($params);
-    }
-
-    function getImpliedRights()
-    {
-
-    }
-
-    function getInheritedRights($params = array())
-    {
-        getGroup();
         $_rights = array();
+        if (is_array($rights)) {
+            foreach ($rights as $key => $value) {
+                $id = $value['right_id'];
+                $_rights[$id] = $value;
+
+                if ($params['implied']) {
+                    $param = array(
+                        'filters' => array(
+                            'right_id' => $id
+                        )
+                    );
+                    $implied_rights = $this->_getImpliedRights($param);
+
+                    if ($implied_rights === false) {
+                        return $implied_rights;
+                    }
+
+                    foreach($implied_rights as $right) {
+                        if ($_rights[$right['right_id']]) {
+                            continue;
+                        }
+
+                        $right['type'] = 'implied';
+
+                        if ($params['hierarchy']) {
+                            $_rights[$id]['implied_rights'][$right['right_id']] = $right;
+                            unset($_rights[$right['right_id']]);
+                        } else {
+                            $_rights[$right['right_id']] = $right;
+                        }
+                    }
+                }
+
+                if (!isset($_rights[$id]['type']) || !$_rights[$id]['type']) {
+                    $_rights[$id]['type'] = 'granted';
+                }
+            }
+        }
+
+        if ($params['inherited'] &&
+                (isset($params['filters']['perm_user_id']) || 
+                 isset($params['filters']['group_id']))
+        ) {
+            $inherited_rights = $this->_getInheritedRights($options);
+
+            if ($inherited_rights === false) {
+                return $inherited_rights;
+            }
+
+            foreach ($inherited_rights as $right) {
+                if ($_rights[$right['right_id']]) {
+                    continue;
+                }
+
+                $right['type'] = 'inherited';
+                $_rights[$right['right_id']] = $right;
+            }
+        }
+
+        return $_rights;
+    }
+
+    /**
+     *
+     *
+     * @access private
+     * @param array $params
+     * @return array
+     */
+    function _getImpliedRights($params = array())
+    {
+        $result = $this->getRight($params, 'right_implied');
+        if ($result === false) {
+            return $false;
+        }
+
+        $_rights = array();
+        foreach ($result as $row) {
+            $params['filters']['right_id'] = $row['right_id'];
+            $implied_rights = $this->getRights($params);
+            if ($implied_rights === false) {
+                return $implied_rights;
+            }
+
+            $_rights = array_merge($_rights, $implied_rights);
+        }
+
+        return $_rights;
+    }
+
+    /**
+     *
+     *
+     * @access private
+     * @param array $params
+     * @return array
+     */
+    function _getInheritedRights($params = array())
+    {
+        if ($params['filters']['perm_user_id']) {
+            $select = array();
+            $root_table = 'groupusers';
+        } else {
+            $select = array('group_subgroups');
+            $root_table = 'group_subgroups';
+        }
+
+        $result = $this->getGroup($params, $select, $root_table);
+        if ($result === false) {
+            return $result;
+        }
+
+        $_rights = array();
+        foreach ($result as $row) {
+            $params['filters']['perm_user_id'] = null;
+            $params['filters']['group_id'] = $row['group_id'];
+            $inherited_rights = $this->getRights($params);
+            if ($inherited_rights === false) {
+                return $inherited_rights;
+            }
+
+            $_rights = array_merge($_rights, $inherited_rights);
+        }
+
         return $_rights;
     }
 }
