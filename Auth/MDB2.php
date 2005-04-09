@@ -206,16 +206,20 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
 
         $col = $val = array();
 
-        if (isset($this->authTableCols['optional']) && is_array($optionalFields) &&
-            count($optionalFields) > 0) {
+        if (isset($this->authTableCols['optional']) &&
+            is_array($optionalFields) &&
+            count($optionalFields) > 0
+        ) {
             foreach ($optionalFields as $alias => $value) {
                 $col[] = $this->authTableCols['optional'][$alias]['name'];
                 $val[] = $this->dbc->quote($value, $this->authTableCols['optional'][$alias]['type']);
             }
         }
 
-        if (isset($this->authTableCols['custom']) && is_array($customFields) &&
-            count($customFields) > 0) {
+        if (isset($this->authTableCols['custom']) &&
+            is_array($customFields) &&
+            count($customFields) > 0
+        ) {
             foreach ($customFields as $alias => $value) {
                 $col[] = $this->authTableCols['custom'][$alias]['name'];
                 $val[] = $this->dbc->quote($value, $this->authTableCols['custom'][$alias]['type']);
@@ -325,16 +329,20 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
                     . $this->dbc->quote($this->encryptPW($password), $this->authTableCols['required']['passwd']['type']);
         }
 
-        if (isset($this->authTableCols['optional']) && is_array($optionalFields) &&
-            count($optionalFields) > 0) {
+        if (isset($this->authTableCols['optional']) &&
+            is_array($optionalFields) &&
+            count($optionalFields) > 0
+        ) {
             foreach ($optionalFields as $alias => $value) {
                 $updateValues[] = $this->authTableCols['optional'][$alias]['name'] . '=' .
                     $this->dbc->quote($value, $this->authTableCols['optional'][$alias]['type']);
             }
         }
 
-        if (isset($this->authTableCols['custom']) && is_array($customFields) &&
-            count($customFields) > 0) {
+        if (isset($this->authTableCols['custom']) &&
+            is_array($customFields) &&
+            count($customFields) > 0
+        ) {
             foreach ($customFields as $alias => $value) {
                 $updateValues[] = $this->authTableCols['custom'][$alias]['name'] . '=' .
                     $this->dbc->quote($value, $this->authTableCols['custom'][$alias]['type']);
@@ -427,7 +435,7 @@ class LiveUser_Admin_Auth_MDB2 extends LiveUser_Admin_Auth_Common
             }
         }
 
-        if (count($customFields > 0)) {
+        if (count($customFields) > 0) {
               $fields  = ',';
               $fields .= implode(',', $customFields);
         }
