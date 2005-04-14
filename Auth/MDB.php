@@ -134,13 +134,15 @@ class LiveUser_Admin_Auth_MDB extends LiveUser_Admin_Auth_Common
      */
     var $authTableCols = array(
         'required' => array(
-            'auth_user_id' => array('name' => 'auth_user_id', 'type' => ''),
-            'handle'       => array('name' => 'handle',       'type' => ''),
-            'passwd'       => array('name' => 'passwd',       'type' => ''),
+            'auth_user_id' => array('name' => 'auth_user_id', 'type' => 'text'),
+            'handle'       => array('name' => 'handle',       'type' => 'text'),
+            'passwd'       => array('name' => 'passwd',       'type' => 'text'),
         ),
         'optional' => array(
-            'lastlogin'    => array('name' => 'lastlogin',    'type' => ''),
-            'is_active'    => array('name' => 'is_active',    'type' => '')
+            'owner_user_id'  => array('name' => 'owner_user_id',  'type' => 'integer'),
+            'owner_group_id' => array('name' => 'owner_group_id', 'type' => 'integer'),
+            'lastlogin'      => array('name' => 'lastlogin',      'type' => 'timestamp'),
+            'is_active'      => array('name' => 'is_active',      'type' => 'boolean'),
         )
     );
 
