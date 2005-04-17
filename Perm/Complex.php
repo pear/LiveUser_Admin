@@ -606,10 +606,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * subgroups - defaults to false
      *    If subgroups should be included, if false then it acts same as the
      *    medium container getGroups, if set to true it will return all subgroups
-     *    like they are directly assigned, if set to 'hierachy' it will place
+     *    like they are directly assigned, if set to 'hierarchy' it will place
      *    a tree of the subgroups under the array key 'subgroups'
      *
-     *    note that 'hierachy' requires 'rekey' enabled, 'group' is disabled,
+     *    note that 'hierarchy' requires 'rekey' enabled, 'group' is disabled,
      *    'select' set to 'all' and the first field needs to be 'group_id'
      *
      * rekey = defaults to false
@@ -644,8 +644,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return parent::getGroups($params);
         }
 
-        if ($subgroup === 'hierachy') {
-            return $this->_getGroupsWithHierachy($params);
+        if ($subgroup === 'hierarchy') {
+            return $this->_getGroupsWithHierarchy($params);
         }
 
         return $this->_getGroupsWithSubgroups($params);
@@ -708,7 +708,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     /**
      * Helper method to fetch all groups including the subgroups in a 
-     * hierachy tree structure
+     * hierarchy tree structure
      *
      * @param array $params
      * @return boolean | array
@@ -716,7 +716,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * @access private
      */
 
-    function _getGroupsWithHierachy($params)
+    function _getGroupsWithHierarchy($params)
     {
         if ((!isset($params['rekey']) || !$params['rekey'])
             || (isset($params['group']) && $params['group'])
@@ -725,7 +725,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         ) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => "Setting 'subgroups' to 'hierachy' is only allowed if 'rekey' is enabled, ".
+                array('msg' => "Setting 'subgroups' to 'hierarchy' is only allowed if 'rekey' is enabled, ".
                     "'group' is disabled, 'select' is 'all' and the first field is 'group_id'")
             );
             return false;
@@ -760,7 +760,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         foreach ($subgroups as $group_id => $subgroup_ids) {
             $tmp_params = $params;
-            $tmp_params['subgroups'] = 'hierachy';
+            $tmp_params['subgroups'] = 'hierarchy';
             $tmp_params['filters'] = array('group_id' => $subgroup_ids);
             $subgroup_data = parent::getGroups($tmp_params);
             if ($subgroup_data === false) {
