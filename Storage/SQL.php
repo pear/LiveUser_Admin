@@ -502,6 +502,39 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
+     * Determine if an explicitly prefixed table is in the selectable table
+     * list and is a valid field
+     *
+     *
+     * @param array $field
+     * @param array $selectable_tables
+     * @return mixed | array, null or false on failure
+     *
+     * @access private
+     */
+    function _checkExplicitTable($field, $selectable_tables)
+    {
+        if (!preg_match('/^([^.]+)\.(.+)$/', $field, $match)) {
+            return null;
+        }
+        if (!isset($this->tables[$match[1]]['fields'][$match[2]])) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'table/field is not defined in the schema structure: '.$field)
+            );
+            return false;
+        }
+        if (!in_array($match[1], $selectable_tables)) {
+            $this->_stack->push(
+                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                array('reason' => 'explicit field is not a selectable: ' . $match[1])
+            );
+            return false;
+        }
+        return $match[1];
+    }
+
+    /**
      * Find all the tables that need to be joined to be able to select
      * all requested columns and to be able to filter the joined rows
      *
@@ -517,27 +550,58 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     function findTables(&$fields, &$filters, &$orders, $selectable_tables)
     {
         $tables = array();
-        $fields_not_yet_linked = array_merge($fields, array_keys($filters), array_keys($orders));
-        $prefix = (bool)(count($selectable_tables) !== 1);
 
-        // find tables that the user explicitly requested by using field names
-        // like [tablename].[fieldname]
-        foreach ($fields_not_yet_linked as $key => $field) {
-            if (preg_match('/^([^.]+)\.(.+)$/', $field, $match)) {
-                if (!in_array($match[1], $selectable_tables)) {
-                    $this->_stack->push(
-                        LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                        array('reason' => 'explicit table does not exist: ' . $match[1])
-                    );
-                    return false;
-                }
-                // todo add prefix!!
-                $tables[$match[1]] = true;
-                unset($fields_not_yet_linked[$key]);
+        // find tables that the user explicitly requested
+        // by using field names like [tablename].[fieldname]
+        $fields_tmp = $fields;
+        foreach ($fields_tmp as $key => $field) {
+           $match = $this->_checkExplicitTable($field, $selectable_tables);
+            if (is_null($match)) {
+                continue;
+            } elseif ($match === false) {
+                return false;
             }
+            $tables[$match[1]] = true;
+            unset($fields_tmp[$key]);
+            // append table prefix and AS to this field
+            $fields[$key] = $this->prefix.$field.' AS '.$match[2];
+        }
+
+        $filters_tmp = $filters;
+        foreach ($filters_tmp as $field => $value) {
+           $match = $this->_checkExplicitTable($field, $selectable_tables);
+            if (is_null($match)) {
+                continue;
+            } elseif ($match === false) {
+                return false;
+            }
+            $tables[$match[1]] = true;
+            unset($fields_tmp[$field]);
+            // append prefix to this filter
+            $filters[$this->prefix.$field] = $value;
+        }
+
+        $orders_tmp = $orders;
+        foreach ($orders_tmp as $field => $value) {
+           $match = $this->_checkExplicitTable($field, $selectable_tables);
+            if (is_null($match)) {
+                continue;
+            } elseif ($match === false) {
+                return false;
+            }
+            $tables[$match[1]] = true;
+            unset($orders_tmp[$field]);
+            // append prefix to this order by field
+            $orders[$this->prefix.$field] = $value;
+        }
+
+        $fields_not_yet_linked = array_merge($fields_tmp, array_keys($filters_tmp), array_keys($orders_tmp));
+        if (empty($fields_not_yet_linked)) {
+            return $tables;
         }
 
         // find the required tables for all other fields
+        $table_prefix = !empty($tables);
         foreach ($selectable_tables as $table) {
             if (!isset($this->tables[$table]['fields'])) {
                 $this->_stack->push(
@@ -555,7 +619,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $tables[$table] = true;
             // remove fields that have been dealt with
             $fields_not_yet_linked = array_diff($fields_not_yet_linked, $current_fields);
-            if ($prefix && (!empty($fields_not_yet_linked) || count($tables) !== 1)) {
+            if ($table_prefix || !empty($fields_not_yet_linked)) {
+                $table_prefix = true;
                 foreach ($current_fields as $field) {
                     // append table name to all selected fields for this table
                     for ($i = 0, $j = count($fields); $i < $j; $i++) {
