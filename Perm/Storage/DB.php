@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
- * A framework for authentication and authorization in PHP applications
+ * A framework for authentication and permorization in PHP applications
  *
  * LiveUser_Admin is meant to be used with the LiveUser package.
  * It is composed of all the classes necessary to administrate
@@ -48,13 +48,13 @@
  *
  * @category authentication
  * @package  LiveUser_Admin
- * @author  Markus Wolff <wolff@21st.de>
- * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @author  Lukas Smith <smith@backendmedia.com>
- * @author Arnaud Limbourg <arnaud@php.net>
- * @author  Christian Dickmann <dickmann@php.net>
- * @author  Matt Scifo <mscifo@php.net>
- * @author  Bjoern Kraus <krausbn@php.net>
+ * @permor  Markus Wolff <wolff@21st.de>
+ * @permor Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @permor  Lukas Smith <smith@backendmedia.com>
+ * @permor Arnaud Limbourg <arnaud@php.net>
+ * @permor  Christian Dickmann <dickmann@php.net>
+ * @permor  Matt Scifo <mscifo@php.net>
+ * @permor  Bjoern Kraus <krausbn@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version CVS: $Id$
@@ -65,7 +65,7 @@
  * Require parent class definition.
  */
 require_once 'LiveUser/Admin/Storage/DB.php';
-require_once 'LiveUser/Auth/Storage/SQL.php';
+require_once 'LiveUser/Perm/Storage/SQL.php';
 
 /**
  * This is a PEAR::DB backend driver for the LiveUser class.
@@ -82,14 +82,14 @@ require_once 'LiveUser/Auth/Storage/SQL.php';
  *
  * @category authentication
  * @package  LiveUser_Admin
- * @author  Lukas Smith <smith@backendmedia.com>
- * @author  Bjoern Kraus <krausbn@php.net>
+ * @permor  Lukas Smith <smith@backendmedia.com>
+ * @permor  Bjoern Kraus <krausbn@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version Release: @package_version@
  * @link http://pear.php.net/LiveUser_Admin
  */
-class LiveUser_Admin_Auth_Storage_DB extends LiveUser_Admin_Storage_DB
+class LiveUser_Admin_Perm_Storage_DB extends LiveUser_Admin_Storage_DB
 {
     /**
      * Initializes database storage container.
@@ -106,21 +106,21 @@ class LiveUser_Admin_Auth_Storage_DB extends LiveUser_Admin_Storage_DB
     {
         parent::init($storageConf);
 
-        require_once 'LiveUser/Auth/Storage/Globals.php';
+        require_once 'LiveUser/Perm/Storage/Globals.php';
         if (empty($this->tables)) {
-            $this->tables = $GLOBALS['_LiveUser']['auth']['tables'];
+            $this->tables = $GLOBALS['_LiveUser']['perm']['tables'];
         } else {
-            $this->tables = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['tables'], $this->tables);
+            $this->tables = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['perm']['tables'], $this->tables);
         }
         if (empty($this->fields)) {
-            $this->fields = $GLOBALS['_LiveUser']['auth']['fields'];
+            $this->fields = $GLOBALS['_LiveUser']['perm']['fields'];
         } else {
-            $this->fields = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['fields'], $this->fields);
+            $this->fields = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['perm']['fields'], $this->fields);
         }
         if (empty($this->alias)) {
-            $this->alias = $GLOBALS['_LiveUser']['auth']['alias'];
+            $this->alias = $GLOBALS['_LiveUser']['perm']['alias'];
         } else {
-            $this->alias = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['alias'], $this->alias);
+            $this->alias = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['perm']['alias'], $this->alias);
         }
     }
 }
