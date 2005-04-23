@@ -65,7 +65,7 @@
  * Require parent class definition.
  */
 require_once 'LiveUser/Admin/Storage/DB.php';
-require_once 'LiveUser/Perm/Storage/SQL.php';
+require_once 'LiveUser/Auth/Storage/SQL.php';
 
 /**
  * This is a PEAR::DB backend driver for the LiveUser class.
@@ -89,7 +89,7 @@ require_once 'LiveUser/Perm/Storage/SQL.php';
  * @version Release: @package_version@
  * @link http://pear.php.net/LiveUser_Admin
  */
-class LiveUser_Admin_Perm_Storage_DB extends LiveUser_Admin_Storage_DB
+class LiveUser_Admin_Auth_Storage_DB extends LiveUser_Admin_Storage_DB
 {
     /**
      * Initializes database storage container.
@@ -106,21 +106,21 @@ class LiveUser_Admin_Perm_Storage_DB extends LiveUser_Admin_Storage_DB
     {
         parent::init($storageConf);
 
-        require_once 'LiveUser/Perm/Storage/Globals.php';
+        require_once 'LiveUser/Auth/Storage/Globals.php';
         if (empty($this->tables)) {
-            $this->tables = $GLOBALS['_LiveUser']['perm']['tables'];
+            $this->tables = $GLOBALS['_LiveUser']['auth']['tables'];
         } else {
-            $this->tables = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['perm']['tables'], $this->tables);
+            $this->tables = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['tables'], $this->tables);
         }
         if (empty($this->fields)) {
-            $this->fields = $GLOBALS['_LiveUser']['perm']['fields'];
+            $this->fields = $GLOBALS['_LiveUser']['auth']['fields'];
         } else {
-            $this->fields = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['perm']['fields'], $this->fields);
+            $this->fields = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['fields'], $this->fields);
         }
         if (empty($this->alias)) {
-            $this->alias = $GLOBALS['_LiveUser']['perm']['alias'];
+            $this->alias = $GLOBALS['_LiveUser']['auth']['alias'];
         } else {
-            $this->alias = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['perm']['alias'], $this->alias);
+            $this->alias = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['alias'], $this->alias);
         }
     }
 }
