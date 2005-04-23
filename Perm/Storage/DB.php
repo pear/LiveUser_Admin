@@ -2,7 +2,7 @@
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
- * A framework for authentication and permorization in PHP applications
+ * A framework for authentication and authorization in PHP applications
  *
  * LiveUser_Admin is meant to be used with the LiveUser package.
  * It is composed of all the classes necessary to administrate
@@ -48,13 +48,13 @@
  *
  * @category authentication
  * @package  LiveUser_Admin
- * @permor  Markus Wolff <wolff@21st.de>
- * @permor Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @permor  Lukas Smith <smith@backendmedia.com>
- * @permor Arnaud Limbourg <arnaud@php.net>
- * @permor  Christian Dickmann <dickmann@php.net>
- * @permor  Matt Scifo <mscifo@php.net>
- * @permor  Bjoern Kraus <krausbn@php.net>
+ * @author  Markus Wolff <wolff@21st.de>
+ * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Lukas Smith <smith@backendmedia.com>
+ * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Christian Dickmann <dickmann@php.net>
+ * @author  Matt Scifo <mscifo@php.net>
+ * @author  Bjoern Kraus <krausbn@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version CVS: $Id$
@@ -82,8 +82,8 @@ require_once 'LiveUser/Perm/Storage/SQL.php';
  *
  * @category authentication
  * @package  LiveUser_Admin
- * @permor  Lukas Smith <smith@backendmedia.com>
- * @permor  Bjoern Kraus <krausbn@php.net>
+ * @author  Lukas Smith <smith@backendmedia.com>
+ * @author  Bjoern Kraus <krausbn@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version Release: @package_version@
