@@ -14,6 +14,10 @@ $version = '0.2.2';
 $notes = <<<EOT
 - delete() now uses findTable() to ensure that only defined table with the proper fields are being used
 - findTable() now only prefixes fields if necessary
+- typo fix: hierachy -> hierarchy (bug #4150)
+- added ability to prefix explicit tables in findTables()
+- no longer use "ids" in insert so we can remove this information from the
+  Globals.php file in the client
 EOT;
 
 $description = <<<EOT
