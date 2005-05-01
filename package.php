@@ -18,6 +18,7 @@ $notes = <<<EOT
 - added ability to prefix explicit tables in findTables()
 - no longer use "ids" in insert so we can remove this information from the
   Globals.php file in the client
+- examples were converted to use MDB2_Schema. See the demodata.php script found in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
 EOT;
 
 $description = <<<EOT
