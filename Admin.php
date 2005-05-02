@@ -678,7 +678,6 @@ class LiveUser_Admin
     /**
     * Finds and gets full userinfo by filtering inside the auth container
     *
-    *
     * @param  mixed auth filters (as for getUsers() from the auth container
     * @param  boolean if only one row should be returned
     * @return mixed Array with userinfo if found else error object
@@ -723,12 +722,12 @@ class LiveUser_Admin
     }
 
     /**
-     * Wrapper method to get the Error Stack
-     *
-     * @return array  an array of the errors
-     *
-     * @access public
-     */
+    * Wrapper method to get the Error Stack
+    *
+    * @return array  an array of the errors
+    *
+    * @access public
+    */
     function getErrors()
     {
         if (is_object($this->_stack)) {
@@ -736,4 +735,27 @@ class LiveUser_Admin
         }
         return false;
     }
+
+    /**
+    * Calls a method using the __call() magic method on perm or auth
+    *
+    * @param string method name
+    * @param array  arguments
+    * @return mixed returned value
+    *
+    * @access public
+    */
+    function __call($method, $params)
+    {
+        if (is_object($this->perm) && method_exists($this->perm, $method)) {
+            return call_user_func_array(array(&$this->perm, $method), $params);
+        }
+        if (is_object($this->auth) && method_exists($this->auth, $method)) {
+            return call_user_func_array(array(&$this->auth, $method), $params);
+        }
+        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            array('msg' => 'Could not find method: '.$method));
+        return false;
+    }
+
 }
