@@ -155,7 +155,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         foreach ($this->tables[$table]['fields'] as $field => $required) {
             if ($required && !isset($data[$field])) {
                 if ($required == 'seq') {
-                    $result = $this->getBeforeId($this->prefix . $table, true);
+                    $result = $this->getBeforeId($this->prefix . $this->alias[$table], true);
                     if ($result === false) {
                         return false;
                     }
@@ -187,7 +187,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             return false;
         }
         if ($sequence_field) {
-            return $this->getAfterId($data[$sequence_field], $this->prefix . $table);
+            return $this->getAfterId($data[$sequence_field], $this->prefix . $this->alias[$table]);
         }
         return $result;
     }
@@ -205,7 +205,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      */
     function createInsert($table, $fields, $values)
     {
-        $query = 'INSERT INTO ' . $this->prefix . $table . "\n";
+        $query = 'INSERT INTO ' . $this->prefix . $this->alias[$table] . "\n";
         $query .= '(' . implode(', ', $fields) . ')' . "\n";
         $query .= 'VALUES (' . implode(', ', $values) . ')';
         return $query;
@@ -262,7 +262,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      */
     function createUpdate($table, $fields, $filters)
     {
-        $query = 'UPDATE ' . $this->prefix . $table . ' SET'. "\n";
+        $query = 'UPDATE ' . $this->prefix . $this->alias[$table] . ' SET'. "\n";
         $query .= implode(",\n", $fields);
         $query .= $this->createWhere($filters);
         return $query;
@@ -286,7 +286,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if ($result === false) {
             return false;
         }
-        $query = 'DELETE FROM ' . $this->prefix . $table;
+        $query = 'DELETE FROM ' . $this->prefix . $this->alias[$table];
         $query .= $this->createWhere($filters);
 
         $result = $this->query($query);
@@ -325,7 +325,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         $query = 'SELECT ';
         $query .= 'COUNT(' . $this->alias[$field] . ')';
-        $query .= "\n" . 'FROM ' . $this->prefix . $table;
+        $query .= "\n" . 'FROM ' . $this->prefix . $this->alias[$table];
         $query .= $this->createWhere($filters);
         return $this->queryOne($query, 'integer');
     }
@@ -566,7 +566,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $tables[$match[1]] = true;
             unset($fields_tmp[$key]);
             // append table prefix and AS to this field
-            $fields[$key] = $this->prefix.$field.' AS '.$match[2];
+            $fields[$key] = $this->prefix.$this->alias[$match[1]].'.'.$match[2].' AS '.$match[2];
         }
 
         $filters_tmp = $filters;
@@ -580,7 +580,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $tables[$match[1]] = true;
             unset($fields_tmp[$field]);
             // append prefix to this filter
-            $filters[$this->prefix.$field] = $value;
+            $filters[$this->prefix.$this->alias[$match[1]].'.'.$match[2]] = $value;
         }
 
         $orders_tmp = $orders;
@@ -594,7 +594,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $tables[$match[1]] = true;
             unset($orders_tmp[$field]);
             // append prefix to this order by field
-            $orders[$this->prefix.$field] = $value;
+            $orders[$this->prefix.$this->alias[$match[1]].'.'.$match[2]] = $value;
         }
 
         $fields_not_yet_linked = array_merge($fields_tmp, array_keys($filters_tmp), array_keys($orders_tmp));
@@ -627,17 +627,17 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     // append table name to all selected fields for this table
                     for ($i = 0, $j = count($fields); $i < $j; $i++) {
                         if ($field == $fields[$i]) {
-                            $fields[$i] = $this->prefix.$table.'.'.$this->alias[$fields[$i]].' AS '.$field;
+                            $fields[$i] = $this->prefix.$this->alias[$table].'.'.$this->alias[$fields[$i]].' AS '.$field;
                         }
                     }
                     // append table name to all filter fields for this table
                     if (isset($filters[$field])) {
-                        $filters[$this->prefix.$table.'.'.$this->alias[$field]] = $filters[$field];
+                        $filters[$this->prefix.$this->alias[$table].'.'.$this->alias[$field]] = $filters[$field];
                         unset($filters[$field]);
                     }
                     // append table name to all order by fields for this table
                     if (isset($orders[$field])) {
-                        $orders[$this->prefix.$table.'.'.$this->alias[$field]] = $orders[$field];
+                        $orders[$this->prefix.$this->alias[$table].'.'.$this->alias[$field]] = $orders[$field];
                         unset($orders[$field]);
                     }
                 }
@@ -706,8 +706,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     if (isset($this->tables[$root_table]['fields'][$joinsource])
                         && isset($this->tables[$table]['fields'][$jointarget])
                     ) {
-                        $filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
-                            $this->prefix.$table.'.'.$this->alias[$jointarget];
+                        $filters[$this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource]] =
+                            $this->prefix.$this->alias[$table].'.'.$this->alias[$jointarget];
                     // target table uses a field in the join and source table
                     // a constant value
                     } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
@@ -715,7 +715,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         if ($value_quoted === false) {
                             return false;
                         }
-                        $filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] = $value_quoted;
+                        $filters[$this->prefix.$this->alias[$table].'.'.$this->alias[$jointarget]] = $value_quoted;
                     // source table uses a field in the join and target table
                     // a constant value
                     } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
@@ -723,7 +723,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         if ($value_quoted === false) {
                             return false;
                         }
-                        $filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] = $value_quoted;
+                        $filters[$this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource]] = $value_quoted;
                     // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
@@ -735,8 +735,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 }
             // handle single column join
             } else {
-                $filters[$this->prefix.$root_table.'.'.$this->tables[$root_table]['joins'][$table]] =
-                    $this->prefix.$table.'.'.$this->tables[$root_table]['joins'][$table];
+                $filters[$this->prefix.$this->alias[$root_table].'.'.$this->tables[$root_table]['joins'][$table]] =
+                    $this->prefix.$this->alias[$table].'.'.$this->tables[$root_table]['joins'][$table];
             }
             $result = $this->createJoinFilter($table, $filters, $tables, $selectable_tables, $visited);
             // check if the recursion was able to find a join that would reduce
@@ -769,8 +769,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     if (isset($this->tables[$root_table]['fields'][$joinsource])
                         && isset($this->tables[$table]['fields'][$jointarget])
                     ) {
-                        $tmp_filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] =
-                            $this->prefix.$table.'.'.$this->alias[$jointarget];
+                        $tmp_filters[$this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource]] =
+                            $this->prefix.$this->alias[$table].'.'.$this->alias[$jointarget];
                     // target table uses a field in the join and source table
                     // a constant value
                     } elseif (isset($this->tables[$table]['fields'][$jointarget])) {
@@ -778,7 +778,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         if ($value_quoted === false) {
                             return false;
                         }
-                        $tmp_filters[$this->prefix.$table.'.'.$this->alias[$jointarget]] = $value_quoted;
+                        $tmp_filters[$this->prefix.$this->alias[$table].'.'.$this->alias[$jointarget]] = $value_quoted;
                     // source table uses a field in the join and target table
                     // a constant value
                     } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
@@ -786,7 +786,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         if ($value_quoted === false) {
                             return false;
                         }
-                        $tmp_filters[$this->prefix.$root_table.'.'.$this->alias[$joinsource]] = $value_quoted;
+                        $tmp_filters[$this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource]] = $value_quoted;
                     // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
@@ -798,8 +798,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 }
             // handle single column join
             } else {
-                $tmp_filters[$this->prefix.$root_table.'.'.$fields] =
-                    $this->prefix.$table.'.'.$fields;
+                $tmp_filters[$this->prefix.$this->alias[$root_table].'.'.$fields] =
+                    $this->prefix.$this->alias[$table].'.'.$fields;
             }
             // recurse
             $result = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
