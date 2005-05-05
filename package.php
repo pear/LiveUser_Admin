@@ -22,6 +22,7 @@ $notes = <<<EOT
 - examples were converted to use MDB2_Schema. See the demodata.php script found
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
 - added _call() overloading method for php5 users in LiveUser_Admin class
+- added support for table name aliasing (fairly untested)
 EOT;
 
 $description = <<<EOT

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.0a9">
+<package version="1.0" packagerversion="1.4.0a11">
  <name>LiveUser_Admin</name>
  <summary>User authentication and permission management framework</summary>
  <description>LiveUser_Admin is meant to be used with the LiveUser package.
@@ -54,16 +54,21 @@
   </maintainer>
   </maintainers>
  <release>
-  <version>0.2.1</version>
-  <date>2005-03-30</date>
+  <version>0.2.2</version>
+  <date>2005-05-05</date>
   <license>LGPL</license>
   <state>beta</state>
-  <notes>- typo fix in autoinit option (bug #3844)
-- updated LiveUser dependency to 0.15.0
-- fixed type handling in updateUser()
-- update getErrors() with code from the LiveUser class
-- typo fix in outputRightsConstants() (bug #3897)
-- removed calls to make remove filter on delete of relationship tables (bug #3874)
+  <notes>- delete() now uses findTable() to ensure that only defined table with the
+  proper fields are being used
+- findTable() now only prefixes fields if necessary
+- typo fix: hierachy -&gt; hierarchy (bug #4150)
+- added ability to prefix explicit tables in findTables()
+- no longer use &quot;ids&quot; in insert so we can remove this information from the
+  Globals.php file in the client
+- examples were converted to use MDB2_Schema. See the demodata.php script found
+  in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
+- added _call() overloading method for php5 users in LiveUser_Admin class
+- added support for table name aliasing (fairly untested)
   </notes>
   <deps>
    <dep type="php" rel="ge" version="4.2.0" optional="no"/>
@@ -79,6 +84,11 @@
   <filelist>
    <dir name="/" baseinstalldir="/LiveUser/Admin">
     <dir name="Auth">
+     <dir name="Storage">
+      <file role="php" name="DB.php"/>
+      <file role="php" name="MDB.php"/>
+      <file role="php" name="MDB2.php"/>
+     </dir> <!-- /Auth/Storage -->
      <file role="php" name="Common.php"/>
      <file role="php" name="DB.php"/>
      <file role="php" name="MDB.php"/>
@@ -91,7 +101,7 @@
        <file role="doc" name="Area.php"/>
        <file role="doc" name="Area_Admin_Areas.php"/>
        <file role="doc" name="config.inc.php"/>
-       <file role="doc" name="extra_sql.sql"/>
+       <file role="doc" name="demodata.xml"/>
        <file role="doc" name="Group.php"/>
        <file role="doc" name="GroupRights.php"/>
        <file role="doc" name="ImplyRights.php"/>
@@ -108,7 +118,7 @@
        <file role="doc" name="area51.php"/>
        <file role="doc" name="coffeemaker.php"/>
        <file role="doc" name="conf.php"/>
-       <file role="doc" name="demodata.sql"/>
+       <file role="doc" name="demodata.xml"/>
        <file role="doc" name="example.php"/>
        <file role="doc" name="index.html"/>
        <file role="doc" name="loginscreen.php"/>
@@ -142,6 +152,24 @@
   </filelist>
  </release>
  <changelog>
+   <release>
+    <version>0.2.2</version>
+    <date>2005-05-05</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- delete() now uses findTable() to ensure that only defined table with the
+  proper fields are being used
+- findTable() now only prefixes fields if necessary
+- typo fix: hierachy -&gt; hierarchy (bug #4150)
+- added ability to prefix explicit tables in findTables()
+- no longer use &quot;ids&quot; in insert so we can remove this information from the
+  Globals.php file in the client
+- examples were converted to use MDB2_Schema. See the demodata.php script found
+  in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
+- added _call() overloading method for php5 users in LiveUser_Admin class
+- added support for table name aliasing (fairly untested)
+    </notes>
+   </release>
    <release>
     <version>0.2.1</version>
     <date>2005-03-30</date>
