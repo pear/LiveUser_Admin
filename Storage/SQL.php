@@ -424,9 +424,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $joinfilters = $result[0];
         }
 
+        foreach($tables as $key => $table) {
+            $tables[$key] = $this->prefix.$this->alias[$table];
+        }
         // build SELECT query
         $query = 'SELECT '.implode(', ', $fields);
-        $query.= "\n".' FROM '.$this->prefix.implode(', '.$this->prefix, array_keys($tables));
+        $query.= "\n".' FROM '.implode(', ', array_keys($tables));
         $query.= $this->createWhere($filters, $joinfilters);
         if ($orders) {
             $query.= "\n".' ORDER BY ';
