@@ -829,6 +829,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     }
                 }
             }
+        } elseif (is_integer($rights)) {
+            $_rights[$rights]['right_id'] = $rights;
         }
 
         if ($params['inherited'] &&
