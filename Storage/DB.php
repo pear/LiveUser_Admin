@@ -146,10 +146,12 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * Apply a type to all values of an array and return as a comma
+     * seperated string useful for generating IN statements
      *
-     * @param array $array
-     * @param string $type
-     * @return string
+     * @param array $array data array
+     * @param string $type determines type of the field
+     * @return string comma seperated values
      *
      * @access public
      * @uses DB::quoteSmart
@@ -169,8 +171,9 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * This function is not implemented into DB so we
      * can't make use of it.
      *
-     * @param string $limit
-     * @param string $offset
+     * @param string $limit number of rows to select
+     * @param string $offset first row to select
+     *
      * @return boolean false This feature isn't supported by DB
      *
      * @access public
@@ -242,7 +245,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param string $type array argument that specifies a list of
+     * @param array $type array argument that specifies a list of
      *       expected datatypes of the result set columns, so that the eventual
      *       conversions may be performed. The default list of datatypes is
      *       empty, meaning that no conversion is performed.

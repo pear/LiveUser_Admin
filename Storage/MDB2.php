@@ -156,10 +156,13 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     * Apply a type to all values of an array and return as a comma
+     * seperated string useful for generating IN statements
      *
-     * @param array $array
-     * @param string $type
-     * @return string
+     * @param array $array data array
+     * @param string $type determines type of the field
+     *
+     * @return string comma seperated values
      *
      * @access public
      * @uses MDB2::implodeArray
@@ -171,9 +174,10 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     }
 
     /**
+     *  Sets the range of the next query
      *
-     * @param string $limit
-     * @param string $offset
+     * @param string $limit number of rows to select
+     * @param string $offset first row to select
      * @return
      *
      * @access public
@@ -188,6 +192,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     /**
      * Execute query
+     *
      * @param string $query query
      * @return boolean | integer
      *
@@ -241,7 +246,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param string $type array argument that specifies a list of
+     * @param array $type array argument that specifies a list of
      *       expected datatypes of the result set columns, so that the eventual
      *       conversions may be performed. The default list of datatypes is
      *       empty, meaning that no conversion is performed.
