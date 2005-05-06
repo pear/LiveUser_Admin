@@ -9,7 +9,7 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.2.2';
+$version = '0.3.0';
 
 $notes = <<<EOT
 - delete() now uses findTable() to ensure that only defined table with the
@@ -23,6 +23,7 @@ $notes = <<<EOT
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
 - added _call() overloading method for php5 users in LiveUser_Admin class
 - added support for table name aliasing (fairly untested)
+- improved the "with" support (fixing bug #3245)
 EOT;
 
 $description = <<<EOT
