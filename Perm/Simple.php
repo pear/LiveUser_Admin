@@ -106,6 +106,13 @@ class LiveUser_Admin_Perm_Simple
         'getTranslations' => array('translations'),
     );
 
+    var $withFieldMethodMap = array(
+        'perm_user_id' => 'getUsers',
+        'right_id' => 'getRights',
+        'area_id' => 'getAreas',
+        'application_id' => 'getApplications',
+    );
+
     /**
      * Class constructor. Feel free to override in backend subclasses.
      */
@@ -633,8 +640,21 @@ class LiveUser_Admin_Perm_Simple
         // ensure that all $with fields are fetched
         $fields = array_merge($fields, array_keys($with));
 
-        return $this->_storage->select($select, $fields, $filters, $orders,
+        $data = $this->_storage->select($select, $fields, $filters, $orders,
             $rekey, $group, $limit, $offset, $root_table, $selectable_tables);
+
+        if (!empty($with) && is_array($data)) {
+            foreach ($data as $key => $row) {
+                foreach ($params['with'] as $field => $with_params) {
+                    $with_params['filters'][$field] = $row[$field];
+                    $method = $this->withFieldMethodMap[$field];
+                    $data_key = preg_replace('/(.+)_id/', '\\1s', $field);
+                    $data[$key][$data_key] = $this->$method($with_params);
+                }
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -651,27 +671,7 @@ class LiveUser_Admin_Perm_Simple
         $selectable_tables = $this->selectable_tables['getUsers'];
         $root_table = reset($selectable_tables);
 
-        $data = $this->_makeGet($params, $root_table, $selectable_tables);
-
-        if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
-            foreach ($params['with'] as $field => $params) {
-                // this is lame and needs to be made more flexible
-                if ($field == 'right_id') {
-                    $method = 'getRights';
-                } elseif ($field == 'group_id') {
-                    $method = 'getGroups';
-                    $params['subgroups'] = false;
-                } else {
-                    break;
-                }
-
-                foreach ($data as $key => $row) {
-                    $params['filters'][$field] = $row[$field];
-                    $data[$key]['rights'] = $this->$method($params);
-                }
-            }
-        }
-        return $data;
+        return $this->_makeGet($params, $root_table, $selectable_tables);
     }
 
     /**
@@ -688,29 +688,7 @@ class LiveUser_Admin_Perm_Simple
         $selectable_tables = $this->selectable_tables['getRights'];
         $root_table = reset($selectable_tables);
 
-        $data = $this->_makeGet($params, $root_table, $selectable_tables);
-
-        if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
-            foreach ($params['with'] as $field => $params) {
-                // this is lame and needs to be made more flexible
-                if ($field == 'right_id') {
-                    $method = 'getUsers';
-                } elseif ($field == 'group_id') {
-                    $method = 'getGroups';
-                    $params['subgroups'] = false;
-                } else {
-                    break;
-                }
-
-                foreach ($data as $key => $row) {
-                    $params['filters'][$field] = $row[$field];
-                    $data[$key]['rights'] = $this->$method($params);
-                }
-
-            }
-        }
-
-        return $data;
+        return $this->_makeGet($params, $root_table, $selectable_tables);
     }
 
     /**

@@ -102,6 +102,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         $this->selectable_tables['getUsers'][] = 'groupusers';
         $this->selectable_tables['getRights'][] = 'grouprights';
         $this->selectable_tables['getGroups'] = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
+        $this->withFieldMethodMap['group_id'] = 'getGroups';
     }
 
     /**
