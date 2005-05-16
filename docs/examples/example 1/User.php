@@ -104,7 +104,7 @@ if ($users === false) {
 
     echo 'Test fetching auth_user_id AND perm_user_id with PERM getUsers()<br />';
     echo 'Auth<br />';
-    $filter = array(array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'value' => $users[$user]['auth_user_id'], 'type' => 'text'));
+    $filter = array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'value' => $users[$user]['auth_user_id'], 'type' => 'text');
     $options = array('with_rights' => true);
     $user = $admin->auth->getUsers($filter);
     if ($user === false) {
@@ -119,7 +119,7 @@ if ($users === false) {
     unset($user);
 
     echo 'Perm<br />';
-    $filter = array(array('filters' => array('perm_user_id' => '3')));
+    $filter = array('filters' => array('perm_user_id' => '3'));
     $user = $admin->perm->getUsers($filter);
     if ($user === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
