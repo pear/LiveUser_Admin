@@ -151,7 +151,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     function insert($table, $data)
     {
         // sanity checks
-        $sequence_field = false;
+        $sequence_id = false;
         foreach ($this->tables[$table]['fields'] as $field => $required) {
             if ($required && !isset($data[$field])) {
                 if ($required == 'seq') {
@@ -159,8 +159,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     if ($result === false) {
                         return false;
                     }
-                    $sequence_field = $field;
-                    $data[$field] = $result;
+                    $data[$field] = $sequence_id = $result;
                 } elseif (empty($data[$field])) {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
@@ -186,8 +185,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if ($result === false) {
             return false;
         }
-        if ($sequence_field) {
-            return $this->getAfterId($data[$sequence_field], $this->prefix . $this->alias[$table]);
+        if ($sequence_field !== false) {
+            return $this->getAfterId($sequence_id, $this->prefix . $this->alias[$table]);
         }
         return $result;
     }
