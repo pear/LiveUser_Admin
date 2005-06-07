@@ -406,25 +406,5 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
         }
         return $result;
     }
-
-    /**
-     *
-     * @return mixed false on error or the result
-     *
-     * @access public
-     * @uses MDB2::disconnect
-     */
-    function disconnect()
-    {
-        $result = $this->dbc->disconnect();
-        if (PEAR::isError($result)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
-            );
-            return false;
-        }
-        return $result;
-    }
 }
 ?>
