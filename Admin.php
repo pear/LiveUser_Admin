@@ -715,9 +715,6 @@ class LiveUser_Admin
         if (is_object($this->auth) && method_exists($this->auth, $method)) {
             return call_user_func_array(array(&$this->auth, $method), $params);
         }
-        $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-            array('msg' => 'Could not find method: '.$method));
-        return false;
+        trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $method), E_USER_ERROR);
     }
-
 }
