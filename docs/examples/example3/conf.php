@@ -42,22 +42,27 @@ $liveuserConfig = array(
     ),
     'authContainers'    => array(
         'DB' => array(
-            'type' => 'DB',
-            'dsn' => $dsn,
+            'type'          => 'DB',
             'loginTimeout' => 0,
             'expireTime'   => 0,
             'idleTime'     => 0,
             'allowDuplicateHandles'  => 1,
             'passwordEncryptionMode' => 'PLAIN',
-            'authTableCols' => array(
-                'required' => array(
-                    'auth_user_id' => array('name' => 'authUserId', 'type' => 'text'),
-                    'handle'       => array('name' => 'handle',       'type' => 'text'),
-                    'passwd'       => array('name' => 'passwd',       'type' => 'text'),
+            'storage' => array(
+                'dsn' => $dsn,
+                'alias' => array(
+                    'lastlogin' => 'lastlogin',
+                    'is_active' => 'is_active',
                 ),
-                'optional' => array(
-                    'lastlogin'    => array('name' => 'lastLogin',    'type' => 'timestamp'),
-                    'is_active'    => array('name' => 'isActive',    'type' => 'boolean')
+                'fields' => array(
+                    'lastlogin' => 'timestamp',
+                    'is_active' => 'boolean',
+                ),
+                'tables' => array(
+                    'users' => array(
+                        'lastlogin' => false,
+                        'is_active' => false,
+                    ),
                 )
             )
         )
