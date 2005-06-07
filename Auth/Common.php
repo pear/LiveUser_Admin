@@ -349,4 +349,14 @@ class LiveUser_Admin_Auth_Common
         return $this->_storage->select($select, $fields, $filters, $orders,
             $rekey, $group, $limit, $offset, 'users', array('users'));
     }
+
+    /**
+     * properly disconnect from resources
+     *
+     * @access  public
+     */
+    function disconnect()
+    {
+        $this->_storage->disconnect();
+    }
 }
