@@ -115,30 +115,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     var $prefix = 'liveuser_';
 
     /**
-     * Table configuration
-     *
-     * @var    array
-     * @access public
-     */
-    var $tables = array();
-
-    /**
-     * All fields with their types
-     *
-     * @var    array
-     * @access public
-     */
-    var $fields = array();
-
-    /**
-     * All fields with their alias
-     *
-     * @var    array
-     * @access public
-     */
-    var $alias = array();
-
-    /**
      * Insert data into a table
      *
      *
@@ -827,15 +803,26 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     * properly disconnect from resources
+     * Properly disconnect from database
      *
      * @return void
      *
-     * @access  public
+     * @access public
      */
     function disconnect()
     {
-        $this->disconnect();
+        if ($this->dsn) {
+            $result = $this->dbc->disconnect();
+            if (PEAR::isError($result)) {
+                $this->_stack->push(
+                    LIVEUSER_ERROR, 'exception',
+                    array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+                );
+                return false;
+            }
+            $this->dbc = null;
+        }
+        return true;
     }
 }
 ?>
