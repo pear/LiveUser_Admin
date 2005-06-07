@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.0a11">
+<package version="1.0" packagerversion="1.4.0a12">
  <name>LiveUser_Admin</name>
  <summary>User authentication and permission management framework</summary>
  <description>LiveUser_Admin is meant to be used with the LiveUser package.
@@ -54,21 +54,32 @@
   </maintainer>
   </maintainers>
  <release>
-  <version>0.2.2</version>
-  <date>2005-05-05</date>
+  <version>0.3.0</version>
+  <date>2005-06-06</date>
   <license>LGPL</license>
   <state>beta</state>
-  <notes>- delete() now uses findTable() to ensure that only defined table with the
+  <notes>- added _call() overloading method for php5 users in LiveUser_Admin class
+
+storage
+- delete() now uses findTable() to ensure that only defined table with the
   proper fields are being used
 - findTable() now only prefixes fields if necessary
-- typo fix: hierachy -&gt; hierarchy (bug #4150)
 - added ability to prefix explicit tables in findTables()
 - no longer use &quot;ids&quot; in insert so we can remove this information from the
   Globals.php file in the client
+- added support for table name aliasing (fairly untested)
+
+authentication
+- typo fix (bug #4109)
+- typo fix (bug #4173)
+
+permission
+- typo fix: hierachy -&gt; hierarchy (bug #4150)
+- improved the &quot;with&quot; support (fixing bug #3245)
+
+examples
 - examples were converted to use MDB2_Schema. See the demodata.php script found
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
-- added _call() overloading method for php5 users in LiveUser_Admin class
-- added support for table name aliasing (fairly untested)
   </notes>
   <deps>
    <dep type="php" rel="ge" version="4.2.0" optional="no"/>
@@ -77,7 +88,7 @@
    <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
    <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
    <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
-   <dep type="pkg" rel="ge" version="2.0.0beta3" optional="yes">MDB2</dep>
+   <dep type="pkg" rel="ge" version="2.0.0beta4" optional="yes">MDB2</dep>
    <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
    <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
   </deps>
@@ -126,8 +137,6 @@
        <file role="doc" name="nav.php"/>
        <file role="doc" name="testarea.php"/>
       </dir> <!-- /docs/examples/example3 -->
-      <file role="doc" name="Auth_XML.xml"/>
-      <file role="doc" name="test.php"/>
      </dir> <!-- /docs/examples -->
     </dir> <!-- /docs -->
     <dir name="Perm">
@@ -152,6 +161,35 @@
   </filelist>
  </release>
  <changelog>
+   <release>
+    <version>0.3.0</version>
+    <date>2005-06-06</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- added _call() overloading method for php5 users in LiveUser_Admin class
+
+storage
+- delete() now uses findTable() to ensure that only defined table with the
+  proper fields are being used
+- findTable() now only prefixes fields if necessary
+- added ability to prefix explicit tables in findTables()
+- no longer use &quot;ids&quot; in insert so we can remove this information from the
+  Globals.php file in the client
+- added support for table name aliasing (fairly untested)
+
+authentication
+- typo fix (bug #4109)
+- typo fix (bug #4173)
+
+permission
+- typo fix: hierachy -&gt; hierarchy (bug #4150)
+- improved the &quot;with&quot; support (fixing bug #3245)
+
+examples
+- examples were converted to use MDB2_Schema. See the demodata.php script found
+  in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
+    </notes>
+   </release>
    <release>
     <version>0.2.2</version>
     <date>2005-05-05</date>
