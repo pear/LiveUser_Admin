@@ -75,6 +75,22 @@
 class LiveUser_Admin_Auth_Common
 {
     /**
+     * Error stack
+     *
+     * @var object PEAR_ErrorStack
+     * @access private
+     */
+    var $_stack = null;
+
+    /**
+     * Storage Container
+     *
+     * @var object
+     * @access private
+     */
+    var $_storage = null;
+
+    /**
      * Set posible encryption modes.
      *
      * @access private
@@ -114,6 +130,25 @@ class LiveUser_Admin_Auth_Common
     var $containerName = null;
 
     /**
+     * Columns of the auth table.
+     * Associative array with the names of the auth table columns.
+     * The 'auth_user_id', 'handle' and 'passwd' fields have to be set.
+     * 'lastlogin', 'is_active', 'owner_user_id' and 'owner_group_id' are optional.
+     * It doesn't make sense to set only one of the time columns without the
+     * other.
+     *
+     * @access public
+     * @var    array
+     */
+    var $authTableCols = array(
+        'required' => array(
+            'auth_user_id' => array('name' => 'auth_user_id', 'type' => 'text'),
+            'handle'       => array('name' => 'handle',       'type' => 'text'),
+            'passwd'       => array('name' => 'passwd',       'type' => 'text'),
+        ),
+    );
+
+    /**
      * Class constructor. Feel free to override in backend subclasses.
      *
      * @access protected
@@ -123,9 +158,22 @@ class LiveUser_Admin_Auth_Common
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
     }
 
-    function init($conf, $containerName)
+    /**
+     * Load the storage container
+     *
+     * @access  public
+     * @param  mixed         Name of array containing the configuration.
+     * @return  boolean true on success or false on failure
+     */
+    function init(&$conf, $containerName)
     {
         $this->containerName = $containerName;
+        if (!isset($conf['storage'])) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Missing storage configuration array'));
+            return false;
+        }
+
         if (is_array($conf)) {
             $keys = array_keys($conf);
             foreach ($keys as $key) {
@@ -134,6 +182,15 @@ class LiveUser_Admin_Auth_Common
                 }
             }
         }
+
+        $this->_storage = LiveUser::storageFactory($conf['storage'], 'LiveUser_Admin_Auth_');
+        if ($this->_storage === false) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Could not instanciate storage container'));
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -220,77 +277,75 @@ class LiveUser_Admin_Auth_Common
     }
 
     /**
-     * Adds a new user to Auth.
+     * Add user
      *
-     * @access  public
-     * @param   string  Handle (username).
-     * @param   string  Password.
-     * @param   array   Array of optional fields values to be added array('alias' => ''value')
-     * @param   array   Array of custom fields values to be added array('alias' => ''value')
-     * @param   mixed   If specificed no new ID will be automatically generated instead
-     * @return  mixed   Users auth ID on success, DB error if not, false if not initialized
+     *
+     * @param array $data
+     * @return
+     *
+     * @access public
      */
-    function addUser($handle, $password = '', $optionalFields = array(),
-                              $customFields = array(), $authId = null)
+    function addUser($data)
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
-            'addUser(): Method not supported by this container');
+        $result = $this->_storage->insert('users', $data);
+        // notify observer
+        return $result;
     }
 
     /**
-     * Removes an existing user from Auth.
+     * Update usr
      *
-     * @access  public
-     * @param   string   Auth user ID of the user that should be removed.
-     * @return  mixed    True on success, error object if not.
+     *
+     * @param array $data
+     * @param array $filters
+     * @return
+     *
+     * @access public
      */
-    function removeUser($authId)
+    function updateUser($data, $filters)
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
-            'removeUser(): Method not supported by this container');
+        $result = $this->_storage->update('users', $data, $filters);
+        // notify observer
+        return $result;
     }
 
     /**
-     * Changes user data in auth table.
+     * Remove user
      *
-     * @access  public
-     * @param   string   Auth user ID.
-     * @param   string   Handle (username) (optional).
-     * @param   string   Password (optional).
-     * @param   array   Array of optional fields values to be added array('alias' => ''value')
-     * @param   array    Array of custom fields values to be updated
-     * @return  mixed    True on success, DB error if not.
+     *
+     * @param array $filters Array containing the filters on what user(s)
+     *                       should be removed
+     * @return
+     *
+     * @access public
      */
-    function updateUser($authId, $handle = '', $password = '',
-                                   $optionalFields = array(), $customFields = array())
+    function removeUser($filters)
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
-            'updateUser(): Method not supported by this container');
+        $result = $this->_storage->delete('users', $filters);
+        // notify observer
+        return $result;
     }
-
     /**
-     * Gets all users with handle, passwd, authId,
-     * lastlogin, is_active and individual rights.
+     * Fetches users
      *
-     * The array will look like this:
-     * <code>
-     * $userData[0]['auth_user_id']       = 'wujha433gawefawfwfiuj2ou9823r98h';
-     *             ['handle']       = 'myLogin';
-     *             ['passwd']     = 'd346gs2gwaeiuhaeiuuweijfjuwaefhj';
-     *             ['lastlogin']    = 1254801292; (Unix timestamp)
-     *             ['is_active']     = 1; (1 = yes, 0 = no)
-     * </code>
      *
-     * @access  public
-     * @param   array  filters to apply to fetched data
-     * @param   string  if not null 'ORDER BY $order' will be appended to the query
-     * @param   boolean will return an associative array with the auth_user_id
-     *                  as the key by using DB::getAssoc() instead of DB::getAll()
-     * @return  mixed  Array with user data or DB error.
+     * @param array $params
+     * @return
+     *
+     * @access public
      */
-    function getUsers($filters = array(), $order = null, $rekey = false)
+    function getUsers($params = array())
     {
-        return LiveUser_Admin::raiseError(LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED, null, null,
-            'getUsers(): Method not supported by this container');
+        $fields = isset($params['fields']) ? $params['fields'] : array();
+        $filters = isset($params['filters']) ? $params['filters'] : array();
+        $orders = isset($params['orders']) ? $params['orders'] : array();
+        $rekey = isset($params['rekey']) ? $params['rekey'] : false;
+        $group = isset($params['group']) ? $params['group'] : false;
+        $limit = isset($params['limit']) ? $params['limit'] : null;
+        $offset = isset($params['offset']) ? $params['offset'] : null;
+        $select = isset($params['select']) ? $params['select'] : 'all';
+
+        return $this->_storage->select($select, $fields, $filters, $orders,
+            $rekey, $group, $limit, $offset, 'users', array('users'));
     }
 }
