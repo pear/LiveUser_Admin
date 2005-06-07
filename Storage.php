@@ -86,6 +86,30 @@
 class LiveUser_Admin_Storage
 {
     /**
+     * Table configuration
+     *
+     * @var    array
+     * @access public
+     */
+    var $tables = array();
+
+    /**
+     * All fields with their types
+     *
+     * @var    array
+     * @access public
+     */
+    var $fields = array();
+
+    /**
+     * All fields with their alias
+     *
+     * @var    array
+     * @access public
+     */
+    var $alias = array();
+
+    /**
      * Constructor
      *
      * @access protected
