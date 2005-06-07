@@ -183,7 +183,8 @@ class LiveUser_Admin_Auth_Common
             }
         }
 
-        $this->_storage = LiveUser::storageFactory($conf['storage'], 'LiveUser_Admin_Auth_');
+        $storage_conf = array($conf['type'] => &$conf['storage']);
+        $this->_storage = LiveUser::storageFactory($storage_conf, 'LiveUser_Admin_Auth_');
         if ($this->_storage === false) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not instanciate storage container'));

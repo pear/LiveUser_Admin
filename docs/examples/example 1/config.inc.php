@@ -73,28 +73,26 @@ $conf =
                 'idleTime'      => 1800,
                 'allowDuplicateHandles' => false,
                 'storage' => array(
-                    $storage => array(
-                        'connection' => $db,
-                        'dsn' => $dsn,
-                        'prefix' => 'liveuser_',
-                        'tables' => array(
-                            'users' => array(
-                                'fields' => array(
-                                    'name' => false,
-                                    'email' => false,
-                                ),
+                    'connection' => $db,
+                    'dsn' => $dsn,
+                    'prefix' => 'liveuser_',
+                    'tables' => array(
+                        'users' => array(
+                            'fields' => array(
+                                'name' => false,
+                                'email' => false,
                             ),
                         ),
-                        'fields' => array(
-                            'name' => 'text',
-                            'email' => 'text',
-                        ),
-                        'alias' => array(
-                            'name' => 'name',
-                            'email' => 'email'
-                        ),
-                        // 'force_seq' => false
                     ),
+                    'fields' => array(
+                        'name' => 'text',
+                        'email' => 'text',
+                    ),
+                    'alias' => array(
+                        'name' => 'name',
+                        'email' => 'email'
+                    ),
+                    // 'force_seq' => false
                 ),
             )
         ),
