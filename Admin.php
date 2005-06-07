@@ -261,11 +261,14 @@ class LiveUser_Admin
      * @access public
      * @see factory
      */
-    function &singleton($conf)
+    function &singleton($conf = null)
     {
         static $instance;
 
         if (!isset($instance)) {
+            if (!$conf) {
+                return false;
+            }
             $obj = &LiveUser_Admin::factory($conf);
             $instance =& $obj;
         }
