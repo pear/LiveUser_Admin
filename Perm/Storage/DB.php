@@ -65,7 +65,7 @@
  * Require parent class definition.
  */
 require_once 'LiveUser/Admin/Storage/DB.php';
-require_once 'LiveUser/Perm/Storage/SQL.php';
+require_once 'LiveUser/Perm/Storage/Globals.php';
 
 /**
  * This is a PEAR::DB backend driver for the LiveUser class.
