@@ -66,7 +66,6 @@
  * Require parent class definition.
  */
 require_once 'LiveUser/Admin/Storage/MDB.php';
-require_once 'LiveUser/Perm/Storage/Globals.php';
 
 /**
  * This is a PEAR::MDB backend driver for the LiveUser class.
