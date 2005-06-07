@@ -43,10 +43,10 @@ Var_Dump::displayInit(
 <body>
 
 <form action="?" method="get">
- <select name="perm">
+ <select name="storage">
 <?php
     foreach ($backends as $backend => $row) {
-       $selected = $perm == $backend ? 'selected="selected"' : '';
+       $selected = $storage == $backend ? 'selected="selected"' : '';
         echo '<option value="'.$backend.'" '.$selected.'>'.$backend.'</option>';
     }
 ?>
