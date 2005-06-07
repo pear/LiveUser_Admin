@@ -27,30 +27,30 @@ $backends = array(
     )
 );
 
-if (!isset($_GET['perm'])) {
-    $perm = 'MDB2';
-} elseif (isset($backends[$_GET['perm']])) {
-    $perm = strtoupper($_GET['perm']);
+if (!isset($_GET['storage'])) {
+    $storage = 'MDB2';
+} elseif (isset($backends[$_GET['storage']])) {
+    $storage = strtoupper($_GET['storage']);
 } else {
-    exit('Perm Backend not found.');
+    exit('storage Backend not found.');
 }
 
-require_once $perm.'.php';
+require_once $storage.'.php';
 
 function echoQuery(&$db, $scope, $message)
 {
     Var_Dump::display($scope.': '.$message);
 }
 
-$dummy = new $perm;
-$db = $dummy->connect($dsn, $backends[$perm]['options']);
+$dummy = new $storage;
+$db = $dummy->connect($dsn, $backends[$storage]['options']);
 
 if (PEAR::isError($db)) {
     echo $db->getMessage() . ' ' . $db->getUserInfo();
     die();
 }
 
-$db->setFetchMode($perm.'_FETCHMODE_ASSOC');
+$db->setFetchMode($storage.'_FETCHMODE_ASSOC');
 
 $conf =
     array(
@@ -66,39 +66,43 @@ $conf =
             'destroy'  => true,
         ),
         'authContainers' => array(
-            array(
-                'type'          => 'DB',
-                'name'          => 'DB_Local',
+            'DB_Local' => array(
+                'type' => $storage,
                 'loginTimeout'  => 0,
                 'expireTime'    => 3600,
                 'idleTime'      => 1800,
-                'dsn'           => $dsn,
                 'allowDuplicateHandles' => false,
-                'authTable'     => 'liveuser_users',
-                    'authTableCols' => array(
-                        'required' => array(
-                            'auth_user_id' => array('type' => 'text',   'name' => 'auth_user_id'),
-                            'handle'       => array('type' => 'text',   'name' => 'handle'),
-                            'passwd'       => array('type' => 'text',   'name' => 'passwd'),
+                'storage' => array(
+                    $storage => array(
+                        'connection' => $db,
+                        'dsn' => $dsn,
+                        'prefix' => 'liveuser_',
+                        'tables' => array(
+                            'users' => array(
+                                'fields' => array(
+                                    'name' => false,
+                                    'email' => false,
+                                ),
+                            ),
                         ),
-                        'optional' => array(
-                            'is_active'      => array('type' => 'boolean', 'name' => 'is_active'),
-                            'lastlogin'      => array('type' => 'timestamp', 'name' => 'lastlogin'),
-                            'owner_user_id'  => array('type' => 'integer',   'name' => 'owner_user_id'),
-                            'owner_group_id' => array('type' => 'integer',   'name' => 'owner_group_id')
+                        'fields' => array(
+                            'name' => 'text',
+                            'email' => 'text',
                         ),
-                        'custom' => array (
-                            'name'  => array('type' => 'text',    'name' => 'name'),
-                            'email' => array('type' => 'text',    'name' => 'email'),
-                        )
-                    )
+                        'alias' => array(
+                            'name' => 'name',
+                            'email' => 'email'
+                        ),
+                        // 'force_seq' => false
+                    ),
+                ),
             )
         ),
         'permContainer' => array(
             'type'  => 'Complex',
             'alias' => array(),
             'storage' => array(
-                $perm => array(
+                $storage => array(
                     'connection' => $db,
                     'dsn' => $dsn,
                     'prefix' => 'liveuser_',

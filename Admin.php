@@ -376,13 +376,13 @@ class LiveUser_Admin
      *
      * e.g.: $admin->perm->updateAuthUserId();
      *
-     * @param  mixed $authId  user auth id
+     * @param  mixed $authUserId  user auth id
      * @param  string $authName  auth container name
      * @return boolean true upon success, false otherwise
      *
      * @access public
      */
-    function setAdminContainers($authId = null, $authName = null)
+    function setAdminContainers($authUserId = null, $authName = null)
     {
         if (!is_array($this->_conf)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -391,7 +391,7 @@ class LiveUser_Admin
         }
 
         if (is_null($authName)) {
-            if (is_null($authId)) {
+            if (is_null($authUserId)) {
                 reset($this->_conf['authContainers']);
                 $authName = key($this->_conf['authContainers']);
             } else {
@@ -406,9 +406,9 @@ class LiveUser_Admin
                         );
                     }
 
-                    if (!is_null($authId)) {
+                    if (!is_null($authUserId)) {
                         $match = $this->_authContainers[$key]->getUsers(
-                            array('auth_user_id' => $authId)
+                            array('auth_user_id' => $authUserId)
                         );
                         if (is_array($match) && sizeof($match) > 0) {
                             $authName = $key;
@@ -441,37 +441,13 @@ class LiveUser_Admin
     /**
      * Tries to add a user to both containers.
      *
-     * If the optional $id parameter is passed it will be used
-     * for both containers.
-     *
-     * In any case the auth and perm id will be equal when using this method.
-     *
-     * If this behaviour doesn't suit your needs please consider
-     * using directly the concerned method. This method is just
-     * implement to simplify things a bit and should satisfy most
-     * user needs.
-     *
-     *  Note type is optional for DB, thus it's needed for MDB and MDB2,
-     *  we recommend that you use type even though you use DB, so if you change to MDB[2],
-     *  it will be no problem for you.
-     *  usage example for addUser:
-     * <code>
-     *       $optional = array('is_active' => true);
-     *       $user_id = $admin->addUser('johndoe', 'dummypass', $optional);
-     *  </code>
-     *
-     * @param  string $handle  user handle (username)
-     * @param  string $password user password
-     * @param  array $optionalFields  values for the optional fields
-     * @param  array $customFields  values for the custom fields
-     * @param  int  $authId  Auth ID
+     * @param  string $data authentication user data
      * @param  integer $type permission user type
-     * @return mixed   userid or false
+     * @return mixed   perm user id or false
      *
      * @access public
      */
-    function addUser($handle, $password, $optionalFields = array(),
-        $customFields = array(), $authId = null, $type = LIVEUSER_USER_TYPE_ID)
+    function addUser($data, $type = LIVEUSER_USER_TYPE_ID)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -479,15 +455,13 @@ class LiveUser_Admin
             return false;
         }
 
-        $authId = $this->auth->addUser($handle, $password, $optionalFields,
-            $customFields, $authId);
-
-        if (!$authId) {
+        $authUserId = $this->auth->addUser($data);
+        if (!$authUserId) {
             return false;
         }
 
         $data = array(
-            'auth_user_id' => $authId,
+            'auth_user_id' => $authUserId,
             'auth_container_name' => $this->authContainerName,
             'perm_type' => $type
         );
@@ -497,28 +471,14 @@ class LiveUser_Admin
     /**
      * Tried to changes user data for both containers.
      *
-     *  Note type is optional for DB, thus it's needed for MDB and MDB2,
-     *  we recommend that you use type even though you use DB, so if you change to MDB[2],
-     *  it will be no problem for you.
-     *  usage example for updateUser:
-     * <code>
-     *       $optional = array('is_active' => false);
-     *       $admin->updateUser($user_id, 'johndoe', 'dummypass');
-     * </code>
-     *
-     *
-     * @param integer $permId permission user id
-     * @param  string $handle user handle (username)
-     * @param  string $password user password
-     * @param  array  $optionalFields values for the optional fields
-     * @param  array  $customFields values for the custom fields
+     * @param integer $permUserId permission user id
+     * @param  string $data authentication user data
      * @param  integer $type permission user type
      * @return mixed   error object or true
      *
      * @access public
      */
-    function updateUser($permId, $handle, $password, $optionalFields = array(),
-        $customFields = array(), $type = null)
+    function updateUser($permUserId, $data, $type = null)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -529,7 +489,7 @@ class LiveUser_Admin
         $permData = $this->perm->getUsers(
             array(
                 'fields' => array('auth_user_id', 'auth_container_name'),
-                'filters' => array('perm_user_id' => $permId),
+                'filters' => array('perm_user_id' => $permUserId),
                 'select' => 'row',
             )
          );
@@ -541,10 +501,10 @@ class LiveUser_Admin
         }
 
         $this->setAdminAuthContainer($permData['auth_container_name']);
-        $auth = $this->auth->updateUser($permData['auth_user_id'], $handle,
-            $password, $optionalFields, $customFields);
+        $filters = array('auth_user_id' => $permData['auth_user_id']);
+        $result = $this->auth->updateUser($data, $filters);
 
-        if ($auth === false) {
+        if ($result === false) {
             return false;
         }
 
@@ -555,19 +515,19 @@ class LiveUser_Admin
         $data = array(
             'perm_type' => $type
         );
-        $filters = array('perm_user_id' => $permId);
+        $filters = array('perm_user_id' => $permUserId);
         return $this->perm->updateUser($data, $filters);
     }
 
     /**
     * Removes user from both Perm and Auth containers
     *
-    * @param  mixed $permId Perm ID
+    * @param  mixed $permUserId Perm ID
     * @return  mixed error object or true
     *
     * @access public
     */
-    function removeUser($permId)
+    function removeUser($permUserId)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -578,7 +538,7 @@ class LiveUser_Admin
         $permData = $this->perm->getUsers(
             array(
                 'fields' => array('auth_user_id', 'auth_container_name'),
-                'filters' => array('perm_user_id' => $permId),
+                'filters' => array('perm_user_id' => $permUserId),
                 'select' => 'row',
             )
          );
@@ -590,13 +550,14 @@ class LiveUser_Admin
         }
 
         $this->setAdminAuthContainer($permData['auth_container_name']);
-        $result = $this->auth->removeUser($permData['auth_user_id']);
+        $filters = array('auth_user_id' => $permData['auth_user_id']);
+        $result = $this->auth->removeUser($filters);
 
         if ($result === false) {
             return false;
         }
 
-        $filters = array('perm_user_id' => $permId);
+        $filters = array('perm_user_id' => $permUserId);
         return $this->perm->removeUser($filters);
     }
 
@@ -653,16 +614,8 @@ class LiveUser_Admin
                     array('msg' => 'Auth container could not be set.'));
                 return false;
             }
-            $authFilter = array(
-                array(
-                    'name' => $this->auth->authTableCols['required']['auth_user_id']['name'],
-                    'op' => '=',
-                    'value' => $permData['auth_user_id'],
-                    'cond' => 'AND',
-                    'type' => $this->auth->authTableCols['required']['auth_user_id']['type'],
-                )
-            );
 
+            $authFilter = array('filters' => array('auth_user_id' => $permData['auth_user_id']));
             $authData = $this->auth->getUsers($authFilter);
             if (!$authData) {
                 continue;
@@ -695,11 +648,17 @@ class LiveUser_Admin
             return false;
         }
 
+        $authFilter = array('filters' => $authFilter);
+        $authFilter['select'] = $first ? 'row' : 'all';
         $authUsers = $this->auth->getUsers($authFilter);
         if (!$authUsers) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not find user in the authentication backend'));
             return false;
+        }
+
+        if ($first) {
+            $authUsers = array($authUsers);
         }
 
         $users = array();

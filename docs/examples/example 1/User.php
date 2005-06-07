@@ -6,7 +6,9 @@ echo '<h3>User</h3>
 // Add
 echo 'Make 10 normal users and 10 admins<br />';
 for ($i = 1; $i < 21; $i++) {
-    $custom = array(
+    $data = array(
+        'handle' => 'johndoe' . rand(),
+        'passwd' => 'dummypass',
         'name'  => 'asdf'.$i,
         'email' => 'fleh@example.com'.$i
     );
@@ -17,7 +19,7 @@ for ($i = 1; $i < 21; $i++) {
         $level = 1;
     }
 
-    $user_id = $admin->addUser('johndoe' . rand(), 'dummypass', array(), $custom, null, $level);
+    $user_id = $admin->addUser($data, $level);
     if ($user_id === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
@@ -67,7 +69,11 @@ if ($users === false) {
     // Update
     $id = array_rand($users);
     $updateUser = $users[$id]['perm_user_id'];
-    $updated = $admin->updateUser($updateUser, 'updated_user'.rand(), 'foo', array(), $custom);
+    $data = array(
+        'handle' => 'updated_user'.rand(),
+        'passwd' => 'foo',
+    );
+    $updated = $admin->updateUser($updateUser, $data);
     if ($updated === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
@@ -104,9 +110,8 @@ if ($users === false) {
 
     echo 'Test fetching auth_user_id AND perm_user_id with PERM getUsers()<br />';
     echo 'Auth<br />';
-    $filter = array('cond' => '', 'name' => 'auth_user_id', 'op' => '=', 'value' => $users[$user]['auth_user_id'], 'type' => 'text');
-    $options = array('with_rights' => true);
-    $user = $admin->auth->getUsers($filter);
+    $params = array('filters' => array('auth_user_id' => $users[$user]['auth_user_id']));
+    $user = $admin->auth->getUsers($params);
     if ($user === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
