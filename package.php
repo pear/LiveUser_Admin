@@ -13,6 +13,7 @@ $version = '0.3.0';
 
 $notes = <<<EOT
 - added _call() overloading method for php5 users in LiveUser_Admin class
+- dont require a conf array for all but the first call of singleton()
 
 storage
 - delete() now uses findTable() to ensure that only defined table with the
@@ -34,6 +35,7 @@ permission
 examples
 - examples were converted to use MDB2_Schema. See the demodata.php script found
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
+- removed the test.php script since this code is outdated and serves no purpose any longer
 EOT;
 
 $description = <<<EOT
