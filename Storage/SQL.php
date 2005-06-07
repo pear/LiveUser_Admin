@@ -185,7 +185,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if ($result === false) {
             return false;
         }
-        if ($sequence_field !== false) {
+        if ($sequence_id !== false) {
             return $this->getAfterId($sequence_id, $this->prefix . $this->alias[$table]);
         }
         return $result;
