@@ -145,7 +145,7 @@ class LiveUser_Admin_Perm_Simple
             }
         }
 
-        $this->_storage = LiveUser::storageFactory($conf['storage'], 'LiveUser_Admin_');
+        $this->_storage = LiveUser::storageFactory($conf['storage'], 'LiveUser_Admin_Perm_');
         if ($this->_storage === false) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not instanciate storage container'));
