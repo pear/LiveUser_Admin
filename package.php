@@ -12,18 +12,28 @@ require_once 'Console/Getopt.php';
 $version = '0.3.0';
 
 $notes = <<<EOT
+- added _call() overloading method for php5 users in LiveUser_Admin class
+
+storage
 - delete() now uses findTable() to ensure that only defined table with the
   proper fields are being used
 - findTable() now only prefixes fields if necessary
-- typo fix: hierachy -> hierarchy (bug #4150)
 - added ability to prefix explicit tables in findTables()
 - no longer use "ids" in insert so we can remove this information from the
   Globals.php file in the client
+- added support for table name aliasing (fairly untested)
+
+authentication
+- typo fix (bug #4109)
+- typo fix (bug #4173)
+
+permission
+- typo fix: hierachy -> hierarchy (bug #4150)
+- improved the "with" support (fixing bug #3245)
+
+examples
 - examples were converted to use MDB2_Schema. See the demodata.php script found
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
-- added _call() overloading method for php5 users in LiveUser_Admin class
-- added support for table name aliasing (fairly untested)
-- improved the "with" support (fixing bug #3245)
 EOT;
 
 $description = <<<EOT
