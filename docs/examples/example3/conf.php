@@ -60,10 +60,12 @@ $liveuserConfig = array(
                 ),
                 'tables' => array(
                     'users' => array(
-                        'lastlogin' => false,
-                        'is_active' => false,
+                        'fields' => array(
+                            'lastlogin' => false,
+                            'is_active' => false,
+                        ),
                     ),
-                )
+                ),
             )
         )
     ),
