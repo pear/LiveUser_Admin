@@ -130,25 +130,6 @@ class LiveUser_Admin_Auth_Common
     var $containerName = null;
 
     /**
-     * Columns of the auth table.
-     * Associative array with the names of the auth table columns.
-     * The 'auth_user_id', 'handle' and 'passwd' fields have to be set.
-     * 'lastlogin', 'is_active', 'owner_user_id' and 'owner_group_id' are optional.
-     * It doesn't make sense to set only one of the time columns without the
-     * other.
-     *
-     * @access public
-     * @var    array
-     */
-    var $authTableCols = array(
-        'required' => array(
-            'auth_user_id' => array('name' => 'auth_user_id', 'type' => 'text'),
-            'handle'       => array('name' => 'handle',       'type' => 'text'),
-            'passwd'       => array('name' => 'passwd',       'type' => 'text'),
-        ),
-    );
-
-    /**
      * Class constructor. Feel free to override in backend subclasses.
      *
      * @access protected
@@ -207,20 +188,20 @@ class LiveUser_Admin_Auth_Common
         $decryptedPW = 'Encryption type not supported.';
 
         switch (strtoupper($this->passwordEncryptionMode)) {
-            case 'PLAIN':
-                $decryptedPW = $encryptedPW;
-                break;
-            case 'MD5':
-                // MD5 can't be decoded, so return the string unmodified
-                $decryptedPW = $encryptedPW;
-                break;
-            case 'RC4':
-                $decryptedPW = LiveUser::cryptRC4($decryptedPW, $this->secret, false);
-                break;
-            case 'SHA1':
-                // SHA1 can't be decoded, so return the string unmodified
-                $decryptedPW = $encryptedPW;
-                break;
+        case 'PLAIN':
+            $decryptedPW = $encryptedPW;
+            break;
+        case 'MD5':
+            // MD5 can't be decoded, so return the string unmodified
+            $decryptedPW = $encryptedPW;
+            break;
+        case 'RC4':
+            $decryptedPW = LiveUser::cryptRC4($decryptedPW, $this->secret, false);
+            break;
+        case 'SHA1':
+            // SHA1 can't be decoded, so return the string unmodified
+            $decryptedPW = $encryptedPW;
+            break;
         }
 
         return $decryptedPW;
@@ -239,42 +220,26 @@ class LiveUser_Admin_Auth_Common
         $encryptedPW = 'Encryption type not supported.';
 
         switch (strtoupper($this->passwordEncryptionMode)) {
-            case 'PLAIN':
-                $encryptedPW = $plainPW;
-                break;
-            case 'MD5':
-                $encryptedPW = md5($plainPW);
-                break;
-            case 'RC4':
-                $encryptedPW = LiveUser::cryptRC4($plainPW, $this->secret, true);
-                break;
-            case 'SHA1':
-                if (!function_exists('sha1')) {
-                    $this->_stack->push(LIVEUSER_ERROR_NOT_SUPPORTED,
-                        'exception', array(), 'SHA1 function doesn\'t exist. Upgrade your PHP version');
-                    return false;
-                }
-                $encryptedPW = sha1($plainPW);
-                break;
+        case 'PLAIN':
+            $encryptedPW = $plainPW;
+            break;
+        case 'MD5':
+            $encryptedPW = md5($plainPW);
+            break;
+        case 'RC4':
+            $encryptedPW = LiveUser::cryptRC4($plainPW, $this->secret, true);
+            break;
+        case 'SHA1':
+            if (!function_exists('sha1')) {
+                $this->_stack->push(LIVEUSER_ERROR_NOT_SUPPORTED,
+                    'exception', array(), 'SHA1 function doesn\'t exist. Upgrade your PHP version');
+                return false;
+            }
+            $encryptedPW = sha1($plainPW);
+            break;
         }
 
         return $encryptedPW;
-    }
-
-    /**
-     * Function returns the inquired value if it exists in the class.
-     *
-     * @access public
-     * @param  string   Name of the property to be returned.
-     * @return mixed    null, a value or an array.
-     */
-    function getProperty($what)
-    {
-        $that = null;
-        if (isset($this->$what)) {
-            $that = $this->$what;
-        }
-        return $that;
     }
 
     /**
@@ -288,6 +253,9 @@ class LiveUser_Admin_Auth_Common
      */
     function addUser($data)
     {
+        if (array_key_exists('passwd', $data)) {
+            $this->encryptPW($data['passwd']);
+        }
         $result = $this->_storage->insert('users', $data);
         // notify observer
         return $result;
@@ -305,6 +273,9 @@ class LiveUser_Admin_Auth_Common
      */
     function updateUser($data, $filters)
     {
+        if (array_key_exists('passwd', $data)) {
+            $this->encryptPW($data['passwd']);
+        }
         $result = $this->_storage->update('users', $data, $filters);
         // notify observer
         return $result;
