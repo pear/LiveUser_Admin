@@ -254,7 +254,7 @@ class LiveUser_Admin_Auth_Common
     function addUser($data)
     {
         if (array_key_exists('passwd', $data)) {
-            $this->encryptPW($data['passwd']);
+            $data['passwd'] = $this->encryptPW($data['passwd']);
         }
         $result = $this->_storage->insert('users', $data);
         // notify observer
@@ -274,7 +274,7 @@ class LiveUser_Admin_Auth_Common
     function updateUser($data, $filters)
     {
         if (array_key_exists('passwd', $data)) {
-            $this->encryptPW($data['passwd']);
+            $data['passwd'] = $this->encryptPW($data['passwd']);
         }
         $result = $this->_storage->update('users', $data, $filters);
         // notify observer
