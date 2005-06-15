@@ -549,16 +549,16 @@ class LiveUser_Admin
             return false;
         }
 
-        $this->setAdminAuthContainer($permData['auth_container_name']);
-        $filters = array('auth_user_id' => $permData['auth_user_id']);
-        $result = $this->auth->removeUser($filters);
+        $filters = array('perm_user_id' => $permUserId);
+        $result = $this->perm->removeUser($filters);
 
         if ($result === false) {
             return false;
         }
 
-        $filters = array('perm_user_id' => $permUserId);
-        return $this->perm->removeUser($filters);
+        $this->setAdminAuthContainer($permData['auth_container_name']);
+        $filters = array('auth_user_id' => $permData['auth_user_id']);
+        return $this->auth->removeUser($filters);
     }
 
     /**
