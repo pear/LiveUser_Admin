@@ -114,13 +114,6 @@ $params = array(
         'right_id',
         'right_level'
     ),
-    'with' => array(
-        'perm_user_id' => array(
-            'fields' => array(
-                'name',
-            ),
-        ),
-    ),
     'filters' => array(
         'perm_user_id' => $users[$user]['perm_user_id']
     )
@@ -133,7 +126,7 @@ if ($singleRight === false) {
 } elseif (empty($singleRight)) {
     echo 'No rights were found for perm user id <strong>' . $users[$user]['perm_user_id'] . '</strong><br />';
 } else {
-    echo 'These are the user rights for <strong>' . $users[$user]['name'] . '</strong>:<br />';
+    echo 'These are the user rights for <strong>' . $users[$user]['perm_user_id'] . '</strong>:<br />';
     Var_Dump::display($singleRight);
     echo '<br />';
 }
@@ -146,7 +139,7 @@ $params = array(
     'with' => array(
         'perm_user_id' => array(
             'fields' => array(
-                'name',
+                'perm_type',
             ),
         ),
     ),
