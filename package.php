@@ -40,6 +40,7 @@ examples
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
 - removed the test.php script since this code is outdated and serves no purpose any longer
 - updated examples to use the new auth config layout due to using admin storage
+- tweaked error handling on init() call
 EOT;
 
 $description = <<<EOT
