@@ -128,7 +128,10 @@ $passwd = (isset($_REQUEST['passwd'])) ? $_REQUEST['passwd'] : null;
 $logout = (isset($_REQUEST['logout'])) ? $_REQUEST['logout'] : false;
 $remember = (isset($_REQUEST['rememberMe'])) ? $_REQUEST['rememberMe'] : false;
 
-$LU->init($handle, $passwd, $logout, $remember);
+if (!$LU->init($handle, $password, $logout, $remember)) {
+    var_dump($LU->getErrors());
+    die();
+}
 
 require_once 'LiveUser/Admin.php';
 
