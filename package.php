@@ -14,6 +14,7 @@ $version = '0.3.0';
 $notes = <<<EOT
 - added _call() overloading method for php5 users in LiveUser_Admin class
 - dont require a conf array for all but the first call of singleton()
+- updated LiveUser dependency
 
 storage
 - delete() now uses findTable() to ensure that only defined table with the
@@ -22,7 +23,7 @@ storage
 - added ability to prefix explicit tables in findTables()
 - no longer use "ids" in insert so we can remove this information from the
   Globals.php file in the client
-- added support for table name aliasing (fairly untested)
+- added support for table name aliasing
 
 authentication
 - typo fix (bug #4109)
@@ -115,7 +116,7 @@ $package->addMaintainer(
 
 $package->addDependency('php',       '4.2.0',      'ge',  'php', false);
 $package->addDependency('PEAR',      '1.3.1',      'ge',  'pkg', false);
-$package->addDependency('LiveUser',  '0.15.0',     'ge',  'pkg', false);
+$package->addDependency('LiveUser',  '0.16.0',     'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0',      'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0',      'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4',      'ge',  'pkg', true);

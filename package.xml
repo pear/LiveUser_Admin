@@ -55,10 +55,12 @@
   </maintainers>
  <release>
   <version>0.3.0</version>
-  <date>2005-06-06</date>
+  <date>2005-06-17</date>
   <license>LGPL</license>
   <state>beta</state>
   <notes>- added _call() overloading method for php5 users in LiveUser_Admin class
+- dont require a conf array for all but the first call of singleton()
+- updated LiveUser dependency
 
 storage
 - delete() now uses findTable() to ensure that only defined table with the
@@ -67,24 +69,30 @@ storage
 - added ability to prefix explicit tables in findTables()
 - no longer use &quot;ids&quot; in insert so we can remove this information from the
   Globals.php file in the client
-- added support for table name aliasing (fairly untested)
+- added support for table name aliasing
 
 authentication
 - typo fix (bug #4109)
 - typo fix (bug #4173)
+- moved to admin storage class
+- tweaked disconnect to only disconnect when a new connection was made
 
 permission
 - typo fix: hierachy -&gt; hierarchy (bug #4150)
 - improved the &quot;with&quot; support (fixing bug #3245)
+- tweaked disconnect to only disconnect when a new connection was made
 
 examples
 - examples were converted to use MDB2_Schema. See the demodata.php script found
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
+- removed the test.php script since this code is outdated and serves no purpose any longer
+- updated examples to use the new auth config layout due to using admin storage
+- tweaked error handling on init() call
   </notes>
   <deps>
    <dep type="php" rel="ge" version="4.2.0" optional="no"/>
    <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
-   <dep type="pkg" rel="ge" version="0.15.0" optional="no">LiveUser</dep>
+   <dep type="pkg" rel="ge" version="0.16.0" optional="no">LiveUser</dep>
    <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
    <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
    <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
@@ -163,10 +171,12 @@ examples
  <changelog>
    <release>
     <version>0.3.0</version>
-    <date>2005-06-06</date>
+    <date>2005-06-17</date>
     <license>LGPL</license>
     <state>beta</state>
     <notes>- added _call() overloading method for php5 users in LiveUser_Admin class
+- dont require a conf array for all but the first call of singleton()
+- updated LiveUser dependency
 
 storage
 - delete() now uses findTable() to ensure that only defined table with the
@@ -175,19 +185,25 @@ storage
 - added ability to prefix explicit tables in findTables()
 - no longer use &quot;ids&quot; in insert so we can remove this information from the
   Globals.php file in the client
-- added support for table name aliasing (fairly untested)
+- added support for table name aliasing
 
 authentication
 - typo fix (bug #4109)
 - typo fix (bug #4173)
+- moved to admin storage class
+- tweaked disconnect to only disconnect when a new connection was made
 
 permission
 - typo fix: hierachy -&gt; hierarchy (bug #4150)
 - improved the &quot;with&quot; support (fixing bug #3245)
+- tweaked disconnect to only disconnect when a new connection was made
 
 examples
 - examples were converted to use MDB2_Schema. See the demodata.php script found
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
+- removed the test.php script since this code is outdated and serves no purpose any longer
+- updated examples to use the new auth config layout due to using admin storage
+- tweaked error handling on init() call
     </notes>
    </release>
    <release>
