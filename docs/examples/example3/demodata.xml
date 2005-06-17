@@ -1002,7 +1002,6 @@
   </initialization>
 
  </table>
-
  <table>
 
   <name>liveuser_translations</name>
@@ -1010,27 +1009,38 @@
   <declaration>
 
    <field>
+    <name>translation_id</name>
+    <type>integer</type>
+    <notnull>1</notnull>
+    <default></default>
+   </field>
+
+   <field>
     <name>section_id</name>
     <type>integer</type>
-    <default>0</default>
+    <notnull>1</notnull>
+    <default></default>
    </field>
 
    <field>
     <name>section_type</name>
     <type>integer</type>
-    <default>0</default>
+    <notnull>1</notnull>
+    <default></default>
    </field>
 
    <field>
     <name>language_id</name>
     <type>text</type>
-    <length>2</length>
+    <length>32</length>
+    <notnull>1</notnull>
+    <default></default>
    </field>
 
    <field>
     <name>name</name>
     <type>text</type>
-    <length>50</length>
+    <length>32</length>
    </field>
 
    <field>
@@ -1040,24 +1050,22 @@
    </field>
 
    <index>
-    <name>section_id</name>
+    <name>translations_translation_id</name>
+    <unique>1</unique>
+    <field>
+     <name>translation_id</name>
+    </field>
+   </index>
+
+   <index>
+    <name>translations_translation_i</name>
     <unique>1</unique>
     <field>
      <name>section_id</name>
     </field>
-   </index>
-
-   <index>
-    <name>section_type</name>
-    <unique>1</unique>
     <field>
      <name>section_type</name>
     </field>
-   </index>
-
-   <index>
-    <name>language_id</name>
-    <unique>1</unique>
     <field>
      <name>language_id</name>
     </field>
@@ -1068,6 +1076,11 @@
   <initialization>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>1</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1099,6 +1112,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>2</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>1</value>
    </field>
@@ -1126,6 +1144,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>3</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1157,6 +1180,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>4</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>2</value>
    </field>
@@ -1184,6 +1212,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>5</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1215,6 +1248,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>6</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>3</value>
    </field>
@@ -1242,6 +1280,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>7</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1273,6 +1316,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>8</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>1</value>
    </field>
@@ -1300,6 +1348,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>9</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1331,6 +1384,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>10</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>2</value>
    </field>
@@ -1358,6 +1416,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>11</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1389,6 +1452,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>12</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>2</value>
    </field>
@@ -1416,6 +1484,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>13</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1447,6 +1520,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>14</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>4</value>
    </field>
@@ -1474,6 +1552,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>15</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1505,6 +1588,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>16</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>6</value>
    </field>
@@ -1532,6 +1620,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>17</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1563,6 +1656,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>18</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>1</value>
    </field>
@@ -1590,6 +1688,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>19</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1621,6 +1724,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>20</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>3</value>
    </field>
@@ -1648,6 +1756,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>21</value>
+   </field>
 
     <field>
      <name>section_id</name>
@@ -1679,6 +1792,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>22</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>5</value>
    </field>
@@ -1708,6 +1826,11 @@
    <insert>
 
     <field>
+     <name>translation_id</name>
+     <value>23</value>
+   </field>
+
+    <field>
      <name>section_id</name>
      <value>6</value>
    </field>
@@ -1735,6 +1858,11 @@
    </insert>
 
    <insert>
+
+    <field>
+     <name>translation_id</name>
+     <value>24</value>
+   </field>
 
     <field>
      <name>section_id</name>
