@@ -42,7 +42,7 @@ $liveuserConfig = array(
     ),
     'authContainers'    => array(
         'DB' => array(
-            'type'          => 'DB',
+            'type'          => 'MDB2',
             'loginTimeout' => 0,
             'expireTime'   => 0,
             'idleTime'     => 0,
@@ -51,8 +51,9 @@ $liveuserConfig = array(
             'storage' => array(
                 'dsn' => $dsn,
                 'alias' => array(
+                    'auth_user_id' => 'authuserid',
                     'lastlogin' => 'lastlogin',
-                    'is_active' => 'is_active',
+                    'is_active' => 'isactive',
                 ),
                 'fields' => array(
                     'lastlogin' => 'timestamp',
@@ -70,7 +71,7 @@ $liveuserConfig = array(
         )
     ),
     'permContainer' => array(
-        'type'  => 'Complex',
+        'type'  => 'Medium',
         'alias' => array(),
         'storage' => array(
             'MDB2' => array(
@@ -128,7 +129,7 @@ $passwd = (isset($_REQUEST['passwd'])) ? $_REQUEST['passwd'] : null;
 $logout = (isset($_REQUEST['logout'])) ? $_REQUEST['logout'] : false;
 $remember = (isset($_REQUEST['rememberMe'])) ? $_REQUEST['rememberMe'] : false;
 
-if (!$LU->init($handle, $password, $logout, $remember)) {
+if (!$LU->init($handle, $passwd, $logout, $remember)) {
     var_dump($LU->getErrors());
     die();
 }
