@@ -39,7 +39,7 @@ for ($i = 0; $i < 10; $i++) {
             'rekey' => true,
             'filters' => array(
                 'group_id' => $groups_with_subgroup),
-            'subgroups' => 'hierachy',
+            'subgroups' => 'hierarchy',
         )
     );
     if ($groups === false) {
