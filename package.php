@@ -35,6 +35,8 @@ permission
 - typo fix: hierachy -> hierarchy (bug #4150)
 - improved the "with" support (fixing bug #3245)
 - tweaked disconnect to only disconnect when a new connection was made
+- fixed bug that would lead to hierarchy mode in getGroups only fetching the
+  first subgroup level (bug #4633)
 
 examples
 - examples were converted to use MDB2_Schema. See the demodata.php script found
