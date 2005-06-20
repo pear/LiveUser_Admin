@@ -79,7 +79,6 @@ if (isset($_GET['del']))  {
     $db->query('DELETE FROM liveuser_areas');
     $db->query('DROP TABLE liveuser_areas_seq');
     $db->query('DELETE FROM liveuser_group_subgroups');
-    $db->query('DROP TABLE liveuser_group_subgroups_seq');
     $db->query('DELETE FROM liveuser_grouprights');
     $db->query('DELETE FROM liveuser_groups');
     $db->query('DROP TABLE liveuser_groups_seq');
