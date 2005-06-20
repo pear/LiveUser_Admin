@@ -130,6 +130,21 @@ class LiveUser_Admin_Auth_Common
     var $containerName = null;
 
     /**
+     * Allow multiple users in the database to have the same
+     * login handle. Default: false.
+     *
+     * @var    boolean
+     */
+    var $allowDuplicateHandles = false;
+
+    /**
+     * Allow empty passwords to be passed to LiveUser. Default: false.
+     *
+     * @var    boolean
+     */
+    var $allowEmptyPasswords = false;
+
+    /**
      * Class constructor. Feel free to override in backend subclasses.
      *
      * @access protected
