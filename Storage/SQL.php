@@ -455,7 +455,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             }
 
             if (is_array($value)) {
-                if (isset($value['value'])) {
+                if (array_key_exists('value', $value)) {
                     if (is_array($value['value'])) {
                         $where[] = $tmp_field.' ' . $value['op'] . ' ('.$this->implodeArray($value['value'], $type).')';
                     } else {
@@ -473,7 +473,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 if ($value_quoted === false) {
                     return false;
                 }
-                $where[] = $tmp_field.' = '.$value_quoted;
+                $op = ($value_quoted === 'NULL') ? ' IS ' : ' = ';
+                $where[] = $tmp_field.$op.$value_quoted;
             }
         }
         foreach ($joinfilters as $field => $value) {
