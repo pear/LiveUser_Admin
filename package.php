@@ -24,6 +24,7 @@ storage
 - no longer use "ids" in insert so we can remove this information from the
   Globals.php file in the client
 - added support for table name aliasing
+- tweaked NULL value handling in createWhere() (bug #4638)
 
 authentication
 - typo fix (bug #4109)
