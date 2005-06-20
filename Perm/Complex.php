@@ -762,7 +762,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $tmp_params = $params;
             $tmp_params['subgroups'] = 'hierarchy';
             $tmp_params['filters'] = array('group_id' => $subgroup_ids);
-            $subgroup_data = parent::getGroups($tmp_params);
+            $subgroup_data = $this->_getGroupsWithHierarchy($tmp_params);
             if ($subgroup_data === false) {
                 return false;
             }
