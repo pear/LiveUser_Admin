@@ -41,7 +41,6 @@ Var_Dump::displayInit(
 
 </style>
 <body>
-
 <form action="?" method="get">
  <select name="storage">
 <?php
@@ -52,6 +51,7 @@ Var_Dump::displayInit(
 ?>
  </select>
  <input type="submit" id="go" value="Go!" />
+ Make sure you read README in the examples root folder to setup the database.
 </form>
 <?php
 $qstring = isset($_SERVER['QUERY_STRING']) && !isset($_GET['del']) ? '?'.$_SERVER['QUERY_STRING'] : '';
