@@ -167,6 +167,7 @@ examples
      <file role="php" name="SQL.php"/>
     </dir> <!-- /Storage -->
     <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
+    <file role="doc" name="lgpl.txt"/>
     <file role="php" name="Storage.php"/>
    </dir> <!-- / -->
   </filelist>
