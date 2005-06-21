@@ -148,6 +148,7 @@ examples
        <file role="doc" name="nav.php"/>
        <file role="doc" name="testarea.php"/>
       </dir> <!-- /docs/examples/example3 -->
+      <file role="doc" name="README"/>
      </dir> <!-- /docs/examples -->
     </dir> <!-- /docs -->
     <dir name="Perm">
