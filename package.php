@@ -13,6 +13,8 @@ $version = '0.3.1';
 
 $notes = <<<EOT
 - php 4.4 reference assignment fixes
+- dont filter out subgroups from the previous level in
+  _getGroupsWithHierarchy() (bug #4860)
 EOT;
 
 $description = <<<EOT
