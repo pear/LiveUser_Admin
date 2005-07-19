@@ -319,7 +319,8 @@ class LiveUser_Admin
             if (!isset($this->_conf['authContainers'][$authName])) {
                 $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Could not create auth container instance'));
-                return false;
+                $result = false;
+                return $result;
             }
             $auth = &LiveUser::authFactory(
                 $this->_conf['authContainers'][$authName],
@@ -329,7 +330,8 @@ class LiveUser_Admin
             if ($auth === false) {
                 $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Could not create auth container instance'));
-                return false;
+                $result = false;
+                return $result;
             }
             $this->_authContainers[$authName] = &$auth;
         }
@@ -356,7 +358,8 @@ class LiveUser_Admin
         if (!isset($this->_conf['permContainer'])) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not create perm container instance'));
-            return false;
+            $result = false;
+            return $result;
         }
 
         $this->perm = &LiveUser::permFactory(
