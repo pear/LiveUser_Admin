@@ -744,10 +744,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             ),
             'filters' => array(
                 'group_id' => $group_ids,
-                'subgroup_id' => array(
-                    'value' => $group_ids,
-                    'op' => 'NOT IN',
-                ),
             ),
             'rekey' => true,
             'group' => true,
