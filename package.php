@@ -9,42 +9,10 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.0';
+$version = '0.3.1';
 
 $notes = <<<EOT
-- added _call() overloading method for php5 users in LiveUser_Admin class
-- dont require a conf array for all but the first call of singleton()
-- updated LiveUser dependency
-
-storage
-- delete() now uses findTable() to ensure that only defined table with the
-  proper fields are being used
-- findTable() now only prefixes fields if necessary
-- added ability to prefix explicit tables in findTables()
-- no longer use "ids" in insert so we can remove this information from the
-  Globals.php file in the client
-- added support for table name aliasing
-- tweaked NULL value handling in createWhere() (bug #4638)
-
-authentication
-- typo fix (bug #4109)
-- typo fix (bug #4173)
-- moved to admin storage class
-- tweaked disconnect to only disconnect when a new connection was made
-
-permission
-- typo fix: hierachy -> hierarchy (bug #4150)
-- improved the "with" support (fixing bug #3245)
-- tweaked disconnect to only disconnect when a new connection was made
-- fixed bug that would lead to hierarchy mode in getGroups only fetching the
-  first subgroup level (bug #4633)
-
-examples
-- examples were converted to use MDB2_Schema. See the demodata.php script found
-  in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
-- removed the test.php script since this code is outdated and serves no purpose any longer
-- updated examples to use the new auth config layout due to using admin storage
-- tweaked error handling on init() call
+- php 4.4 reference assignment fixes
 EOT;
 
 $description = <<<EOT
