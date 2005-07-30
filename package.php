@@ -9,12 +9,12 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.1';
+$version = '0.3.2';
 
 $notes = <<<EOT
-- php 4.4 reference assignment fixes
-- dont filter out subgroups from the previous level in
-  _getGroupsWithHierarchy() (bug #4860)
+- copy storage config before passing it to the storageFactory() since this
+  method messes with the values which causes the original to be modified due to
+  using pass by reference
 EOT;
 
 $description = <<<EOT
