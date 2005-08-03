@@ -15,6 +15,8 @@ $notes = <<<EOT
 - copy storage config before passing it to the storageFactory() since this
   method messes with the values which causes the original to be modified due to
   using pass by reference
+- removed old 'with' handling code that is no longer necessary from getGroups()
+  in the medium container
 EOT;
 
 $description = <<<EOT
