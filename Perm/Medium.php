@@ -351,26 +351,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         $selectable_tables = $this->selectable_tables['getGroups'];
         $root_table = reset($selectable_tables);
 
-        $data = $this->_makeGet($params, $root_table, $selectable_tables);
-
-        if (isset($params['with']) && !empty($params['with']) && is_array($data)) {
-            foreach ($params['with'] as $field => $params) {
-                // this is lame and needs to be made more flexible
-                if ($field == 'right_id') {
-                    $method = 'getRights';
-                } elseif ($field == 'perm_user_id') {
-                    $method = 'getUsers';
-                } else {
-                    break;
-                }
-
-                foreach ($data as $key => $row) {
-                    $params['filters'][$field] = $row[$field];
-                    $data[$key]['rights'] = $this->$method($params);
-                }
-            }
-        }
-        return $data;
+        return $this->_makeGet($params, $root_table, $selectable_tables);
     }
 
 }
