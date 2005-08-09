@@ -54,13 +54,15 @@
   </maintainer>
   </maintainers>
  <release>
-  <version>0.3.1</version>
-  <date>2005-07-19</date>
+  <version>0.3.2</version>
+  <date>2005-08-09</date>
   <license>LGPL</license>
   <state>beta</state>
-  <notes>- php 4.4 reference assignment fixes
-- dont filter out subgroups from the previous level in
-  _getGroupsWithHierarchy() (bug #4860)
+  <notes>- copy storage config before passing it to the storageFactory() since this
+  method messes with the values which causes the original to be modified due to
+  using pass by reference
+- removed old 'with' handling code that is no longer necessary from getGroups()
+  in the medium container
   </notes>
   <deps>
    <dep type="php" rel="ge" version="4.2.0" optional="no"/>
@@ -144,6 +146,18 @@
   </filelist>
  </release>
  <changelog>
+   <release>
+    <version>0.3.2</version>
+    <date>2005-08-09</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- copy storage config before passing it to the storageFactory() since this
+  method messes with the values which causes the original to be modified due to
+  using pass by reference
+- removed old 'with' handling code that is no longer necessary from getGroups()
+  in the medium container
+    </notes>
+   </release>
    <release>
     <version>0.3.1</version>
     <date>2005-07-19</date>
