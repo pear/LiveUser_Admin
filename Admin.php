@@ -82,7 +82,7 @@ define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
  * Simple usage:
  *
  * <code>
- * $admin = new LiveUser_Admin::factory($conf);
+ * $admin = LiveUser_Admin::factory($conf);
  * $filters = array(
  *     'perm_user_id' => '3'
  * );
