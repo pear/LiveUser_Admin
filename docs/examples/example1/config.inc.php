@@ -5,8 +5,8 @@ require_once 'LiveUser/Admin.php';
 
 $GLOBALS['_LIVEUSER_DEBUG'] = true;
 
-$db_user = 'dufuz';
-$db_pass = 'shadiw';
+$db_user = 'root';
+$db_pass = '';
 $db_host = 'localhost';
 $db_name = 'liveuser_admin_test_example1';
 
