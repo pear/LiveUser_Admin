@@ -50,7 +50,7 @@
  * @package  LiveUser_Admin
  * @permor  Markus Wolff <wolff@21st.de>
  * @permor Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @permor  Lukas Smith <smith@backendmedia.com>
+ * @permor  Lukas Smith <smith@pooteeweet.org>
  * @permor Arnaud Limbourg <arnaud@php.net>
  * @permor  Christian Dickmann <dickmann@php.net>
  * @permor  Matt Scifo <mscifo@php.net>
@@ -81,7 +81,7 @@ require_once 'LiveUser/Admin/Storage/DB.php';
  *
  * @category authentication
  * @package  LiveUser_Admin
- * @permor  Lukas Smith <smith@backendmedia.com>
+ * @permor  Lukas Smith <smith@pooteeweet.org>
  * @permor  Bjoern Kraus <krausbn@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt

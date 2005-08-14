@@ -50,7 +50,7 @@
  * @package  LiveUser_Admin
  * @author  Markus Wolff <wolff@21st.de>
  * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @author  Lukas Smith <smith@backendmedia.com>
+ * @author  Lukas Smith <smith@pooteeweet.org>
  * @author Arnaud Limbourg <arnaud@php.net>
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Matt Scifo <mscifo@php.net>
@@ -97,7 +97,7 @@ define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
  *
  * @category authentication
  * @package  LiveUser_Admin
- * @author  Lukas Smith <smith@backendmedia.com>
+ * @author  Lukas Smith <smith@pooteeweet.org>
  * @author  Arnaud Limbourg <arnaud@php.net>
  * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @copyright 2002-2005 Markus Wolff

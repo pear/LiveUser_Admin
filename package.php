@@ -80,7 +80,7 @@ $package->addMaintainer(
     'arnaud', 'lead', 'Arnaud Limbourg', 'arnaud@php.net'
 );
 $package->addMaintainer(
-    'lsmith', 'lead', 'Lukas Kahwe Smith', 'smith@backendmedia.com'
+    'lsmith', 'lead', 'Lukas Kahwe Smith', 'smith@pooteeweet.org'
 );
 $package->addMaintainer(
     'dufuz', 'lead', 'Helgi Þormar', 'dufuz@php.net'
