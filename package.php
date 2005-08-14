@@ -9,14 +9,11 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.2';
+$version = '0.3.3';
 
 $notes = <<<EOT
-- copy storage config before passing it to the storageFactory() since this
-  method messes with the values which causes the original to be modified due to
-  using pass by reference
-- removed old 'with' handling code that is no longer necessary from getGroups()
-  in the medium container
+- typo fix in phpdoc (bug #5054)
+- removed space in the example1 directory name
 EOT;
 
 $description = <<<EOT
