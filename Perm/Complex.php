@@ -806,7 +806,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                         return false;
                     }
 
-                    foreach($implied_rights as $right) {
+                    foreach ($implied_rights as $right) {
                         if ($_rights[$right['right_id']]) {
                             continue;
                         }

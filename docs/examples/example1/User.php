@@ -129,7 +129,7 @@ if ($users === false) {
     if ($user === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
-    } elseif(empty($user)) {
+    } elseif (empty($user)) {
         echo 'No user was found.<br />';
     } else {
         Var_Dump::display($user);

@@ -71,7 +71,7 @@ $user_rights = $admin->perm->getRights($params);
 
 if ($user_rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-} elseif(empty($user_rights)) {
+} elseif (empty($user_rights)) {
     echo 'No rights were found for perm user id <strong>' . $users[$user]['perm_user_id'] . '</strong><br />';
 } else {
     $right = array_rand($user_rights);

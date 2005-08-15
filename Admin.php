@@ -611,7 +611,7 @@ class LiveUser_Admin
         }
 
         $users = array();
-        foreach($permUsers as $permData) {
+        foreach ($permUsers as $permData) {
             if (!$this->setAdminAuthContainer($permData['auth_container_name'])) {
                 $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Auth container could not be set.'));
@@ -665,7 +665,7 @@ class LiveUser_Admin
         }
 
         $users = array();
-        foreach($authUsers as $authData) {
+        foreach ($authUsers as $authData) {
             $permData = $this->perm->getUsers(array(
                 'filters' => array(
                     'auth_user_id' => $authData['auth_user_id'],
