@@ -90,7 +90,8 @@ $conf =
                     ),
                     'alias' => array(
                         'name' => 'name',
-                        'email' => 'email'
+                        'email' => 'email',
+                        'auth_user_id' => 'user_id',
                     ),
                     // 'force_seq' => false
                 ),

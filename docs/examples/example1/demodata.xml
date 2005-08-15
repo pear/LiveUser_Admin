@@ -563,7 +563,7 @@
   <declaration>
 
    <field>
-    <name>auth_user_id</name>
+    <name>user_id</name>
     <type>text</type>
     <length>32</length>
    </field>
@@ -613,10 +613,10 @@
    </field>
 
    <index>
-    <name>auth_user_id</name>
+    <name>user_id</name>
     <unique>1</unique>
     <field>
-     <name>auth_user_id</name>
+     <name>user_id</name>
      <sorting>ascending</sorting>
     </field>
    </index>
