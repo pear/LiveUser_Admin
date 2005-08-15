@@ -14,6 +14,10 @@ $version = '0.3.3';
 $notes = <<<EOT
 - typo fix in phpdoc (bug #5054)
 - removed space in the example1 directory name
+- ensure that fields are properly aliased (bug #5059)
+- added an aliased field to exampl1 so that we can better test liveuser_admin
+- several CS fixes
+- removed uncessary optional dependencies on XML_Tree and Crypt_RC4
 EOT;
 
 $description = <<<EOT
