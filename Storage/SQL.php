@@ -399,8 +399,11 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $joinfilters = $result[0];
         }
 
+        foreach ($fields as $key => $field) {
+            $fields[$key] = $this->alias[$field];
+        }
         $tables = array_keys($tables);
-        foreach($tables as $key => $table) {
+        foreach ($tables as $key => $table) {
             $tables[$key] = $this->prefix.$this->alias[$table];
         }
         // build SELECT query
