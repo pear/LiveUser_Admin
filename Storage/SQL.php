@@ -136,7 +136,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         return false;
                     }
                     $data[$field] = $sequence_id = $result;
-                } elseif (empty($data[$field])) {
+                } else {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                         array('reason' => 'field may not be empty: '.$field)
@@ -200,8 +200,10 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     function update($table, $data, $filters)
     {
         // sanity checks
-        foreach ($this->tables[$table]['fields'] as $field => $required) {
-            if ($required && isset($data[$field]) && $data[$field] === '') {
+        foreach ($data as $field) {
+            if ($this->tables[$table]['fields'][$field]
+                && (!array_key_exists($field, $data) || $data[$field] === '')
+            ) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'field may not be empty: '.$field)
@@ -330,14 +332,14 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $fields = array_keys($this->tables[$root_table]['fields']);
         }
 
-        $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
-        if ($query === false) {
-            return false;
-        }
-
         $types = array();
         foreach ($fields as $field) {
             $types[] = $this->fields[$field];
+        }
+
+        $query = $this->createSelect($fields, $filters, $orders, $root_table, $selectable_tables);
+        if ($query === false) {
+            return false;
         }
 
         $this->setLimit($limit, $offset);
@@ -399,9 +401,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $joinfilters = $result[0];
         }
 
-        foreach ($fields as $key => $field) {
-            $fields[$key] = $this->alias[$field];
-        }
         $tables = array_keys($tables);
         foreach ($tables as $key => $table) {
             $tables[$key] = $this->prefix.$this->alias[$table];
@@ -440,15 +439,15 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $where = array();
 
         foreach ($filters as $field => $value) {
+            if (array_key_exists($field, $this->fields)) {
+                $type = $this->fields[$field];
+                $tmp_field = $this->alias[$field];
             // find type for fields with naming like [tablename].[fieldname]
-            if (preg_match('/^('.$this->prefix.'[^.]+\.)(.+)$/', $field, $match) &&
-                isset($this->fields[$match[2]])
+            } elseif (preg_match('/^('.$this->prefix.'[^.]+\.)(.+)$/', $field, $match)
+                && array_key_exists($match[2], $this->fields)
             ) {
                 $type = $this->fields[$match[2]];
                 $tmp_field = $match[1].$this->alias[$match[2]];
-            } elseif (isset($this->fields[$field])) {
-                $type = $this->fields[$field];
-                $tmp_field = $this->alias[$field];
             } else {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
@@ -614,13 +613,30 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         }
                     }
                     // append table name to all filter fields for this table
-                    if (isset($filters[$field])) {
-                        $filters[$this->prefix.$this->alias[$table].'.'.$this->alias[$field]] = $filters[$field];
+                    // filters are aliased in createWhere
+                    if (array_key_exists($field, $filters)) {
+                        $filters[$this->prefix.$this->alias[$table].'.'.$field] = $filters[$field];
                         unset($filters[$field]);
                     }
                     // append table name to all order by fields for this table
-                    if (isset($orders[$field])) {
+                    if (array_key_exists($field, $orders)) {
                         $orders[$this->prefix.$this->alias[$table].'.'.$this->alias[$field]] = $orders[$field];
+                        unset($orders[$field]);
+                    }
+                }
+            } else {
+                foreach ($current_fields as $field) {
+                    // alias field
+                    for ($i = 0, $j = count($fields); $i < $j; $i++) {
+                        if ($field == $fields[$i]) {
+                            $fields[$i] = $this->alias[$fields[$i]].' AS '.$field;
+                        }
+                    }
+                    // alias filters
+                    // filters are aliased in createWhere
+                    // alias orders
+                    if (array_key_exists($field, $orders)) {
+                        $orders[$this->alias[$field]] = $orders[$field];
                         unset($orders[$field]);
                     }
                 }
@@ -679,7 +695,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), $selectable_tables);
         foreach ($direct_matches as $table) {
             // verify that the table is in the selectable_tables list
-            if (!isset($tables[$table])) {
+            if (!array_key_exists($table, $tables)) {
                 continue;
             }
             // handle multi column join
