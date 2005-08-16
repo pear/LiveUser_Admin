@@ -399,8 +399,8 @@ class LiveUser_Admin
                 $authName = key($this->_conf['authContainers']);
             } else {
                 foreach ($this->_conf['authContainers'] as $key => $value) {
-                    if (!isset($this->_authContainers[$key]) ||
-                        !is_object($this->_authContainers[$key])
+                    if (!isset($this->_authContainers[$key])
+                        || !is_object($this->_authContainers[$key])
                     ) {
                         $this->_authContainers[$key] = &LiveUser::authFactory(
                             $value,
