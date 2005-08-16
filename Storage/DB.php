@@ -105,8 +105,8 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     {
         parent::init($storageConf);
 
-        if (isset($storageConf['connection']) &&
-            DB::isConnection($storageConf['connection'])
+        if (isset($storageConf['connection'])
+            && DB::isConnection($storageConf['connection'])
         ) {
             $this->dbc = &$storageConf['connection'];
         } elseif (isset($storageConf['dsn'])) {

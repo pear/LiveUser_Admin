@@ -121,8 +121,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function assignSubGroup($data)
     {
-        if (isset($data['group_id']) && isset($data['subgroup_id']) &&
-            $data['subgroup_id'] == $data['group_id']
+        if (isset($data['group_id']) && isset($data['subgroup_id'])
+            && $data['subgroup_id'] == $data['group_id']
         ) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -188,8 +188,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function implyRight($data)
     {
-        if (isset($data['right_id']) && isset($data['implied_right_id']) &&
-            $data['implied_right_id'] == $data['right_id']
+        if (isset($data['right_id']) && isset($data['implied_right_id'])
+            && $data['implied_right_id'] == $data['right_id']
         ) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -829,9 +829,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $_rights[$rights]['right_id'] = $rights;
         }
 
-        if ($params['inherited'] &&
-                (isset($params['filters']['perm_user_id']) || 
-                 isset($params['filters']['group_id']))
+        if ($params['inherited']
+            && (isset($params['filters']['perm_user_id'])
+                || isset($params['filters']['group_id'])
+            )
         ) {
             $inherited_rights = $this->_getInheritedRights($params);
 
