@@ -66,7 +66,6 @@
  */
 require_once 'LiveUser/Admin/Perm/Medium.php';
 
-
 /**
  * Complex permission administration class
  *
@@ -121,9 +120,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function assignSubGroup($data)
     {
-        if (isset($data['group_id']) && isset($data['subgroup_id'])
-            && $data['subgroup_id'] == $data['group_id']
-        ) {
+        if ($data['subgroup_id'] == $data['group_id']) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Parent group id is the same as the subgroup id')
@@ -299,7 +296,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             ),
             'filters' => array(
                 'perm_user_id' => $data['perm_user_id']
-            )
+            ),
+            'select' => 'row',
         );
 
         $result = parent::getUsers($params);
@@ -307,7 +305,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        if ($result[0]['perm_type'] < 3) {
+        if (!isset($result['perm_type']) || $result['perm_type'] < 3) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'The user doesn\'t have sufficient rights')
