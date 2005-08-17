@@ -50,7 +50,7 @@ if (PEAR::isError($db)) {
     die();
 }
 
-$db->setFetchMode($storage.'_FETCHMODE_ASSOC');
+$db->setFetchMode(constant($storage.'_FETCHMODE_ASSOC'));
 
 $conf =
     array(
