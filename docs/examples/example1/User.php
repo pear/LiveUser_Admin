@@ -1,7 +1,6 @@
 <?php
 require_once 'index.php';
-echo '<h3>User</h3>
-<h4>for this test to work you need to add a "name" and an "email" field to your auth user table or use extra_sql.sql</h4>';
+echo '<h3>User</h3>';
 
 // Add
 echo 'Make 10 normal users and 10 admins<br />';
