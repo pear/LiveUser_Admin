@@ -7,7 +7,7 @@
  * LiveUser_Admin is meant to be used with the LiveUser package.
  * It is composed of all the classes necessary to administrate
  * data used by LiveUser.
- * 
+ *
  * You'll be able to add/edit/delete/get things like:
  * * Rights
  * * Users
@@ -16,19 +16,19 @@
  * * Applications
  * * Subgroups
  * * ImpliedRights
- * 
+ *
  * And all other entities within LiveUser.
- * 
+ *
  * At the moment we support the following storage containers:
  * * DB
  * * MDB
  * * MDB2
- * 
+ *
  * But it takes no time to write up your own storage container,
  * so if you like to use native mysql functions straight, then it's possible
  * to do so in under a hour!
  *
- * PHP version 4 and 5 
+ * PHP version 4 and 5
  *
  * LICENSE: This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,21 +40,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
- * MA  02111-1307  USA 
+ * MA  02111-1307  USA
  *
  *
  * @category authentication
  * @package  LiveUser_Admin
- * @author  Markus Wolff <wolff@21st.de>
+ * @author Markus Wolff <wolff@21st.de>
  * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @author  Lukas Smith <smith@pooteeweet.org>
+ * @author Lukas Smith <smith@pooteeweet.org>
  * @author Arnaud Limbourg <arnaud@php.net>
- * @author  Christian Dickmann <dickmann@php.net>
- * @author  Matt Scifo <mscifo@php.net>
- * @author  Bjoern Kraus <krausbn@php.net>
+ * @author Christian Dickmann <dickmann@php.net>
+ * @author Matt Scifo <mscifo@php.net>
+ * @author Bjoern Kraus <krausbn@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version CVS: $Id$
@@ -79,7 +79,7 @@ require_once 'LiveUser/Admin/Perm/Medium.php';
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Markus Wolff <wolff@21st.de>
  * @author  Matt Scifo <mscifo@php.net>
- * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author Helgi ï¿½rmar ï¿½rbjï¿½nsson <dufuz@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version Release: @package_version@
@@ -111,7 +111,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * the child group is already assigned to the parent group and last if
      * the child group does have a parent group already assigned to it.
      * (Just to difference between what kinda error was hit)
-     * 
+     *
      * If so it returns false and pushes the error into stack
      *
      * @param array $data
@@ -274,7 +274,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function addAreaAdmin($data)
     {
         // needs more sanity checking, check if the perm_id is really perm_type 3 and so on
-        // make sure when removing rights or updating them that if the user goes down 
+        // make sure when removing rights or updating them that if the user goes down
         // below perm_type 3 that a entry from area_admin_areas is removed
 
         if (!is_numeric($data['area_id'])) {
@@ -579,7 +579,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         if (!is_numeric($subGroupId)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Something wrong with your param, make sure its a 
+                array('msg' => 'Something wrong with your param, make sure its a
                                numeric value and not empty')
             );
             return false;
@@ -601,7 +601,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     /**
      * Get groups
-     * 
+     *
      * Params:
      * subgroups - defaults to false
      *    If subgroups should be included, if false then it acts same as the
@@ -697,7 +697,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 return false;
             }
 
-            $groups= array_merge($groups, $subgroups);
+            $groups = array_merge($groups, $subgroups);
             $new_count = count($subgroups);
         } while(!empty($subgroups) && $count <= $new_count);
 
@@ -707,7 +707,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Helper method to fetch all groups including the subgroups in a 
+     * Helper method to fetch all groups including the subgroups in a
      * hierarchy tree structure
      *
      * @param array $params
