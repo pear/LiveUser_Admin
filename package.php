@@ -18,6 +18,7 @@ $notes = <<<EOT
 - added an aliased field to exampl1 so that we can better test liveuser_admin
 - several CS fixes
 - removed uncessary optional dependencies on XML_Tree and Crypt_RC4
+- fixed issue in upate() handling in the storage of required fields
 EOT;
 
 $description = <<<EOT
