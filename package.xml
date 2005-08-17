@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.0a12">
- <name>LiveUser_Admin</name>
- <summary>User authentication and permission management framework</summary>
- <description>LiveUser_Admin is meant to be used with the LiveUser package.
+<package version="1.0">
+  <name>LiveUser_Admin</name>
+  <summary>User authentication and permission management framework</summary>
+  <description>  LiveUser_Admin is meant to be used with the LiveUser package.
   It is composed of all the classes necessary to administrate
   data used by LiveUser.
   
@@ -25,155 +25,167 @@
   
   But it takes no time to write up your own storage container,
   so if you like to use native mysql functions straight, then it's possible
-  to do so in under a hour!
- </description>
- <maintainers>
-  <maintainer>
-   <user>mw21st</user>
-   <name>Markus Wolff</name>
-   <email>mw21st@php.net</email>
-   <role>lead</role>
-  </maintainer>
-  <maintainer>
-   <user>arnaud</user>
-   <name>Arnaud Limbourg</name>
-   <email>arnaud@php.net</email>
-   <role>lead</role>
-  </maintainer>
-  <maintainer>
-   <user>lsmith</user>
-   <name>Lukas Kahwe Smith</name>
-   <email>smith@pooteeweet.org</email>
-   <role>lead</role>
-  </maintainer>
-  <maintainer>
-   <user>dufuz</user>
-   <name>Helgi &THORN;ormar</name>
-   <email>dufuz@php.net</email>
-   <role>lead</role>
-  </maintainer>
+  to do so in under a hour!</description>
+  <maintainers>
+    <maintainer>
+      <user>mw21st</user>
+      <name>Markus Wolff</name>
+      <email>mw21st@php.net</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>arnaud</user>
+      <name>Arnaud Limbourg</name>
+      <email>arnaud@php.net</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>lsmith</user>
+      <name>Lukas Kahwe Smith</name>
+      <email>smith@pooteeweet.org</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>dufuz</user>
+      <name>Helgi Þormar</name>
+      <email>dufuz@php.net</email>
+      <role>lead</role>
+    </maintainer>
   </maintainers>
- <release>
-  <version>0.3.2</version>
-  <date>2005-08-09</date>
-  <license>LGPL</license>
-  <state>beta</state>
-  <notes>- copy storage config before passing it to the storageFactory() since this
+  <release>
+    <version>0.3.3</version>
+    <date>2005-08-17</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- typo fix in phpdoc (bug #5054)
+- removed space in the example1 directory name
+- ensure that fields are properly aliased (bug #5059)
+- added an aliased field to exampl1 so that we can better test liveuser_admin
+- several CS fixes
+- removed uncessary optional dependencies on XML_Tree and Crypt_RC4
+- fixed issue in upate() handling in the storage of required fields</notes>
+    <deps>
+      <dep type="php" rel="ge" version="4.2.0" optional="no"/>
+      <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
+      <dep type="pkg" rel="ge" version="0.16.0" optional="no">LiveUser</dep>
+      <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
+      <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
+      <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
+      <dep type="pkg" rel="ge" version="2.0.0beta4" optional="yes">MDB2</dep>
+      <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
+      <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
+    </deps>
+    <filelist>
+      <dir baseinstalldir="/LiveUser/Admin" name="/">
+       <dir name="Auth">
+        <file role="php" name="Common.php"/>
+        <file role="php" name="DB.php"/>
+        <file role="php" name="MDB.php"/>
+        <file role="php" name="MDB2.php"/>
+        <dir name="Storage">
+         <file role="php" name="DB.php"/>
+         <file role="php" name="MDB.php"/>
+         <file role="php" name="MDB2.php"/>
+        </dir> <!-- Auth/Storage -->
+       </dir> <!-- Auth -->
+       <dir name="docs">
+        <dir name="examples">
+         <file role="doc" name="README"/>
+         <dir name="example1">
+          <file role="doc" name="Application.php"/>
+          <file role="doc" name="Area.php"/>
+          <file role="doc" name="Area_Admin_Areas.php"/>
+          <file role="doc" name="config.inc.php"/>
+          <file role="doc" name="demodata.xml"/>
+          <file role="doc" name="Group.php"/>
+          <file role="doc" name="GroupRights.php"/>
+          <file role="doc" name="ImplyRights.php"/>
+          <file role="doc" name="index.php"/>
+          <file role="doc" name="OutputRightsConstants.php"/>
+          <file role="doc" name="Rights.php"/>
+          <file role="doc" name="Subgroups.php"/>
+          <file role="doc" name="test.php"/>
+          <file role="doc" name="Translation.php"/>
+          <file role="doc" name="User.php"/>
+          <file role="doc" name="UserGroup.php"/>
+          <file role="doc" name="UserRights.php"/>
+         </dir> <!-- docs/examples/example1 -->
+         <dir name="example3">
+          <file role="doc" name="area51.php"/>
+          <file role="doc" name="coffeemaker.php"/>
+          <file role="doc" name="conf.php"/>
+          <file role="doc" name="demodata.xml"/>
+          <file role="doc" name="example.php"/>
+          <file role="doc" name="index.html"/>
+          <file role="doc" name="loginscreen.php"/>
+          <file role="doc" name="main.php"/>
+          <file role="doc" name="nav.php"/>
+          <file role="doc" name="testarea.php"/>
+         </dir> <!-- docs/examples/example3 -->
+        </dir> <!-- docs/examples -->
+       </dir> <!-- docs -->
+       <dir name="Perm">
+        <file role="php" name="Complex.php"/>
+        <file role="php" name="Medium.php"/>
+        <file role="php" name="Simple.php"/>
+        <dir name="Storage">
+         <file role="php" name="DB.php"/>
+         <file role="php" name="MDB.php"/>
+         <file role="php" name="MDB2.php"/>
+        </dir> <!-- Perm/Storage -->
+       </dir> <!-- Perm -->
+       <dir name="Storage">
+        <file role="php" name="DB.php"/>
+        <file role="php" name="MDB.php"/>
+        <file role="php" name="MDB2.php"/>
+        <file role="php" name="SQL.php"/>
+       </dir> <!-- Storage -->
+       <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
+       <file role="doc" name="lgpl.txt"/>
+       <file role="php" name="Storage.php"/>
+      </dir> <!-- / -->
+    </filelist>
+  </release>
+  <changelog>
+    <release>
+      <version>0.3.3</version>
+      <date>2005-08-17</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- typo fix in phpdoc (bug #5054)
+- removed space in the example1 directory name
+- ensure that fields are properly aliased (bug #5059)
+- added an aliased field to exampl1 so that we can better test liveuser_admin
+- several CS fixes
+- removed uncessary optional dependencies on XML_Tree and Crypt_RC4
+- fixed issue in upate() handling in the storage of required fields</notes>
+    </release>
+    <release>
+      <version>0.3.2</version>
+      <date>2005-08-09</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- copy storage config before passing it to the storageFactory() since this
   method messes with the values which causes the original to be modified due to
   using pass by reference
 - removed old 'with' handling code that is no longer necessary from getGroups()
-  in the medium container
-  </notes>
-  <deps>
-   <dep type="php" rel="ge" version="4.2.0" optional="no"/>
-   <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
-   <dep type="pkg" rel="ge" version="0.16.0" optional="no">LiveUser</dep>
-   <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
-   <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
-   <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
-   <dep type="pkg" rel="ge" version="2.0.0beta4" optional="yes">MDB2</dep>
-   <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
-   <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
-  </deps>
-  <filelist>
-   <dir name="/" baseinstalldir="/LiveUser/Admin">
-    <dir name="Auth">
-     <dir name="Storage">
-      <file role="php" name="DB.php"/>
-      <file role="php" name="MDB.php"/>
-      <file role="php" name="MDB2.php"/>
-     </dir> <!-- /Auth/Storage -->
-     <file role="php" name="Common.php"/>
-     <file role="php" name="DB.php"/>
-     <file role="php" name="MDB.php"/>
-     <file role="php" name="MDB2.php"/>
-    </dir> <!-- /Auth -->
-    <dir name="docs">
-     <dir name="examples">
-      <dir name="example 1">
-       <file role="doc" name="Application.php"/>
-       <file role="doc" name="Area.php"/>
-       <file role="doc" name="Area_Admin_Areas.php"/>
-       <file role="doc" name="config.inc.php"/>
-       <file role="doc" name="demodata.xml"/>
-       <file role="doc" name="Group.php"/>
-       <file role="doc" name="GroupRights.php"/>
-       <file role="doc" name="ImplyRights.php"/>
-       <file role="doc" name="index.php"/>
-       <file role="doc" name="OutputRightsConstants.php"/>
-       <file role="doc" name="Rights.php"/>
-       <file role="doc" name="Subgroups.php"/>
-       <file role="doc" name="Translation.php"/>
-       <file role="doc" name="User.php"/>
-       <file role="doc" name="UserGroup.php"/>
-       <file role="doc" name="UserRights.php"/>
-      </dir> <!-- /docs/examples/example 1 -->
-      <dir name="example3">
-       <file role="doc" name="area51.php"/>
-       <file role="doc" name="coffeemaker.php"/>
-       <file role="doc" name="conf.php"/>
-       <file role="doc" name="demodata.xml"/>
-       <file role="doc" name="example.php"/>
-       <file role="doc" name="index.html"/>
-       <file role="doc" name="loginscreen.php"/>
-       <file role="doc" name="main.php"/>
-       <file role="doc" name="nav.php"/>
-       <file role="doc" name="testarea.php"/>
-      </dir> <!-- /docs/examples/example3 -->
-      <file role="doc" name="README"/>
-     </dir> <!-- /docs/examples -->
-    </dir> <!-- /docs -->
-    <dir name="Perm">
-     <dir name="Storage">
-      <file role="php" name="DB.php"/>
-      <file role="php" name="MDB.php"/>
-      <file role="php" name="MDB2.php"/>
-     </dir> <!-- /Perm/Storage -->
-     <file role="php" name="Complex.php"/>
-     <file role="php" name="Medium.php"/>
-     <file role="php" name="Simple.php"/>
-    </dir> <!-- /Perm -->
-    <dir name="Storage">
-     <file role="php" name="DB.php"/>
-     <file role="php" name="MDB.php"/>
-     <file role="php" name="MDB2.php"/>
-     <file role="php" name="SQL.php"/>
-    </dir> <!-- /Storage -->
-    <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
-    <file role="doc" name="lgpl.txt"/>
-    <file role="php" name="Storage.php"/>
-   </dir> <!-- / -->
-  </filelist>
- </release>
- <changelog>
-   <release>
-    <version>0.3.2</version>
-    <date>2005-08-09</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- copy storage config before passing it to the storageFactory() since this
-  method messes with the values which causes the original to be modified due to
-  using pass by reference
-- removed old 'with' handling code that is no longer necessary from getGroups()
-  in the medium container
-    </notes>
-   </release>
-   <release>
-    <version>0.3.1</version>
-    <date>2005-07-19</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- php 4.4 reference assignment fixes
+  in the medium container</notes>
+    </release>
+    <release>
+      <version>0.3.1</version>
+      <date>2005-07-19</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- php 4.4 reference assignment fixes
 - dont filter out subgroups from the previous level in
-  _getGroupsWithHierarchy() (bug #4860)
-    </notes>
-   </release>
-   <release>
-    <version>0.3.0</version>
-    <date>2005-06-21</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- added _call() overloading method for php5 users in LiveUser_Admin class
+  _getGroupsWithHierarchy() (bug #4860)</notes>
+    </release>
+    <release>
+      <version>0.3.0</version>
+      <date>2005-06-21</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- added _call() overloading method for php5 users in LiveUser_Admin class
 - dont require a conf array for all but the first call of singleton()
 - updated LiveUser dependency
 
@@ -205,15 +217,14 @@ examples
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
 - removed the test.php script since this code is outdated and serves no purpose any longer
 - updated examples to use the new auth config layout due to using admin storage
-- tweaked error handling on init() call
-    </notes>
-   </release>
-   <release>
-    <version>0.2.2</version>
-    <date>2005-05-05</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- delete() now uses findTable() to ensure that only defined table with the
+- tweaked error handling on init() call</notes>
+    </release>
+    <release>
+      <version>0.2.2</version>
+      <date>2005-05-05</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- delete() now uses findTable() to ensure that only defined table with the
   proper fields are being used
 - findTable() now only prefixes fields if necessary
 - typo fix: hierachy -&gt; hierarchy (bug #4150)
@@ -223,28 +234,26 @@ examples
 - examples were converted to use MDB2_Schema. See the demodata.php script found
   in the client part (http://cvs.php.net/co.php/pear/LiveUser/docs/examples/demodata.php)
 - added _call() overloading method for php5 users in LiveUser_Admin class
-- added support for table name aliasing (fairly untested)
-    </notes>
-   </release>
-   <release>
-    <version>0.2.1</version>
-    <date>2005-03-30</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- typo fix in autoinit option (bug #3844)
+- added support for table name aliasing (fairly untested)</notes>
+    </release>
+    <release>
+      <version>0.2.1</version>
+      <date>2005-03-30</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- typo fix in autoinit option (bug #3844)
 - updated LiveUser dependency to 0.15.0
 - fixed type handling in updateUser()
 - update getErrors() with code from the LiveUser class
 - typo fix in outputRightsConstants() (bug #3897)
-- removed calls to make remove filter on delete of relationship tables (bug #3874)
-    </notes>
-   </release>
-   <release>
-    <version>0.2.0</version>
-    <date>2005-03-15</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- perm container now also has a default init() method that is called in the factory
+- removed calls to make remove filter on delete of relationship tables (bug #3874)</notes>
+    </release>
+    <release>
+      <version>0.2.0</version>
+      <date>2005-03-15</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- perm container now also has a default init() method that is called in the factory
 - delete/update now dont require a filter in the id field
 - delete/update now return the number of affected rows
 - use LiveUser::cryptRC4() for rc4 handling
@@ -279,15 +288,14 @@ examples
   the proper auth container is affected
 - updated the file headers as per the RFC
 - getGroups() in the complex container was refactored and subgroup handling
-  was reworked (BC break!)
-    </notes>
-   </release>
-   <release>
-    <version>0.1.0</version>
-    <date>2004-12-20</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- refactored into a separate package from LiveUser
+  was reworked (BC break!)</notes>
+    </release>
+    <release>
+      <version>0.1.0</version>
+      <date>2004-12-20</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- refactored into a separate package from LiveUser
 - severe BC breaks in the permission API in order to unify the API
 - added ErrorStack
 - fixed outputRightsConstants() method
@@ -298,16 +306,14 @@ examples
 - sql query builder only joins the necessary tables so the admin API does not
   force the usage of any table (especially the translation table)
 - searchUser() now also fetches perm data
-- the complex container is currently not fully implemented
-    </notes>
-   </release>
-   <release>
-    <version>0.14.0</version>
-    <date>2004-12-11</date>
-    <license>LGPL</license>
-    <state>beta</state>
-    <notes>- Refactored nto a separate package.
-    </notes>
-   </release>
- </changelog>
+- the complex container is currently not fully implemented</notes>
+    </release>
+    <release>
+      <version>0.14.0</version>
+      <date>2004-12-11</date>
+      <license>LGPL</license>
+      <state>beta</state>
+      <notes>- Refactored nto a separate package.</notes>
+    </release>
+  </changelog>
 </package>
