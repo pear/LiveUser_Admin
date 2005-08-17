@@ -72,7 +72,8 @@ echo '
 ?>
 So that these test will run you have to have <a href="http://pear.php.net/package/Var_Dump">Var_Dump</a> installed<br /><br />
 <?php
-if (isset($_GET['del']))  {
+if (isset($_GET['del'])) {
+    $db->expectError(MDB2_ERROR_NOSUCHTABLE);
     $db->query('DELETE FROM liveuser_applications');
     $db->query('DROP TABLE liveuser_applications_seq');
     $db->query('DELETE FROM liveuser_area_admin_areas');
@@ -95,6 +96,7 @@ if (isset($_GET['del']))  {
     $db->query('DROP TABLE liveuser_users_seq');
     $db->query('DELETE FROM liveuser_translations');
     $db->query('DROP TABLE liveuser_translations_seq');
+    $db->popExpect();
     echo 'Reseted the database';
     exit;
 } else {
