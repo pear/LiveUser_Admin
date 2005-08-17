@@ -19,6 +19,10 @@ $notes = <<<EOT
 - several CS fixes
 - removed uncessary optional dependencies on XML_Tree and Crypt_RC4
 - fixed issue in upate() handling in the storage of required fields
+- supress errors due to deleting non existant tables in example1
+- fixed bug in setFetchMode() calling in example1
+- removed warning about extra_sql.sql in example1
+- pass the storage config array by ref after all
 EOT;
 
 $description = <<<EOT
