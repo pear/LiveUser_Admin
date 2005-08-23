@@ -199,8 +199,9 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      */
     function update($table, $data, $filters)
     {
-        // sanity checks
-        foreach ($data as $field) {
+        $fields = $values = array();
+        foreach ($data as $field => $value) {
+            // sanity checks
             if ($this->tables[$table]['fields'][$field]
                 && (!array_key_exists($field, $data) || $data[$field] === '')
             ) {
@@ -210,11 +211,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 );
                 return false;
             }
-        }
 
-        $fields = array();
-        $values = array();
-        foreach ($data as $field => $value) {
             $value_quoted = $this->quote($value, $this->fields[$field]);
             if ($value_quoted === false) {
                 return false;
