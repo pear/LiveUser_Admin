@@ -129,14 +129,18 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         // sanity checks
         $sequence_id = false;
         foreach ($this->tables[$table]['fields'] as $field => $required) {
-            if ($required && !isset($data[$field])) {
+            if ($required) {
                 if ($required == 'seq') {
-                    $result = $this->getBeforeId($this->prefix . $this->alias[$table], true);
-                    if ($result === false) {
-                        return false;
+                    if (!isset($data[$field])) {
+                        $result = $this->getBeforeId($this->prefix . $this->alias[$table], true);
+                        if ($result === false) {
+                            return false;
+                        }
+                        $data[$field] = $sequence_id = $result;
+                    } else {
+                        $sequence_id = $data[$field];
                     }
-                    $data[$field] = $sequence_id = $result;
-                } else {
+                } elseif (!isset($data[$field])) {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                         array('reason' => 'field may not be empty: '.$field)
@@ -162,6 +166,9 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             return false;
         }
         if ($sequence_id !== false) {
+            if (is_numeric($sequence_id)) {
+                return $sequence_id;
+            }
             return $this->getAfterId($sequence_id, $this->prefix . $this->alias[$table]);
         }
         return $result;
