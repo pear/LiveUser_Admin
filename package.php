@@ -9,20 +9,15 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.3';
+$version = '0.3.4';
 
 $notes = <<<EOT
-- typo fix in phpdoc (bug #5054)
-- removed space in the example1 directory name
-- ensure that fields are properly aliased (bug #5059)
-- added an aliased field to exampl1 so that we can better test liveuser_admin
-- several CS fixes
-- removed uncessary optional dependencies on XML_Tree and Crypt_RC4
-- fixed issue in upate() handling in the storage of required fields
-- supress errors due to deleting non existant tables in example1
-- fixed bug in setFetchMode() calling in example1
-- removed warning about extra_sql.sql in example1
-- pass the storage config array by ref after all
+- fixed typo error in sanity checking of the SQL storage layer update() method
+- fixed bug in the SQL storage layer insert() method that would lead to the
+  sequence value not being returned if it was set externally. this for example
+  leads to broken behaviour  in the addUser() wrapper method in LiveUser_Admin
+- added error handler to example1 so that notices and warnings will not go
+  unnoticed so easily in the large output
 EOT;
 
 $description = <<<EOT
