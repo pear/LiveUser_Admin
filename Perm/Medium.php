@@ -121,16 +121,19 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    /**
-     * Update group(s)
-     *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
-     *
-     * @access public
-     */
+   /**
+    * Update grouo - This will update the liveuser_perm_users table
+    *
+    *
+    * @param array $data    associative array in the form of $fieldname => $data
+    * @param array $filters associative array in the form of $fieldname => $data
+    *                       This will construct the WHERE clause of your update
+    *                       Be careful, if you leave this blank no WHERE clause
+    *                       will be used and all groups will be affected by the update
+    * @return mixed false on error, the affected rows on success
+    *
+    * @access public
+    */ 
     function updateGroup($data, $filters)
     {
         $result = $this->_storage->update('groups', $data, $filters);

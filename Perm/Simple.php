@@ -175,16 +175,19 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    /**
-     * Update usr
-     *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
-     *
-     * @access public
-     */
+   /**
+    * Update user - This will update the liveuser_perm_users table
+    *
+    *
+    * @param array $data    associative array in the form of $fieldname => $data
+    * @param array $filters associative array in the form of $fieldname => $data
+    *                       This will construct the WHERE clause of your update
+    *                       Be careful, if you leave this blank no WHERE clause
+    *                       will be used and all users will be affected by the update
+    * @return mixed false on error, the affected rows on success
+    *
+    * @access public
+    */
     function updateUser($data, $filters)
     {
         $result = $this->_storage->update('perm_users', $data, $filters);
@@ -236,16 +239,19 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    /**
-     * Update right
-     *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
-     *
-     * @access public
-     */
+   /**
+    * Update right - This will update the liveuser_perm_users table
+    *
+    *
+    * @param array $data    associative array in the form of $fieldname => $data
+    * @param array $filters associative array in the form of $fieldname => $data
+    *                       This will construct the WHERE clause of your update
+    *                       Be careful, if you leave this blank no WHERE clause
+    *                       will be used and all rights will be affected by the update
+    * @return mixed false on error, the affected rows on success
+    *
+    * @access public
+    */ 
     function updateRight($data, $filters)
     {
         $result = $this->_storage->update('rights', $data, $filters);
@@ -297,16 +303,19 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    /**
-     * Update area(s)
-     *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
-     *
-     * @access public
-     */
+   /**
+    * Update area - This will update the liveuser_perm_users table
+    *
+    *
+    * @param array $data    associative array in the form of $fieldname => $data
+    * @param array $filters associative array in the form of $fieldname => $data
+    *                       This will construct the WHERE clause of your update
+    *                       Be careful, if you leave this blank no WHERE clause
+    *                       will be used and all areas will be affected by the update
+    * @return mixed false on error, the affected rows on success
+    *
+    * @access public
+    */ 
     function updateArea($data, $filters)
     {
         $result = $this->_storage->update('areas', $data, $filters);
@@ -403,16 +412,19 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    /**
-     * Update application(s)
-     *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
-     *
-     * @access public
-     */
+   /**
+    * Update application - This will update the liveuser_perm_users table
+    *
+    *
+    * @param array $data    associative array in the form of $fieldname => $data
+    * @param array $filters associative array in the form of $fieldname => $data
+    *                       This will construct the WHERE clause of your update
+    *                       Be careful, if you leave this blank no WHERE clause
+    *                       will be used and all applications will be affected by the update
+    * @return mixed false on error, the affected rows on success
+    *
+    * @access public
+    */ 
     function updateApplication($data, $filters)
     {
         $result = $this->_storage->update('applications', $data, $filters);
@@ -534,16 +546,19 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-    /**
-     * Update translation(s)
-     *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
-     *
-     * @access public
-     */
+   /**
+    * Update translation - This will update the liveuser_perm_users table
+    *
+    *
+    * @param array $data    associative array in the form of $fieldname => $data
+    * @param array $filters associative array in the form of $fieldname => $data
+    *                       This will construct the WHERE clause of your update
+    *                       Be careful, if you leave this blank no WHERE clause
+    *                       will be used and all translations will be affected by the update
+    * @return mixed false on error, the affected rows on success
+    *
+    * @access public
+    */ 
     function updateTranslation($data, $filters)
     {
         $result = $this->_storage->update('translations', $data, $filters);
