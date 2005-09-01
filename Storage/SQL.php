@@ -130,7 +130,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $sequence_id = false;
         foreach ($this->tables[$table]['fields'] as $field => $required) {
             if ($required) {
-                if ($required == 'seq') {
+                if ($required === 'seq') {
                     if (!isset($data[$field])) {
                         $result = $this->getBeforeId($this->prefix . $this->alias[$table], true);
                         if ($result === false) {
