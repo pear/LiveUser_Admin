@@ -122,7 +122,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
    /**
-    * Update grouo - This will update the liveuser_perm_users table
+    * Update group - This will update the liveuser_perm_users table
     *
     *
     * @param array $data    associative array in the form of $fieldname => $data
