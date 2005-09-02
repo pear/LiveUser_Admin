@@ -4,7 +4,6 @@ function php_error_handler($errno, $errstr, $errfile, $errline)
 {
     if (error_reporting() && $errno != 2048) {
         var_dump('error_msg', "<b>$errfile ($errline)</b><br />$errstr");
-        exit();
     }
 }
 
