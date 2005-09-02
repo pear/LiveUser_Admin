@@ -587,7 +587,7 @@ class LiveUser_Admin
     * @param  boolean $first if only one row should be returned
     * @return mixed Array with userinfo if found else error object
     *
-    * @access public
+    * @access private
     */
     function _getUsersByPerm($permFilter = array(), $first = false)
     {
@@ -641,7 +641,7 @@ class LiveUser_Admin
     * @param  boolean if only one row should be returned
     * @return mixed Array with userinfo if found else error object
     *
-    * @access public
+    * @access private
     */
     function _getUsersByAuth($authFilter = array(), $first = false)
     {
@@ -708,7 +708,7 @@ class LiveUser_Admin
     * @param array  arguments
     * @return mixed returned value
     *
-    * @access public
+    * @access private
     */
     function __call($method, $params)
     {

@@ -530,7 +530,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * @param array $filters
      * @return
      *
-     * @access public
+     * @access private
      */
     function _updateImpliedStatus($filters)
     {
