@@ -639,7 +639,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     // alias filters
                     // filters are aliased in createWhere
                     // alias orders
-                    if (array_key_exists($field, $orders)) {
+                    if (array_key_exists($field, $orders) && $this->alias[$field] != $field) {
                         $orders[$this->alias[$field]] = $orders[$field];
                         unset($orders[$field]);
                     }
