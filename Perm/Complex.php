@@ -730,8 +730,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         $groups = parent::getGroups($params);
-        if ($groups === false) {
-            return false;
+        if (!$groups) {
+            return $groups;
         }
 
         $group_ids = array_keys($groups);
