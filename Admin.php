@@ -371,7 +371,7 @@ class LiveUser_Admin
     }
 
     /**
-     * Tries to find a user in any of the auth container.
+     * Setup backend container.
      *
      * Upon success it will return true. You can then
      * access the backend container by using the auth
@@ -442,7 +442,7 @@ class LiveUser_Admin
     }
 
     /**
-     * Tries to add a user to both containers.
+     * Add a user to both containers.
      *
      * @param  string $data authentication user data
      * @param  integer $type permission user type
@@ -472,7 +472,7 @@ class LiveUser_Admin
     }
 
     /**
-     * Tried to changes user data for both containers.
+     * Changes user data for both containers.
      *
      * @param integer $permUserId permission user id
      * @param  string $data authentication user data
