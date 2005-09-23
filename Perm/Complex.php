@@ -664,9 +664,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'select' => 'col',
         );
 
-        if (isset($params['filter'])) {
-            $tmp_params['filter'] = $params['filter'];
-            unset($params['filter']);
+        if (isset($params['filters'])) {
+            $tmp_params['filters'] = $params['filters'];
+            unset($params['filters']);
         }
 
         $groups = parent::getGroups($tmp_params);
@@ -678,14 +678,16 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         $new_count = count($subgroups);
 
         do {
-            $count = $new_count;
-
             $tmp_params = array(
                 'fields' => array(
                     'subgroup_id',
                 ),
                 'filters' => array(
-                    'group_id' => $subgroups
+                    'group_id' => $subgroups,
+                    'subgroup_id' => array(
+                        'op' => 'NOT IN',
+                        'value' => $groups,
+                    ),
                  ),
                 'select' => 'col',
             );
@@ -695,9 +697,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 return false;
             }
 
-            $groups = array_merge($groups, $subgroups);
-            $new_count = count($subgroups);
-        } while(!empty($subgroups) && $count <= $new_count);
+            $groups = array_merge($groups, (array)$subgroups);
+        } while(!empty($subgroups));
 
         $params['filters'] = array('group_id' => $groups);
 
@@ -719,7 +720,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         if ((!isset($params['rekey']) || !$params['rekey'])
             || (isset($params['group']) && $params['group'])
             || (isset($params['select']) && $params['select'] != 'all')
-            || (isset($params['fields']) && reset($tmp_params['fields']) !== 'group_id')
+            || (isset($params['fields']) && reset($params['fields']) !== 'group_id')
         ) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -777,78 +778,111 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getRights($params = array())
     {
-        !isset($params['hierarchy']) ? $params['hierarchy'] = false : null;
+        // ensure optional parameters are set
         !isset($params['inherited']) ? $params['inherited'] = false : null;
         !isset($params['implied']) ? $params['implied'] = false : null;
 
+        if ($params['inherited'] || $params['implied']) {
+            if ((!isset($params['rekey']) || !$params['rekey'])
+                || (isset($params['group']) && $params['group'])
+                || (isset($params['select']) && $params['select'] != 'all')
+                || (isset($params['fields']) && reset($params['fields']) !== 'right_id')
+            ) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => "Setting 'implied' or 'inherited' is only allowed if 'rekey' is enabled, ".
+                        "'group' is disabled, 'select' is 'all' and the first field is 'right_id'")
+                );
+                return false;
+            }
+
+            if ($params['implied']
+                && array_key_exists('fields', $params)
+                && !in_array('has_implied', $params['fields'])
+            ) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => "Setting 'implied' requires that 'has_implied' field needs to be in the select list")
+                );
+                return false;
+            }
+        }
+
+        // handle select, fields and rekey
         $rights = parent::getRights($params);
         if ($rights === false) {
             return false;
         }
 
-        $_rights = array();
-        if (is_array($rights)) {
-            foreach ($rights as $value) {
-                $id = $value['right_id'];
-                $_rights[$id] = $value;
-
-                if ($params['implied']) {
-                    $param = array(
-                        'filters' => array(
-                            'right_id' => $id
-                        )
-                    );
-                    $implied_rights = $this->_getImpliedRights($param);
-
-                    if ($implied_rights === false) {
-                        return false;
-                    }
-
-                    foreach ($implied_rights as $right) {
-                        if ($_rights[$right['right_id']]) {
-                            continue;
-                        }
-
-                        $right['type'] = 'implied';
-
-                        if ($params['hierarchy']) {
-                            $_rights[$id]['implied_rights'][$right['right_id']] = $right;
-                            unset($_rights[$right['right_id']]);
-                        } else {
-                            $_rights[$right['right_id']] = $right;
-                        }
-                    }
-                    if (!isset($_rights[$id]['type']) || !$_rights[$id]['type']) {
-                        $_rights[$id]['type'] = 'granted';
-                    }
-                }
-            }
-        } elseif (is_integer($rights)) {
-            $_rights[$rights]['right_id'] = $rights;
+        // if the result was empty or no additional work is needed
+        if (empty($rights) || (!$params['inherited'] && !$params['implied'])) {
+            return $rights;
         }
 
-        if ($params['inherited']
-            && (isset($params['filters']['perm_user_id'])
-                || isset($params['filters']['group_id'])
-            )
-        ) {
+        // read rights inherited by (sub)groups
+        if ($params['inherited']) {
+            // consider adding a NOT IN filter
             $inherited_rights = $this->_getInheritedRights($params);
-
             if ($inherited_rights === false) {
                 return false;
             }
 
-            foreach ($inherited_rights as $right) {
-                if ($_rights[$right['right_id']]) {
-                    continue;
-                }
+            if (!empty($inherited_rights)) {
+                foreach ($inherited_rights as $right_id => $right) {
+                    if (isset($rights[$right_id])) {
+                        continue;
+                    }
 
-                $right['type'] = 'inherited';
-                $_rights[$right['right_id']] = $right;
+                    $right['_type'] = 'inherited';
+                    $rights[$right_id] = $right;
+                }
             }
         }
 
-        return $_rights;
+        if ($params['implied']) {
+            $_rights = $rights;
+            $rights = array();
+
+            foreach ($_rights as $right_id => $right) {
+                if (!isset($right['_type'])) {
+                    $right['_type'] = 'granted';
+                }
+                $rights[$right_id] = $right;
+                if (!$right['has_implied']) {
+                    continue;
+                }
+
+                // consider adding a NOT IN filter
+                $implied_rights = $this->_getImpliedRights($right_id, $params);
+                if ($implied_rights === false) {
+                    return false;
+                } elseif (empty($implied_rights)) {
+                    continue;
+                }
+
+                foreach ($implied_rights as $implied_right_id => $right) {
+                    if (isset($rights[$implied_right_id])) {
+                        continue;
+                    }
+
+                    $right['_type'] = 'implied';
+
+                    if ($params['implied'] === 'hierarchy') {
+                        $rights[$right_id]['implied_rights'][$implied_right_id] = $right;
+                    } else {
+                        $rights[$implied_right_id] = $right;
+                    }
+                }
+            }
+        } else {
+            foreach ($rights as $right_id => $right) {
+                if (!isset($rights[$right_id]['_type']) || !$rights[$right_id]['_type']) {
+                    $rights[$right_id]['_type'] = 'granted';
+                }
+            }
+        }
+
+        return $rights;
     }
 
     /**
@@ -860,28 +894,25 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      * @access private
      */
-    function _getImpliedRights($params = array())
+    function _getImpliedRights($right_id, $params)
     {
-        $selectable_tables = $this->selectable_tables['getRights'];
+        $selectable_tables = array('right_implied', 'rights');
         $root_table = 'right_implied';
 
-        $result = $this->_makeGet($params, $root_table, $selectable_tables);
+        $param = array(
+            'fields' => array('implied_right_id'),
+            'select' => 'col',
+            'filters' => array('right_id' => $right_id),
+        );
+
+        $result = $this->_makeGet($param, $root_table, $selectable_tables);
         if ($result === false) {
             return false;
         }
 
-        $_rights = array();
-        foreach ($result as $row) {
-            $params['filters']['right_id'] = $row['right_id'];
-            $implied_rights = $this->getRights($params);
-            if ($implied_rights === false) {
-                return false;
-            }
-
-            $_rights = array_merge($_rights, $implied_rights);
-        }
-
-        return $_rights;
+        $params['filters'] = array('right_id' => $result);
+        unset($params['inherited']);
+        return $this->getRights($params);
     }
 
     /**
@@ -894,31 +925,26 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      * @access private
      */
-    function _getInheritedRights($params = array())
+    function _getInheritedRights($params)
     {
-        if ($params['filters']['perm_user_id']) {
-            $result = $this->getGroups($params);
-        } else {
-            $result = $this->_getSubGroups($params);
-        }
+        $param = array(
+            'fields' => array('group_id'),
+            'select' => 'col',
+            'filters' => $params['filters'],
+            'subgroups' => true,
+        );
 
+        $result = $this->getGroups($param);
         if ($result === false) {
             return false;
+        } elseif (empty($result)) {
+            return array();
         }
 
-        unset($params['filters']['perm_user_id']);
-        $_rights = array();
-        foreach ($result as $row) {
-            $params['filters']['group_id'] = $row['group_id'];
-            $inherited_rights = $this->getRights($params);
-            if ($inherited_rights === false) {
-                return false;
-            }
-
-            $_rights = array_merge($_rights, $inherited_rights);
-        }
-
-        return $_rights;
+        $params['filters'] = array('group_id' => $result);
+        unset($params['implied']);
+        unset($params['inherited']);
+        return $this->getRights($params);
     }
 }
 ?>
