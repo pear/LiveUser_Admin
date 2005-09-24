@@ -917,7 +917,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     /**
      * Fetches inherited rights
-     * FIX ME!
      *
      *
      * @param array $params
