@@ -9,15 +9,14 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.4';
+$version = '0.3.5';
 
 $notes = <<<EOT
-- fixed typo error in sanity checking of the SQL storage layer update() method
-- fixed bug in the SQL storage layer insert() method that would lead to the
-  sequence value not being returned if it was set externally. this for example
-  leads to broken behaviour  in the addUser() wrapper method in LiveUser_Admin
-- added error handler to example1 so that notices and warnings will not go
-  unnoticed so easily in the large output
+- only alias orders fields if needed (bug #5310)
+- fixed warning in _getGroupsWithHierarchy() if filters match no group
+- several typo fixes in getGroups() in the complex container
+- several fixes to getRights() in the complex container (bug #5453)
+- added test.php to the linkbar in example1
 EOT;
 
 $description = <<<EOT
