@@ -54,7 +54,7 @@ Var_Dump::displayInit(
  Make sure you read README in the examples root folder to setup the database.
 </form>
 <?php
-$qstring = isset($_SERVER['QUERY_STRING']) && !isset($_GET['del']) ? '?'.$_SERVER['QUERY_STRING'] : '';
+$qstring = array_key_exists('QUERY_STRING', $_SERVER) && !array_key_exists('del', $_GET) ? '?'.$_SERVER['QUERY_STRING'] : '';
 
 echo '
 <a href="Application.php'.$qstring.'">Application</a> | 
@@ -73,7 +73,7 @@ echo '
 ?>
 So that these test will run you have to have <a href="http://pear.php.net/package/Var_Dump">Var_Dump</a> installed<br /><br />
 <?php
-if (isset($_GET['del'])) {
+if (array_key_exists('del', $_GET)) {
     $db->expectError(MDB2_ERROR_NOSUCHTABLE);
     $db->query('DELETE FROM liveuser_applications');
     $db->query('DROP TABLE liveuser_applications_seq');

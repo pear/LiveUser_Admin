@@ -185,7 +185,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function implyRight($data)
     {
-        if (isset($data['right_id']) && isset($data['implied_right_id'])
+        if (array_key_exists('right_id', $data) && array_key_exists('implied_right_id', $data)
             && $data['implied_right_id'] == $data['right_id']
         ) {
             $this->_stack->push(
@@ -305,7 +305,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        if (!isset($result['perm_type']) || $result['perm_type'] < 3) {
+        if (!array_key_exists('perm_type', $result) || $result['perm_type'] < 3) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'The user doesn\'t have sufficient rights')
@@ -474,7 +474,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeGroup($filters)
     {
-        if (isset($filters['recursive'])) {
+        if (array_key_exists('recursive', $filters)) {
             $param = array(
                 'fields' => array(
                     'subgroup_id'
@@ -629,13 +629,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getGroups($params = array())
     {
         $subgroup = false;
-        if (isset($params['subgroups'])) {
+        if (array_key_exists('subgroups', $params)) {
             $subgroup = $params['subgroups'];
             unset($params['subgroups']);
         }
 
         if (!$subgroup
-            || (isset($params['select'])
+            || (array_key_exists('select', $params)
                 && ($params['select'] == 'one' || $params['select'] == 'row')
             )
         ) {
@@ -664,7 +664,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'select' => 'col',
         );
 
-        if (isset($params['filters'])) {
+        if (array_key_exists('filters', $params)) {
             $tmp_params['filters'] = $params['filters'];
             unset($params['filters']);
         }
@@ -717,10 +717,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
     function _getGroupsWithHierarchy($params)
     {
-        if ((!isset($params['rekey']) || !$params['rekey'])
-            || (isset($params['group']) && $params['group'])
-            || (isset($params['select']) && $params['select'] != 'all')
-            || (isset($params['fields']) && reset($params['fields']) !== 'group_id')
+        if ((!array_key_exists('rekey', $params) || !$params['rekey'])
+            || (array_key_exists('group', $params) && $params['group'])
+            || (array_key_exists('select', $params) && $params['select'] != 'all')
+            || (array_key_exists('fields', $params) && reset($params['fields']) !== 'group_id')
         ) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -779,14 +779,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getRights($params = array())
     {
         // ensure optional parameters are set
-        !isset($params['inherited']) ? $params['inherited'] = false : null;
-        !isset($params['implied']) ? $params['implied'] = false : null;
+        !array_key_exists('inherited', $params) ? $params['inherited'] = false : null;
+        !array_key_exists('implied', $params) ? $params['implied'] = false : null;
 
         if ($params['inherited'] || $params['implied']) {
-            if ((!isset($params['rekey']) || !$params['rekey'])
-                || (isset($params['group']) && $params['group'])
-                || (isset($params['select']) && $params['select'] != 'all')
-                || (isset($params['fields']) && reset($params['fields']) !== 'right_id')
+            if ((!array_key_exists('rekey', $params) || !$params['rekey'])
+                || (array_key_exists('group', $params) && $params['group'])
+                || (array_key_exists('select', $params) && $params['select'] != 'all')
+                || (array_key_exists('fields', $params) && reset($params['fields']) !== 'right_id')
             ) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
@@ -844,7 +844,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $rights = array();
 
             foreach ($_rights as $right_id => $right) {
-                if (!isset($right['_type'])) {
+                if (!array_key_exists('_type', $right)) {
                     $right['_type'] = 'granted';
                 }
                 $rights[$right_id] = $right;

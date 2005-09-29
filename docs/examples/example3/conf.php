@@ -100,18 +100,18 @@ function eHandler($errObj)
 
     foreach ($debug_backtrace as $trace_item) {
         $message.= "\t" . '    @ ';
-        if (isset($trace_item['file'])) {
+        if (array_key_exists('file', $trace_item)) {
             $message.= basename($trace_item['file']) . ':' . $trace_item['line'];
         } else {
             $message.= '- PHP inner-code - ';
         }
         $message.= ' -- ';
-        if (isset($trace_item['class'])) {
+        if (array_key_exists('class', $trace_item)) {
             $message.= $trace_item['class'] . $trace_item['type'];
         }
         $message.= $trace_item['function'];
 
-        if (isset($trace_item['args']) && is_array($trace_item['args'])) {
+        if (array_key_exists('args', $trace_item) && is_array($trace_item['args'])) {
             $message.= '('.@implode(', ', $trace_item['args']).')';
         } else {
             $message.= '()';
@@ -124,10 +124,10 @@ function eHandler($errObj)
 // Create new LiveUser object
 $LU =& LiveUser::factory($liveuserConfig);
 
-$handle = (isset($_REQUEST['handle'])) ? $_REQUEST['handle'] : null;
-$passwd = (isset($_REQUEST['passwd'])) ? $_REQUEST['passwd'] : null;
-$logout = (isset($_REQUEST['logout'])) ? $_REQUEST['logout'] : false;
-$remember = (isset($_REQUEST['rememberMe'])) ? $_REQUEST['rememberMe'] : false;
+$handle = (array_key_exists('handle', $_REQUEST)) ? $_REQUEST['handle'] : null;
+$passwd = (array_key_exists('passwd', $_REQUEST)) ? $_REQUEST['passwd'] : null;
+$logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
+$remember = (array_key_exists('rememberMe', $_REQUEST)) ? $_REQUEST['rememberMe'] : false;
 
 if (!$LU->init($handle, $passwd, $logout, $remember)) {
     var_dump($LU->getErrors());
@@ -139,4 +139,4 @@ require_once 'LiveUser/Admin.php';
 $luadmin =& LiveUser_Admin::factory($liveuserConfig);
 $luadmin->setAdminContainers();
 
-$language_selected = isset($_GET['language']) ? $_GET['language'] : 'de';
+$language_selected = array_key_exists('language', $_GET) ? $_GET['language'] : 'de';

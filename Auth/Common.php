@@ -164,7 +164,7 @@ class LiveUser_Admin_Auth_Common
     function init(&$conf, $containerName)
     {
         $this->containerName = $containerName;
-        if (!isset($conf['storage'])) {
+        if (!array_key_exists('storage', $conf)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Missing storage configuration array'));
             return false;
@@ -324,14 +324,14 @@ class LiveUser_Admin_Auth_Common
      */
     function getUsers($params = array())
     {
-        $fields = isset($params['fields']) ? $params['fields'] : array();
-        $filters = isset($params['filters']) ? $params['filters'] : array();
-        $orders = isset($params['orders']) ? $params['orders'] : array();
-        $rekey = isset($params['rekey']) ? $params['rekey'] : false;
-        $group = isset($params['group']) ? $params['group'] : false;
-        $limit = isset($params['limit']) ? $params['limit'] : null;
-        $offset = isset($params['offset']) ? $params['offset'] : null;
-        $select = isset($params['select']) ? $params['select'] : 'all';
+        $fields = array_key_exists('fields', $params) ? $params['fields'] : array();
+        $filters = array_key_exists('filters', $params) ? $params['filters'] : array();
+        $orders = array_key_exists('orders', $params) ? $params['orders'] : array();
+        $rekey = array_key_exists('rekey', $params) ? $params['rekey'] : false;
+        $group = array_key_exists('group', $params) ? $params['group'] : false;
+        $limit = array_key_exists('limit', $params) ? $params['limit'] : null;
+        $offset = array_key_exists('offset', $params) ? $params['offset'] : null;
+        $select = array_key_exists('select', $params) ? $params['select'] : 'all';
 
         return $this->_storage->select($select, $fields, $filters, $orders,
             $rekey, $group, $limit, $offset, 'users', array('users'));

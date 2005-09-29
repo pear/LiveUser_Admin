@@ -3,9 +3,9 @@
 
     session_start();
 
-    if (isset($_POST['language'])) {
+    if (array_key_exists('language', $_POST)) {
         $language = $_POST['language'];
-    } elseif (isset($_SESSION['language'])) {
+    } elseif (array_key_exists('language', $_SESSION)) {
         $language = $_SESSION['language'];
     } else {
         $language = 'en';

@@ -130,7 +130,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function init(&$conf)
     {
-        if (!isset($conf['storage'])) {
+        if (!array_key_exists('storage', $conf)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Missing storage configuration array'));
             return false;
@@ -166,7 +166,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function addUser($data)
     {
-        if (!isset($data['perm_type'])) {
+        if (!array_key_exists('perm_type', $data)) {
             $data['perm_type'] = LIVEUSER_USER_TYPE_ID;
         }
 
@@ -471,7 +471,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function grantUserRight($data)
     {
-        if (!isset($data['right_level'])) {
+        if (!array_key_exists('right_level', $data)) {
             $data['right_level'] = LIVEUSER_MAX_LEVEL;
         }
 
@@ -642,15 +642,15 @@ class LiveUser_Admin_Perm_Simple
      */
     function _makeGet($params, $root_table, $selectable_tables)
     {
-        $fields = isset($params['fields']) ? $params['fields'] : array();
-        $with = isset($params['with']) ? $params['with'] : array();
-        $filters = isset($params['filters']) ? $params['filters'] : array();
-        $orders = isset($params['orders']) ? $params['orders'] : array();
-        $rekey = isset($params['rekey']) ? $params['rekey'] : false;
-        $group = isset($params['group']) ? $params['group'] : false;
-        $limit = isset($params['limit']) ? $params['limit'] : null;
-        $offset = isset($params['offset']) ? $params['offset'] : null;
-        $select = isset($params['select']) ? $params['select'] : 'all';
+        $fields = array_key_exists('fields', $params) ? $params['fields'] : array();
+        $with = array_key_exists('with', $params) ? $params['with'] : array();
+        $filters = array_key_exists('filters', $params) ? $params['filters'] : array();
+        $orders = array_key_exists('orders', $params) ? $params['orders'] : array();
+        $rekey = array_key_exists('rekey', $params) ? $params['rekey'] : false;
+        $group = array_key_exists('group', $params) ? $params['group'] : false;
+        $limit = array_key_exists('limit', $params) ? $params['limit'] : null;
+        $offset = array_key_exists('offset', $params) ? $params['offset'] : null;
+        $select = array_key_exists('select', $params) ? $params['select'] : 'all';
 
         // ensure that all $with fields are fetched
         $fields = array_merge($fields, array_keys($with));
@@ -788,7 +788,7 @@ class LiveUser_Admin_Perm_Simple
         $opt['fields'] = array('right_id', 'right_define_name');
 
         $naming = LIVEUSER_SECTION_RIGHT;
-        if (isset($options['naming'])) {
+        if (array_key_exists('naming', $options)) {
             $naming = $options['naming'];
             switch ($naming) {
             case LIVEUSER_SECTION_AREA:
@@ -801,21 +801,21 @@ class LiveUser_Admin_Perm_Simple
             }
         }
 
-        if (isset($options['area'])) {
+        if (array_key_exists('area', $options)) {
             $opt['filters']['area_id'] = $options['area'];
         }
 
-        if (isset($options['application'])) {
+        if (array_key_exists('application', $options)) {
             $opt['filters']['application_id'] = $options['application'];
         }
 
         $prefix = '';
-        if (isset($options['prefix'])) {
+        if (array_key_exists('prefix', $options)) {
             $prefix = $options['prefix'] . '_';
         }
 
         $rekey = false;
-        if ($type == 'array' && isset($options['rekey'])) {
+        if ($type == 'array' && array_key_exists('rekey', $options)) {
             $rekey = $options['rekey'];
         }
 
@@ -867,7 +867,7 @@ class LiveUser_Admin_Perm_Simple
         $strDef = "<?php\n";
         if ($type == 'array') {
             if ($mode == 'file') {
-                if (!isset($options['varname'])
+                if (!array_key_exists('varname', $options)
                     || !preg_match('/^[a-zA-Z_0-9]+$/', $options['varname'])
                 ) {
                     $this->_stack->push(
@@ -902,7 +902,7 @@ class LiveUser_Admin_Perm_Simple
         $strDef .= '?>';
 
         if ($mode == 'file') {
-            if (!isset($options['filename']) || !$options['filename']) {
+            if (!array_key_exists('filename', $options) || !$options['filename']) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
                     array('msg' => 'no filename is set for output mode file')

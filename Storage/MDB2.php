@@ -107,18 +107,18 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     {
         parent::init($storageConf);
 
-        if (isset($storageConf['connection'])
+        if (array_key_exists('connection', $storageConf)
             && MDB2::isConnection($storageConf['connection'])
         ) {
             $this->dbc = &$storageConf['connection'];
-        } elseif (isset($storageConf['dsn'])) {
+        } elseif (array_key_exists('dsn', $storageConf)) {
             $this->dsn = $storageConf['dsn'];
             $function = null;
-            if (isset($storageConf['function'])) {
+            if (array_key_exists('function', $storageConf)) {
                 $function = $storageConf['function'];
             }
             $options = null;
-            if (isset($storageConf['options'])) {
+            if (array_key_exists('options', $storageConf)) {
                 $options = $storageConf['options'];
             }
             $options['portability'] = MDB2_PORTABILITY_ALL;

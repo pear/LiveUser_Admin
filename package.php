@@ -97,7 +97,7 @@ $package->addDependency('DB',        '1.6.0',      'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4',      'ge',  'pkg', true);
 $package->addDependency('MDB2',      '2.0.0beta4', 'ge',  'pkg', true);
 
-if (isset($_GET['make'])
+if (array_key_exists('make', $_GET)
     || (isset($_SERVER['argv'][1])
         && $_SERVER['argv'][1] == 'make')) {
     $result = $package->writePackageFile();

@@ -36,7 +36,7 @@ $backends = array(
     )
 );
 
-if (!isset($_GET['storage'])) {
+if (!array_key_exists('storage', $_GET)) {
     $storage = 'MDB2';
 } elseif (isset($backends[$_GET['storage']])) {
     $storage = strtoupper($_GET['storage']);

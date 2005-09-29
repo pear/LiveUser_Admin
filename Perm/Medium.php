@@ -186,7 +186,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function grantGroupRight($data)
     {
-        if (!isset($data['right_level'])) {
+        if (!array_key_exists('right_level', $data)) {
             $data['right_level'] = LIVEUSER_MAX_LEVEL;
         }
 
