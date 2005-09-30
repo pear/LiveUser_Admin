@@ -63,7 +63,7 @@ $db->setFetchMode(constant($storage.'_FETCHMODE_ASSOC'));
 
 $conf =
     array(
-        'autoInit' => false,
+        'debug' => true,
         'session'  => array(
             'name'     => 'PHPSESSION',
             'varname'  => 'ludata'
@@ -126,5 +126,5 @@ $conf =
 $admin =& LiveUser_Admin::factory($conf);
 $logconf = array('mode' => 0666, 'timeFormat' => '%X %x');
 $logger = &Log::factory('file', 'liveuser_test.log', 'ident', $logconf);
-$admin->addErrorLog($logger);
+$admin->log->addChild($logger);
 $admin->setAdminContainers();
