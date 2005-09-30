@@ -173,62 +173,16 @@ class LiveUser_Admin
      */
     var $_log = null;
 
-    function LiveUser_Admin()
+    function LiveUser_Admin($debug)
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
 
-        if ($GLOBALS['_LIVEUSER_DEBUG']) {
-            if (!is_object($this->_log)) {
-                $this->loadPEARLog();
-            }
-            $winlog = &Log::factory('win', 'LiveUser_Admin');
-            $this->_log->addChild($winlog);
+        if ($debug) {
+            $this->log =& LiveUser::PEARLogFactory($debug);
+            $this->_stack->setLogger($this->log);
         }
 
         $this->_stack->setErrorMessageTemplate($this->_errorMessages);
-    }
-
-    /**
-     * This method lazy loads PEAR::Log
-     *
-     * @return void
-     *
-     * @access protected
-     */
-    function loadPEARLog()
-    {
-        require_once 'Log.php';
-        $this->_log = &Log::factory('composite');
-        $this->_stack->setLogger($this->_log);
-    }
-
-    /**
-     * Add error logger for use by Errorstack.
-     *
-     * Be aware that if you need add a log
-     * at the beginning of your code if you
-     * want it to be effective. A log will only
-     * be taken into account after it's added.
-     *
-     * Sample usage:
-     * <code>
-     * $lu_object = &LiveUser_Admin::singleton($conf);
-     * $logger = &Log::factory('mail', 'bug@example.com',
-     *      'myapp_debug_mail_log', array('from' => 'application_bug@example.com'));
-     * $lu_object->addErrorLog($logger);
-     * </code>
-     *
-     * @param  Log &$log logger instance
-     * @return boolean true on success or false on failure
-     *
-     * @access public
-     */
-    function addErrorLog(&$log)
-    {
-        if (!is_object($this->_log)) {
-            $this->loadPEARLog();
-        }
-        return $this->_log->addChild($log);
     }
 
     /**
@@ -239,15 +193,17 @@ class LiveUser_Admin
      * @access public
      * @see setAdminContainers
      */
-    function &factory($conf)
+    function &factory(&$conf)
     {
-        $obj = &new LiveUser_Admin;
+        $debug = false;
+        if (array_key_exists('debug', $conf)) {
+            $debug =& $conf['debug'];
+        }
 
-        if (is_array($conf) && !empty($conf)) {
-            $obj->_conf = $conf;
-            if (array_key_exists('autoInit', $obj->_conf) && $obj->_conf['autoInit']) {
-                $obj->setAdminContainers();
-            }
+        $obj = &new LiveUser_Admin($debug);
+
+        if (is_array($conf)) {
+            $obj->_conf =& $conf;
         }
 
         return $obj;
@@ -261,7 +217,7 @@ class LiveUser_Admin
      * @access public
      * @see factory
      */
-    function &singleton($conf = null)
+    function &singleton(&$conf)
     {
         static $instance;
 
@@ -274,27 +230,6 @@ class LiveUser_Admin
         }
 
         return $instance;
-    }
-
-    /**
-     * Merges the current configuration array with configuration array pases
-     * along with the method call.
-     *
-     * @param  array $conf configuration array
-     * @return boolean true upon success, false otherwise
-     *
-     * @access public
-     */
-    function setConfArray($conf)
-    {
-        if (!is_array($conf)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Missing configuration array'));
-            return false;
-        }
-
-        $this->_conf = LiveUser::arrayMergeClobber($this->_conf, $conf);
-        return true;
     }
 
     /**
