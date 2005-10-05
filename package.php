@@ -17,6 +17,11 @@ $notes = <<<EOT
 - several typo fixes in getGroups() in the complex container
 - several fixes to getRights() in the complex container (bug #5453)
 - added test.php to the linkbar in example1
+- removed autoInit (call setAdminContainers() manually instead) *BC BREAK*
+- reworked log/debug handling (there is a new 'debug' conf option which can
+  either be a bool or a log instance)
+- made the log property public which made it possible to remove addErrorLog()
+- use static LiveUser::PEARLogFactory instead of loadPEARLog()
 EOT;
 
 $description = <<<EOT
