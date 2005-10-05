@@ -169,9 +169,9 @@ class LiveUser_Admin
      *
      *
      * @var    Log
-     * @access private
+     * @access public
      */
-    var $_log = null;
+    var $log = null;
 
     function LiveUser_Admin($debug)
     {
