@@ -536,9 +536,7 @@ class LiveUser_Admin
         $permFilter['select'] = $first ? 'row' : 'all';
         $permUsers = $this->perm->getUsers($permFilter);
         if (!$permUsers) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Could not find user in the permission backend'));
-            return false;
+            return $permUsers;
         }
 
         if ($first) {
@@ -590,9 +588,7 @@ class LiveUser_Admin
         $authFilter['select'] = $first ? 'row' : 'all';
         $authUsers = $this->auth->getUsers($authFilter);
         if (!$authUsers) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Could not find user in the authentication backend'));
-            return false;
+            return $authUsers;
         }
 
         if ($first) {
