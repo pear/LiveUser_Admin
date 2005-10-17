@@ -519,7 +519,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             );
             return false;
         }
-        return $match[1];
+        return $match;
     }
 
     /**
@@ -549,7 +549,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             } elseif ($match === false) {
                 return false;
             }
-            $tables[$match] = true;
+            $tables[$match[1]] = true;
             unset($fields_tmp[$key]);
             // append table prefix and AS to this field
             $fields[$key] = $this->prefix.$this->alias[$match[1]].'.'.$match[2].' AS '.$match[2];
@@ -563,7 +563,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             } elseif ($match === false) {
                 return false;
             }
-            $tables[$match] = true;
+            $tables[$match[1]] = true;
             unset($fields_tmp[$field]);
             // append prefix to this filter
             $filters[$this->prefix.$this->alias[$match[1]].'.'.$match[2]] = $value;
@@ -577,7 +577,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             } elseif ($match === false) {
                 return false;
             }
-            $tables[$match] = true;
+            $tables[$match[1]] = true;
             unset($orders_tmp[$field]);
             // append prefix to this order by field
             $orders[$this->prefix.$this->alias[$match[1]].'.'.$match[2]] = $value;
