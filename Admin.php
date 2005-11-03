@@ -264,9 +264,8 @@ class LiveUser_Admin
             );
             if ($auth === false) {
                 $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => 'Could not create auth container instance'));
-                $result = false;
-                return $result;
+                    array('msg' => 'Could not instanciate auth container: '.$authName));
+                return $auth;
             }
             $this->_authContainers[$authName] = &$auth;
         }
@@ -297,10 +296,13 @@ class LiveUser_Admin
             return $result;
         }
 
-        $this->perm = &LiveUser::permFactory(
-            $this->_conf['permContainer'],
-            'LiveUser_Admin_'
-        );
+        $perm = &LiveUser::permFactory($this->_conf['permContainer'], 'LiveUser_Admin_');
+        if ($perm === false) {
+            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Could not instanciate perm container of type: '.$this->_conf['permContainer']['type']));
+            return $perm;
+        }
+        $this->perm = &$perm;
 
         return $this->perm;
     }
@@ -337,11 +339,17 @@ class LiveUser_Admin
                     if (!isset($this->_authContainers[$key])
                         || !is_object($this->_authContainers[$key])
                     ) {
-                        $this->_authContainers[$key] = &LiveUser::authFactory(
+                        $auth = &LiveUser::authFactory(
                             $value,
                             $key,
                             'LiveUser_Admin_'
                         );
+                        if ($auth === false) {
+                            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                                array('msg' => 'Could not instanciate auth container: '.$key));
+                            return $auth;
+                        }
+                        $this->_authContainers[$key] =& $auth;
                     }
 
                     if (!is_null($authUserId)) {
