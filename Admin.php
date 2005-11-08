@@ -77,7 +77,7 @@ define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
 /**#@-*/
 
 /**
- * Attempt at a unified admin class
+ * A unified admin class
  *
  * Simple usage:
  *
@@ -107,7 +107,6 @@ define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
  */
 class LiveUser_Admin
 {
-
      /**
       * Name of the current selected auth container
       *
@@ -164,15 +163,22 @@ class LiveUser_Admin
     );
 
     /**
-     * PEAR::Log object
-     * used for error logging by ErrorStack
-     *
+     * PEAR::Log object used for error logging by ErrorStack
      *
      * @var    Log
      * @access public
      */
     var $log = null;
 
+    /**
+     *
+     * @param mixed boolean value to denote if the debug mode should be enabled,
+                    or instance of a PEAR_ErrorStack compatible Log object
+     * @return object
+     *
+     * @access public
+     * @see setAdminContainers
+     */
     function LiveUser_Admin($debug)
     {
         $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
@@ -187,7 +193,7 @@ class LiveUser_Admin
 
     /**
      *
-     * @param array $conf configuration array
+     * @param array configuration array
      * @return object
      *
      * @access public
@@ -211,7 +217,7 @@ class LiveUser_Admin
 
     /**
      *
-     * @param array $conf configuration array
+     * @param array configuration array
      * @return object
      *
      * @access public
@@ -235,14 +241,14 @@ class LiveUser_Admin
     /**
      * Sets the current auth container to the one with the given auth container name
      *
-     * Upon success it will return true. You can then
+     * Upon success it will return the auth instance. You can then
      * access the auth backend container by using the
-     * auth property of this class.
+     * auth property of this class or the auth object directly
      *
-     * e.g.: $admin->auth->addUser();
+     * e.g.: $admin->auth->addUser(); or $auth->addUser();
      *
-     * @param  string $authName  auth container name
-     * @return boolean true upon success, false otherwise
+     * @param  string auth container name
+     * @return mixed auth instance upon success, false otherwise
      *
      * @access public
      */
@@ -277,13 +283,13 @@ class LiveUser_Admin
     /**
      * Sets the perm container
      *
-     * Upon success it will return true. You can then
+     * Upon success it will return a perm instance. You can then
      * access the perm backend container by using the
-     * perm properties of this class.
+     * perm properties of this class or the perm object directly.
      *
-     * e.g.: $admin->perm->addUser();
+     * e.g.: $admin->perm->addUser(); or $perm->addUser();
      *
-     * @return boolean true upon success, false otherwise
+     * @return mixed perm instance upon success, false otherwise
      *
      * @access public
      */
@@ -314,10 +320,10 @@ class LiveUser_Admin
      * access the backend container by using the auth
      * and perm properties of this class.
      *
-     * e.g.: $admin->perm->updateAuthUserId();
+     * e.g.: $admin->perm->getUsers();
      *
-     * @param  mixed $authUserId  user auth id
-     * @param  string $authName  auth container name
+     * @param  mixed user auth id
+     * @param  string auth container name
      * @return boolean true upon success, false otherwise
      *
      * @access public
@@ -387,8 +393,8 @@ class LiveUser_Admin
     /**
      * Add a user to both containers.
      *
-     * @param  string $data authentication user data
-     * @param  integer $type permission user type
+     * @param  array authentication user data
+     * @param  integer permission user type
      * @return mixed   perm user id or false
      *
      * @access public
@@ -417,10 +423,10 @@ class LiveUser_Admin
     /**
      * Changes user data for both containers.
      *
-     * @param integer $permUserId permission user id
-     * @param  string $data authentication user data
-     * @param  integer $type permission user type
-     * @return mixed   error object or true
+     * @param integer permission user id
+     * @param  array authentication user data
+     * @param  integer permission user type
+     * @return mixed affected rows on success or false otherwise
      *
      * @access public
      */
@@ -468,8 +474,8 @@ class LiveUser_Admin
     /**
     * Removes user from both Perm and Auth containers
     *
-    * @param  mixed $permUserId Perm ID
-    * @return  mixed error object or true
+    * @param  integer Perm ID
+     * @return mixed affected rows on success or false otherwise
     *
     * @access public
     */
@@ -510,10 +516,13 @@ class LiveUser_Admin
     /**
     * Finds and gets full userinfo by filtering inside the given container
     *
-    * @access public
-    * @param  mixed perm filters (as for getUsers() from the perm container
+    * @param  string either 'auth' or 'perm' to determine if users should first
+    *                be searched in the 'auth' or 'perm' container
+    * @param  array filters (as for getUsers()
     * @param  boolean if only one row should be returned
-    * @return mixed Array with userinfo if found else error object
+    * @return mixed array with userinfo if found on success or false otherwise
+    *
+    * @access public
     */
     function getUsers($container = 'perm', $filter = array(), $first = false)
     {
@@ -526,9 +535,9 @@ class LiveUser_Admin
     /**
     * Finds and gets full userinfo by filtering inside the perm container
     *
-    * @param  mixed $permFilter perm filters (as for getUsers() from the perm container
-    * @param  boolean $first if only one row should be returned
-    * @return mixed Array with userinfo if found else error object
+    * @param  array perm filters (as for getUsers() from the perm container
+    * @param  boolean if only one row should be returned
+    * @return mixed Array with userinfo if found on success or false otherwise
     *
     * @access private
     */
@@ -578,9 +587,9 @@ class LiveUser_Admin
     /**
     * Finds and gets full userinfo by filtering inside the auth container
     *
-    * @param  mixed auth filters (as for getUsers() from the auth container
+    * @param  array auth filters (as for getUsers() from the auth container
     * @param  boolean if only one row should be returned
-    * @return mixed Array with userinfo if found else error object
+    * @return mixed Array with userinfo if found on success or false otherwise
     *
     * @access private
     */
