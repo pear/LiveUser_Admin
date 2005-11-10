@@ -62,17 +62,8 @@
  */
 
 /**
- * This is a PEAR::MDB2 backend driver for the LiveUser class.
- * A PEAR::MDB2 connection object can be passed to the constructor to reuse an
- * existing connection. Alternatively, a DSN can be passed to open a new one.
- *
- * Requirements:
- * - File "Liveuser.php" (contains the parent class "LiveUser")
- * - Array of connection options or a PEAR::MDB2 connection object must be
- *   passed to the constructor.
- *   Example: array('dsn' => 'mysql://user:pass@host/db_name')
- *              OR
- *            &$conn (PEAR::MDB2 connection object)
+ * This is core base class for all LiveUser admin storage classes that is meant
+ * for internal use only.
  *
  * @category authentication
  * @package  LiveUser_Admin
@@ -113,7 +104,6 @@ class LiveUser_Admin_Storage
      * Constructor
      *
      * @access protected
-     * @param  mixed      configuration array
      * @return void
      */
     function LiveUser_Admin_Storage()
