@@ -126,7 +126,7 @@ class LiveUser_Admin
     /**
      * Admin perm object
      *
-     * @var    object
+     * @var    LiveUser_Admin_Perm_Simple
      * @access public
      */
     var $perm = null;
@@ -134,7 +134,7 @@ class LiveUser_Admin
     /**
      * Auth admin object
      *
-     * @var    object
+     * @var    LiveUser_Admin_Auth_Common
      * @access public
      */
     var $auth = null;
@@ -172,9 +172,9 @@ class LiveUser_Admin
 
     /**
      *
-     * @param mixed boolean value to denote if the debug mode should be enabled,
-                    or instance of a PEAR_ErrorStack compatible Log object
-     * @return object
+     * @param boolean|log boolean value to denote if the debug mode should be
+       enabled, or instance of a PEAR_ErrorStack compatible Log object
+     * @return LiveUser_Admin
      *
      * @access public
      * @see setAdminContainers
@@ -194,7 +194,7 @@ class LiveUser_Admin
     /**
      *
      * @param array configuration array
-     * @return object
+     * @return LiveUser_Admin|boolean
      *
      * @access public
      * @see setAdminContainers
@@ -218,7 +218,7 @@ class LiveUser_Admin
     /**
      *
      * @param array configuration array
-     * @return object
+     * @return LiveUser_Admin|boolean
      *
      * @access public
      * @see factory
@@ -248,7 +248,7 @@ class LiveUser_Admin
      * e.g.: $admin->auth->addUser(); or $auth->addUser();
      *
      * @param  string auth container name
-     * @return mixed auth instance upon success, false otherwise
+     * @return LiveUser_Admin_Auth_Common|boolean auth instance upon success, false otherwise
      *
      * @access public
      */
@@ -289,7 +289,7 @@ class LiveUser_Admin
      *
      * e.g.: $admin->perm->addUser(); or $perm->addUser();
      *
-     * @return mixed perm instance upon success, false otherwise
+     * @return LiveUser_Admin_Perm_Simple|boolean auth instance upon success, false otherwise
      *
      * @access public
      */
@@ -322,7 +322,7 @@ class LiveUser_Admin
      *
      * e.g.: $admin->perm->getUsers();
      *
-     * @param  mixed user auth id
+     * @param  integer user auth id
      * @param  string auth container name
      * @return boolean true upon success, false otherwise
      *
@@ -345,11 +345,7 @@ class LiveUser_Admin
                     if (!isset($this->_authContainers[$key])
                         || !is_object($this->_authContainers[$key])
                     ) {
-                        $auth = &LiveUser::authFactory(
-                            $value,
-                            $key,
-                            'LiveUser_Admin_'
-                        );
+                        $auth = &LiveUser::authFactory($value, $key, 'LiveUser_Admin_');
                         if ($auth === false) {
                             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                                 array('msg' => 'Could not instanciate auth container: '.$key));
@@ -395,7 +391,7 @@ class LiveUser_Admin
      *
      * @param  array authentication user data
      * @param  integer permission user type
-     * @return mixed   perm user id or false
+     * @return integer|boolean perm user id or false
      *
      * @access public
      */
@@ -426,7 +422,7 @@ class LiveUser_Admin
      * @param integer permission user id
      * @param  array authentication user data
      * @param  integer permission user type
-     * @return mixed affected rows on success or false otherwise
+     * @return integer|boolean affected rows on success or false otherwise
      *
      * @access public
      */
@@ -472,13 +468,13 @@ class LiveUser_Admin
     }
 
     /**
-    * Removes user from both Perm and Auth containers
-    *
-    * @param  integer Perm ID
-     * @return mixed affected rows on success or false otherwise
-    *
-    * @access public
-    */
+     * Removes user from both Perm and Auth containers
+     *
+     * @param  integer Perm ID
+     * @return integer|boolean affected rows on success or false otherwise
+     *
+     * @access public
+     */
     function removeUser($permUserId)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
@@ -514,16 +510,16 @@ class LiveUser_Admin
     }
 
     /**
-    * Finds and gets full userinfo by filtering inside the given container
-    *
-    * @param  string either 'auth' or 'perm' to determine if users should first
-    *                be searched in the 'auth' or 'perm' container
-    * @param  array filters (as for getUsers()
-    * @param  boolean if only one row should be returned
-    * @return mixed array with userinfo if found on success or false otherwise
-    *
-    * @access public
-    */
+     * Finds and gets full userinfo by filtering inside the given container
+     *
+     * @param  string either 'auth' or 'perm' to determine if users should first
+     *                be searched in the 'auth' or 'perm' container
+     * @param  array filters (as for getUsers()
+     * @param  boolean if only one row should be returned
+     * @return array|boolean array with userinfo if found on success or false otherwise
+     *
+     * @access public
+     */
     function getUsers($container = 'perm', $filter = array(), $first = false)
     {
         if ($container == 'perm') {
@@ -533,14 +529,14 @@ class LiveUser_Admin
     }
 
     /**
-    * Finds and gets full userinfo by filtering inside the perm container
-    *
-    * @param  array perm filters (as for getUsers() from the perm container
-    * @param  boolean if only one row should be returned
-    * @return mixed Array with userinfo if found on success or false otherwise
-    *
-    * @access private
-    */
+     * Finds and gets full userinfo by filtering inside the perm container
+     *
+     * @param  array perm filters (as for getUsers() from the perm container
+     * @param  boolean if only one row should be returned
+     * @return array|boolean Array with userinfo if found on success or false otherwise
+     *
+     * @access private
+     */
     function _getUsersByPerm($permFilter = array(), $first = false)
     {
         if (!is_object($this->perm)) {
@@ -585,14 +581,14 @@ class LiveUser_Admin
     }
 
     /**
-    * Finds and gets full userinfo by filtering inside the auth container
-    *
-    * @param  array auth filters (as for getUsers() from the auth container
-    * @param  boolean if only one row should be returned
-    * @return mixed Array with userinfo if found on success or false otherwise
-    *
-    * @access private
-    */
+     * Finds and gets full userinfo by filtering inside the auth container
+     *
+     * @param  array auth filters (as for getUsers() from the auth container
+     * @param  boolean if only one row should be returned
+     * @return array|boolean Array with userinfo if found on success or false otherwise
+     *
+     * @access private
+     */
     function _getUsersByAuth($authFilter = array(), $first = false)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
@@ -635,12 +631,12 @@ class LiveUser_Admin
     }
 
     /**
-    * Wrapper method to get the Error Stack
-    *
-    * @return array  an array of the errors
-    *
-    * @access public
-    */
+     * Wrapper method to get the Error Stack
+     *
+     * @return array  an array of the errors
+     *
+     * @access public
+     */
     function getErrors()
     {
         if (is_object($this->_stack)) {
@@ -650,14 +646,14 @@ class LiveUser_Admin
     }
 
     /**
-    * Calls a method using the __call() magic method on perm or auth
-    *
-    * @param string method name
-    * @param array  arguments
-    * @return mixed returned value
-    *
-    * @access private
-    */
+     * Calls a method using the __call() magic method on perm or auth
+     *
+     * @param string method name
+     * @param array  arguments
+     * @return mixed returned value
+     *
+     * @access private
+     */
     function __call($method, $params)
     {
         if (is_object($this->perm) && method_exists($this->perm, $method)) {
