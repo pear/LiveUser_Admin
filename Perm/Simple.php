@@ -464,6 +464,14 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Grant user a right
      *
+     * <code>
+     * // grant user idd 13 the right NEWS_CHANGE
+     * $data = array(
+     *      'right_id'     => NEWS_CHANGE,
+     *      'perm_user_id' => 13
+     * );
+     * $lua->perm->grantUserRight($data);
+     * </code>
      *
      * @param array $data
      * @return
@@ -693,6 +701,7 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Fetches rights
      *
+     * the array expected should follow the form of
      *
      * @param array $params
      * @return
