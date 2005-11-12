@@ -759,7 +759,7 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Generate the constants to a file or define them directly.
      *
-     * $mode can be either 'file' or 'php'. File will write the constant
+     * $type can be either 'file' or 'php'. File will write the constant
      * in the given file, replacing/adding constants as needed. Php will
      * call define() function to actually define the constants.
      *
@@ -773,7 +773,7 @@ class LiveUser_Admin_Perm_Simple
      * 'filename'    => if $mode is file you must give the full path for the
      *                  output file
      *
-     * If not prefix is given it will not be used to generate the constants
+     * If no prefix is given it will not be used to generate the constants
      *
      * @param  string  type of output (constant or array)
      * @param  array   options for constants generation
