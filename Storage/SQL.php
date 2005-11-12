@@ -92,7 +92,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     /**
      * dsn that was connected to
      *
-     * @var object
+     * @var string
      * @access private
      */
     var $dsn = null;
@@ -106,8 +106,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     var $dbc = null;
 
     /**
-     * Table prefix
-     * Prefix for all db tables the container has.
+     * Table prefix for all db tables the container has.
      *
      * @var    string
      * @access public
@@ -117,10 +116,9 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     /**
      * Insert data into a table
      *
-     *
-     * @param string $table
-     * @param array $data
-     * @return mixed false on error, true (or new id) on success
+     * @param string $table name of the table
+     * @param array $data key value pairs
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -161,7 +159,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $values[] = $value_quoted;
         }
 
-        $result = $this->query($this->createInsert($table, $fields, $values));
+        $result = $this->exec($this->createInsert($table, $fields, $values));
         if ($result === false) {
             return false;
         }
@@ -177,10 +175,9 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     /**
      * Create the SQL necessary for an insert
      *
-     *
-     * @param string $table
-     * @param array $fields
-     * @param array $values
+     * @param string $table name of the table
+     * @param array $fields array of field names
+     * @param array $values array of quoted values
      * @return string SQL insert query
      *
      * @access public
@@ -196,11 +193,10 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     /**
      * Update data in a table based given filters
      *
-     *
-     * @param string $table
-     * @param array $data
-     * @param array $filteres
-     * @return mixed false on error, the affected rows on success
+     * @param string $table name of the table
+     * @param array $data key value pairs
+     * @param array $filters key values pairs (value may be a string or an array)
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -226,7 +222,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $fields[] = $this->alias[$field] . ' = ' . $value_quoted;
         }
 
-        $result = $this->query($this->createUpdate($table, $fields, $filters));
+        $result = $this->exec($this->createUpdate($table, $fields, $filters));
         return $result;
     }
 
@@ -234,9 +230,9 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * Create the SQL necessary for an update
      *
      *
-     * @param string $table
-     * @param array $fields
-     * @param array $filters
+     * @param string $table name of the table
+     * @param array $fields array of field names
+     * @param array $filters array containing the filtering to apply
      * @return string SQL update query
      *
      * @access public
@@ -250,12 +246,11 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     }
 
     /**
-     * Update from a table based given filters
+     * Delete from a table based given filters
      *
-     *
-     * @param string $table
-     * @param array $filters
-     * @return mixed false on error, the affected rows on success
+     * @param string $table name of the table
+     * @param array $filters key values pairs (value may be a string or an array)
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -267,20 +262,34 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if ($result === false) {
             return false;
         }
+
+        $result = $this->exec($this->createDelete($table, $filters));
+        return $result;
+    }
+
+    /**
+     * Create the SQL necessary for an delete
+     *
+     *
+     * @param string $table name of the table
+     * @param array $filters array containing the filtering to apply
+     * @return string SQL delete query
+     *
+     * @access public
+     */
+    function createDelete($table, $filters)
+    {
         $query = 'DELETE FROM ' . $this->prefix . $this->alias[$table];
         $query .= $this->createWhere($filters);
-
-        $result = $this->query($query);
-        return $result;
+        return $query;
     }
 
     /**
      * Fetches the count of many rows contain the filtered data
      *
-     *
-     * @param string $table
-     * @param string $field
-     * @param array $filters
+     * @param string $table name of the table
+     * @param string $field field name to count
+     * @param array $filters key values pairs (value may be a string or an array)
      * @return boolean | integer false on failure and integer of how many 
      *                           rows contain the filtered data
      *
@@ -315,16 +324,21 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * Select data from a set of tables
      *
      *
-     * @param array $select
-     * @param array $fields
-     * @param array $filters
-     * @param array $orders
-     * @param boolean $rekey
-     * @param boolean $group
-     * @param integer $limit
-     * @param integer $offset
-     * @param string $root_table
-     * @param array $selectable_tables
+     * @param string $select determines what query method to use:
+     *               'one' -> queryOne, 'row' -> queryRow, 'col' -> queryCol,
+     *               'all' ->queryAll (default)
+     * @param array $fields list of fields to fetch
+     * @param array $filters key values pairs (value may be a string or an array)
+     * @param array $orders key value pairs (values 'ASC' or 'DESC')
+     * @param boolean $rekey if set to true, returned array will have the first
+     *       column as its first dimension
+     * @param boolean $group if set to true and $rekey is set to true, then
+     *      all values with the same first column will be wrapped in an array
+     * @param string $limit number of rows to select
+     * @param string $offset first row to select
+     * @param string $root_table name of the table from which to start looking
+     *               for join points
+     * @param array $selectable_tables list of tables that may be joined to
      * @return boolean | array false on failure or array with selected data
      *
      * @access public
@@ -367,11 +381,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * Create the SQL necessary for a select
      *
      *
-     * @param array $fields
-     * @param array $filters
-     * @param array $orders
-     * @param string $root_table
-     * @param array $selectable_tables
+     * @param array $fields list of fields to fetch
+     * @param array $filters key values pairs (value may be a string or an array)
+     * @param array $orders key value pairs (values 'ASC' or 'DESC')
+     * @param string $root_table name of the table from which to start looking
+     *               for join points
+     * @param array $selectable_tables list of tables that may be joined to
      * @return boolean | string false on failure or a string with SQL query
      *
      * @access public
@@ -428,8 +443,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * Create the SQL necessary for a where statement
      *
      *
-     * @param array $filters
-     * @param array $joinfilters
+     * @param array $filters key values pairs (value may be a string or an array)
+     * @param array $joinfilters key values pairs of join related filters
      * @return boolean | string false on failure or string with SQL WHERE
      *
      * @access public
@@ -494,9 +509,9 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * list and is a valid field
      *
      *
-     * @param array $field
-     * @param array $selectable_tables
-     * @return mixed | array, null or false on failure
+     * @param string $field (qualified) field name
+     * @param array $selectable_tables list of tables that may be joined to
+     * @return boolean|array null or false on failure
      *
      * @access private
      */
@@ -527,11 +542,11 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * all requested columns and to be able to filter the joined rows
      *
      *
-     * @param array &$fields
-     * @param array &$filters
-     * @param array &$orders
-     * @param array $selectable_tables
-     * @return boolean | array false on failure
+     * @param array &$fields list of fields to fetch
+     * @param array &$filters key values pairs (value may be a string or an array)
+     * @param array &$orders key value pairs (values 'ASC' or 'DESC')
+     * @param array $selectable_tables list of tables that may be joined to
+     * @return boolean | array of table names required or false on failure
      *
      * @access public
      */
@@ -665,11 +680,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * Recursively find all the tables that need to be joined to be able to select
      * all requested columns and to be able to filter the joined rows
      *
-     * @param string $root_table
-     * @param array $filters
-     * @param array $tables
-     * @param array $selectable_tables
-     * @param array $visited
+     * @param string $root_table name of the table from which to start looking
+     *               for join points
+     * @param array $fields list of fields to fetch
+     * @param array $tables list of tables that are joined
+     * @param array $selectable_tables list of tables that may be joined to
+     * @param array $visited array of table already visisted to prevent infinite recursions
      * @return boolean | array false on failure
      *
      * @access public

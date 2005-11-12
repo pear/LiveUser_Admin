@@ -73,12 +73,12 @@ require_once 'DB.php';
  * existing connection. Alternatively, a DSN can be passed to open a new one.
  *
  * Requirements:
- * - File "Liveuser.php" (contains the parent class "LiveUser")
+ * - File "Liveuser/Admin.php" (contains the parent class "LiveUser_Admin")
  * - Array of connection options or a PEAR::DB connection object must be
- *   passed to the constructor.
+ *   passed to the init() method
  *   Example: array('dsn' => 'mysql://user:pass@host/db_name')
  *              OR
- *            &$conn (PEAR::DB connection object)
+ *            array('connection' => &$conn) ($conn is a PEAR::DB connection object)
  *
  * @category authentication
  * @package  LiveUser_Admin
@@ -190,15 +190,15 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     }
 
     /**
-     * Execute query
+     * Execute DML query
      *
-     * @param string $query query
-     * @return boolean | integer
+     * @param string $query DML query
+     * @return boolean | integer of the affected rows
      *
      * @access public
      * @uses DB::query DB::affectedRows
      */
-    function query($query)
+    function exec($query)
     {
         $result = $this->dbc->query($query);
         if (PEAR::isError($result)) {
@@ -213,15 +213,13 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
 
     /**
      * Execute the specified query, fetch the value from the first column of
-     * the first row of the result set and then frees
-     * the result set.
+     * the first row of the result set and then frees the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param string $type argument that specifies the expected
-     *       datatype of the result set field, so that an eventual conversion
-     *       may be performed. The default datatype is text, meaning that no
-     *       conversion is performed
-     * @return boolean | array
+     * @param string $type argument that specifies the expected datatype of the
+     *       result set field, so that an eventual conversion may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
+     * @return boolean | scalar
      *
      * @access public
      * @uses DB::getOne
@@ -245,10 +243,9 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param array $type array argument that specifies a list of
-     *       expected datatypes of the result set columns, so that the eventual
-     *       conversions may be performed. The default list of datatypes is
-     *       empty, meaning that no conversion is performed.
+     * @param array $type argument that specifies a list of expected datatypes
+     *       of theresult set columns, so that the conversions may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
      * @return boolean | array
      *
      * @access public
@@ -272,10 +269,9 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * each row of the result set into an array and then frees the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param string $type argument that specifies the expected
-     *       datatype of the result set field, so that an eventual conversion
-     *       may be performed. The default datatype is text, meaning that no
-     *       conversion is performed
+     * @param string $type argument that specifies the expected datatype of the
+     *       result set field, so that an eventual conversion may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
      * @return boolean | array
      *
      * @access public
@@ -299,11 +295,10 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * a two dimensional array and then frees the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param array $types array argument that specifies a list of
-     *       expected datatypes of the result set columns, so that the eventual
-     *       conversions may be performed. The default list of datatypes is
-     *       empty, meaning that no conversion is performed.
-     * @param boolean $rekey if set to true, the $all will have the first
+     * @param array $type argument that specifies a list of expected datatypes
+     *       of theresult set columns, so that the conversions may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
+     * @param boolean $rekey if set to true, returned array will have the first
      *       column as its first dimension
      * @param boolean $group if set to true and $rekey is set to true, then
      *      all values with the same first column will be wrapped in an array
@@ -354,8 +349,8 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     }
 
     /**
-     * returns the next free id of a sequence if the RDBMS
-     * does not support auto increment
+     * Since DB does not support determining if auto increment is supported,
+     * the call is redirected to nextID()
      *
      * @param string $table name of the table into which a new row was inserted
      * @param boolean $ondemand when true the seqence is
@@ -363,26 +358,15 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * @return boolean | integer
      *
      * @access public
-     * @uses DB::nextId
      */
     function getBeforeId($table, $ondemand = true)
     {
-        $result = $this->dbc->nextId($table, $ondemand);
-        if (PEAR::isError($result)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
-            );
-            return false;
-        }
-        return $result;
+        return $this->nextId($table, $ondemand);
     }
 
     /**
-     * returns the autoincrement ID if supported or $id
-     *
-     * getAfterId isn't implemented in DB so we return the $id that
-     * was passed by the user
+     * Since DB does not support determining if auto increment is supported,
+     * the call just returns the $id parameter
      *
      * @param string $id value as returned by getBeforeId()
      * @param string $table name of the table into which a new row was inserted
