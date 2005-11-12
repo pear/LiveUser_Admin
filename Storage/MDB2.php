@@ -73,12 +73,12 @@ require_once 'MDB2.php';
  * existing connection. Alternatively, a DSN can be passed to open a new one.
  *
  * Requirements:
- * - File "Liveuser.php" (contains the parent class "LiveUser")
+ * - File "Liveuser/Admin.php" (contains the parent class "LiveUser_Admin")
  * - Array of connection options or a PEAR::MDB2 connection object must be
- *   passed to the constructor.
+ *   passed to the init() method
  *   Example: array('dsn' => 'mysql://user:pass@host/db_name')
  *              OR
- *            &$conn (PEAR::MDB2 connection object)
+ *            array('connection' => &$conn) ($conn is a PEAR::MDB2 connection object)
  *
  * @category authentication
  * @package  LiveUser_Admin
@@ -91,6 +91,12 @@ require_once 'MDB2.php';
  */
 class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 {
+    /**
+     * determines of the use of sequences should be forced
+     *
+     * @var boolean
+     * @access private
+     */
     var $force_seq = true;
 
     /**
@@ -161,11 +167,10 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      *
      * @param array $array data array
      * @param string $type determines type of the field
-     *
      * @return string comma seperated values
      *
      * @access public
-     * @uses MDB2::implodeArray
+     * @uses MDB2_Driver_Datatype_Common::implodeArray
      */
     function implodeArray($array, $type)
     {
@@ -178,7 +183,8 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      *
      * @param string $limit number of rows to select
      * @param string $offset first row to select
-     * @return
+     *
+     * @return boolean
      *
      * @access public
      * @uses MDB2::setLimit
@@ -186,22 +192,30 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     function setLimit($limit, $offset)
     {
         if ($limit || $offset) {
-            return $this->dbc->setLimit($limit, $offset);
+            $result = $this->dbc->setLimit($limit, $offset);
+            if (PEAR::isError($result)) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
+                );
+                return false;
+            }
         }
+        return true;
     }
 
     /**
-     * Execute query
+     * Execute DML query
      *
-     * @param string $query query
-     * @return boolean | integer
+     * @param string $query DML query
+     * @return boolean | integer of the affected rows
      *
      * @access public
-     * @uses MDB::query
+     * @uses MDB2::exec
      */
-    function query($query)
+    function exec($query)
     {
-        $result = $this->dbc->query($query);
+        $result = $this->dbc->exec($query);
         if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
@@ -214,15 +228,13 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
 
     /**
      * Execute the specified query, fetch the value from the first column of
-     * the first row of the result set and then frees
-     * the result set.
+     * the first row of the result set and then frees the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param string $type argument that specifies the expected
-     *       datatype of the result set field, so that an eventual conversion
-     *       may be performed. The default datatype is text, meaning that no
-     *       conversion is performed
-     * @return boolean | array
+     * @param string $type argument that specifies the expected datatype of the
+     *       result set field, so that an eventual conversion may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
+     * @return boolean | scalar
      *
      * @access public
      * @uses MDB2::queryOne
@@ -246,10 +258,9 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param array $type array argument that specifies a list of
-     *       expected datatypes of the result set columns, so that the eventual
-     *       conversions may be performed. The default list of datatypes is
-     *       empty, meaning that no conversion is performed.
+     * @param array $type argument that specifies a list of expected datatypes
+     *       of theresult set columns, so that the conversions may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
      * @return boolean | array
      *
      * @access public
@@ -273,10 +284,9 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * each row of the result set into an array and then frees the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param string $type argument that specifies the expected
-     *       datatype of the result set field, so that an eventual conversion
-     *       may be performed. The default datatype is text, meaning that no
-     *       conversion is performed
+     * @param string $type argument that specifies the expected datatype of the
+     *       result set field, so that an eventual conversion may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
      * @return boolean | array
      *
      * @access public
@@ -300,11 +310,10 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * a two dimensional array and then frees the result set.
      *
      * @param string $query the SELECT query statement to be executed.
-     * @param array $types array argument that specifies a list of
-     *       expected datatypes of the result set columns, so that the eventual
-     *       conversions may be performed. The default list of datatypes is
-     *       empty, meaning that no conversion is performed.
-     * @param boolean $rekey if set to true, the $all will have the first
+     * @param array $type argument that specifies a list of expected datatypes
+     *       of theresult set columns, so that the conversions may be performed.
+     *       The default datatype is text, meaning no conversion is performed.
+     * @param boolean $rekey if set to true, returned array will have the first
      *       column as its first dimension
      * @param boolean $group if set to true and $rekey is set to true, then
      *      all values with the same first column will be wrapped in an array
@@ -332,7 +341,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @param string $seqname name of the sequence
      * @param boolean $ondemand when true the seqence is
      *                           automatic created, if it not exists
-     * @return boolean | integer
+     * @return boolean | integer false on failure or next id for the table
      *
      * @access public
      * @uses MDB2::nextId
@@ -360,14 +369,15 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @return boolean | integer
      *
      * @access public
-     * @uses MDB2::nextId MDB2::getBeforeId
+     * @uses MDB2::nextId MDB2_Extended::getBeforeId
      */
     function getBeforeId($table, $ondemand = true)
     {
         if ($this->force_seq) {
             $result = $this->dbc->nextId($table, $ondemand);
         } else {
-            $result = $this->dbc->getBeforeId($table);
+            $this->loadModule('Extended');
+            $result = $this->dbc->extended->getBeforeId($table);
         }
 
         if (PEAR::isError($result)) {
@@ -388,7 +398,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @return  boolean | integer returns the id that the users passed via params
      *
      * @access public
-     * @uses MDB2::getAfterId
+     * @uses MDB2_Extended::getAfterId
      */
     function getAfterId($id, $table)
     {
@@ -396,7 +406,8 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
             return $id;
         }
 
-        $result = $this->dbc->getAfterId($id, $table);
+        $this->loadModule('Extended');
+        $result = $this->dbc->extended->getAfterId($id, $table);
         if (PEAR::isError($result)) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
