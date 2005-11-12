@@ -85,7 +85,7 @@ class LiveUser_Admin_Auth_Common
     /**
      * Storage Container
      *
-     * @var object
+     * @var    LiveUser_Admin_Storage
      * @access private
      */
     var $_storage = null;
