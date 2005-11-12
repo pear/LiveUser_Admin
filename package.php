@@ -100,7 +100,7 @@ $package->addDependency('LiveUser',  '0.16.0',     'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0',      'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0',      'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4',      'ge',  'pkg', true);
-$package->addDependency('MDB2',      '2.0.0beta4', 'ge',  'pkg', true);
+$package->addDependency('MDB2',      '2.0.0beta7', 'ge',  'pkg', true);
 
 if (array_key_exists('make', $_GET)
     || (isset($_SERVER['argv'][1])
