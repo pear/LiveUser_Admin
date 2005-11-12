@@ -228,8 +228,7 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Add right
      *
-     *
-     * @param array $data
+     * @param array $data    associative array in the form of $fieldname => $data
      * @return
      *
      * @access public
@@ -242,15 +241,16 @@ class LiveUser_Admin_Perm_Simple
     }
 
    /**
-    * Update right - This will update the liveuser_perm_users table
-    *
+    * Update right
+    * 
+    * Use this to update a right's information
     *
     * @param array $data    associative array in the form of $fieldname => $data
     * @param array $filters associative array in the form of $fieldname => $data
     *                       This will construct the WHERE clause of your update
     *                       Be careful, if you leave this blank no WHERE clause
     *                       will be used and all rights will be affected by the update
-    * @return mixed false on error, the affected rows on success
+    * @return int|false the affected rows on success or false on error
     *
     * @access public
     */ 
@@ -264,10 +264,9 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Remove right
      *
-     *
      * @param array $filters Array containing the filters on what right(s)
      *                       should be removed
-     * @return
+     * @return false|int false on error
      *
      * @access public
      * @uses LiveUser_Admin_Perm_Simple::revokeUserRight
