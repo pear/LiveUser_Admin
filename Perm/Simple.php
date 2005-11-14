@@ -181,8 +181,8 @@ class LiveUser_Admin_Perm_Simple
     * Update user - This will update the liveuser_perm_users table
     *
     *
-    * @param array $data    associative array in the form of $fieldname => $data
-    * @param array $filters associative array in the form of $fieldname => $data
+    * @param array    associative array in the form of $fieldname => $data
+    * @param array associative array in the form of $fieldname => $data
     *                       This will construct the WHERE clause of your update
     *                       Be careful, if you leave this blank no WHERE clause
     *                       will be used and all users will be affected by the update
@@ -201,7 +201,7 @@ class LiveUser_Admin_Perm_Simple
      * Remove user
      *
      *
-     * @param array $filters Array containing the filters on what user(s)
+     * @param array Array containing the filters on what user(s)
      *                       should be removed
      * @return
      *
@@ -228,7 +228,7 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Add right
      *
-     * @param array $data    associative array in the form of $fieldname => $data
+     * @param array    associative array in the form of $fieldname => $data
      * @return
      *
      * @access public
@@ -245,8 +245,8 @@ class LiveUser_Admin_Perm_Simple
     * 
     * Use this to update a right's information
     *
-    * @param array $data    associative array in the form of $fieldname => $data
-    * @param array $filters associative array in the form of $fieldname => $data
+    * @param array    associative array in the form of $fieldname => $data
+    * @param array associative array in the form of $fieldname => $data
     *                       This will construct the WHERE clause of your update
     *                       Be careful, if you leave this blank no WHERE clause
     *                       will be used and all rights will be affected by the update
@@ -264,7 +264,7 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Remove right
      *
-     * @param array $filters Array containing the filters on what right(s)
+     * @param array Array containing the filters on what right(s)
      *                       should be removed
      * @return false|int false on error
      *
@@ -308,8 +308,8 @@ class LiveUser_Admin_Perm_Simple
     * Update area - This will update the liveuser_perm_users table
     *
     *
-    * @param array $data    associative array in the form of $fieldname => $data
-    * @param array $filters associative array in the form of $fieldname => $data
+    * @param array    associative array in the form of $fieldname => $data
+    * @param array associative array in the form of $fieldname => $data
     *                       This will construct the WHERE clause of your update
     *                       Be careful, if you leave this blank no WHERE clause
     *                       will be used and all areas will be affected by the update
@@ -344,7 +344,7 @@ class LiveUser_Admin_Perm_Simple
      *  $foo = $admin->perm->removeArea($filters);
      * </code>
      *
-     * @param array $filters Array containing the filters on what area(s)
+     * @param array Array containing the filters on what area(s)
      *                       should be removed
      * @return
      *
@@ -417,8 +417,8 @@ class LiveUser_Admin_Perm_Simple
     * Update application - This will update the liveuser_perm_users table
     *
     *
-    * @param array $data    associative array in the form of $fieldname => $data
-    * @param array $filters associative array in the form of $fieldname => $data
+    * @param array    associative array in the form of $fieldname => $data
+    * @param array associative array in the form of $fieldname => $data
     *                       This will construct the WHERE clause of your update
     *                       Be careful, if you leave this blank no WHERE clause
     *                       will be used and all applications will be affected by the update
@@ -437,7 +437,7 @@ class LiveUser_Admin_Perm_Simple
      * Remove application(s)
      *
      *
-     * @param array $filters Array containing the filters on what application(s)
+     * @param array Array containing the filters on what application(s)
      *                       should be removed
      * @return
      *
@@ -526,7 +526,7 @@ class LiveUser_Admin_Perm_Simple
      * Revoke (remove) right(s) from the user(s)
      *
      *
-     * @param array $filters Array containing the filters on what right(s)
+     * @param array Array containing the filters on what right(s)
      *                       should be removed from what user(s)
      * @return
      *
@@ -559,8 +559,8 @@ class LiveUser_Admin_Perm_Simple
     * Update translation - This will update the liveuser_perm_users table
     *
     *
-    * @param array $data    associative array in the form of $fieldname => $data
-    * @param array $filters associative array in the form of $fieldname => $data
+    * @param array    associative array in the form of $fieldname => $data
+    * @param array associative array in the form of $fieldname => $data
     *                       This will construct the WHERE clause of your update
     *                       Be careful, if you leave this blank no WHERE clause
     *                       will be used and all translations will be affected by the update
@@ -578,7 +578,7 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Remove translation(s)
      *
-     * @param array $filters Array containing the filters on what tranlation(s)
+     * @param array Array containing the filters on what tranlation(s)
      *                       should be removed
      * @return
      *

@@ -285,7 +285,7 @@ class LiveUser_Admin_Auth_Common
      * Update a user
      *
      * @param array containing the key value pairs of columns to update
-     * @param array $filters key values pairs (value may be a string or an array)
+     * @param array key values pairs (value may be a string or an array)
      * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
@@ -303,7 +303,7 @@ class LiveUser_Admin_Auth_Common
     /**
      * Remove a user
      *
-     * @param array $filters key values pairs (value may be a string or an array)
+     * @param array key values pairs (value may be a string or an array)
      * @return integer|boolean false on error, the affected rows on success
      *
      * @access public

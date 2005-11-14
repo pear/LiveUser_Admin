@@ -84,7 +84,7 @@ class LiveUser_Admin_Auth_Storage_DB extends LiveUser_Admin_Storage_DB
     /**
      * Initializes database storage container.
      *
-     * @param array &$storageConf Storage Configuration
+     * @param array Storage Configuration
      * @return void
      *
      * @access public

@@ -323,7 +323,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Remove Area Admin
      *
      *
-     * @param array $filters Array containing the filters on what area admin(s)
+     * @param array Array containing the filters on what area admin(s)
      *                       should be removed
      * @return mixed
      *
@@ -344,7 +344,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Remove Area
      *
      *
-     * @param array $filters Array containing the filters on what area(s)
+     * @param array Array containing the filters on what area(s)
      *                       should be removed
      * @return
      *
@@ -372,7 +372,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Remove Right
      *
      *
-     * @param array $filters Array containing the filters on what right(s)
+     * @param array Array containing the filters on what right(s)
      *                       should be removed
      * @return
      *
@@ -403,7 +403,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Remove User
      *
      *
-     * @param array $filters Array containing the filters on what user(s)
+     * @param array Array containing the filters on what user(s)
      *                       should be removed
      * @return
      *
@@ -465,7 +465,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * option recursive is passed on as true.
      *
      *
-     * @param array $filters Array containing the filters on what group(s)
+     * @param array Array containing the filters on what group(s)
      *                       should be removed
      * @return
      *
@@ -567,7 +567,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Get parent of the group that's passed via param
      *
      *
-     * @param int $subGroupId Id of the group that is used to fetch parents
+     * @param int Id of the group that is used to fetch parents
      * @return array
      *
      * @access public

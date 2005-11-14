@@ -116,8 +116,8 @@ class LiveUser_Admin_Storage
      * Goes through the storage config and turns each value into
      * a var
      *
-     * @param array &$storageConf Storage Configuration
-     * @param array $structure containing the database structure (tables, fields, alias)
+     * @param array Storage Configuration
+     * @param array containing the database structure (tables, fields, alias)
      * @return boolean false on failure and true on success
      *
      * @access public

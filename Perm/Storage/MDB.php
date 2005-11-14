@@ -85,7 +85,7 @@ class LiveUser_Admin_Perm_Storage_MDB extends LiveUser_Admin_Storage_MDB
     /**
      * Initializes database storage container.
      *
-     * @param array &$storageConf Storage Configuration
+     * @param array Storage Configuration
      * @return void
      *
      * @access public

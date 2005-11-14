@@ -125,8 +125,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     * Update group - This will update the liveuser_perm_users table
     *
     *
-    * @param array $data    associative array in the form of $fieldname => $data
-    * @param array $filters associative array in the form of $fieldname => $data
+    * @param array    associative array in the form of $fieldname => $data
+    * @param array associative array in the form of $fieldname => $data
     *                       This will construct the WHERE clause of your update
     *                       Be careful, if you leave this blank no WHERE clause
     *                       will be used and all groups will be affected by the update
@@ -145,7 +145,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * Removes group(s)
      *
      *
-     * @param array $filters Array containing the filters on what group(s)
+     * @param array Array containing the filters on what group(s)
      *                       should be removed
      * @return
      *
@@ -231,7 +231,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * Revokes (removes) right(s) from group(s)
      *
      *
-     * @param array $filters Array containing the filters on what right(s)
+     * @param array Array containing the filters on what right(s)
      *                       should be removed from what group(s)
      * @return
      *
@@ -273,7 +273,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * Removes user(s) from group(s)
      *
      *
-     * @param array $filters Array containing the filters on what user(s)
+     * @param array Array containing the filters on what user(s)
      *                       should be removed from what group(s)
      * @return
      *
@@ -290,7 +290,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * Removes right(s)
      *
      *
-     * @param array $filters Array containing the filters on what right(s)
+     * @param array Array containing the filters on what right(s)
      *                       should be removed
      * @return
      *
@@ -317,7 +317,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * Removes user(s)
      *
      *
-     * @param array $filters Array containing the filters on what user(s)
+     * @param array Array containing the filters on what user(s)
      *                       should be removed
      * @return
      *
