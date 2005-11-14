@@ -96,14 +96,14 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * Connects to database or uses existing database connection.
      *
      * @param array &$storageConf Storage Configuration
+     * @param array $structure containing the database structure (tables, fields, alias)
      * @return boolean false on failure and true on success
      *
      * @access public
-     * @uses LiveUser_Admin_Storage_SQL::init
      */
-    function init(&$storageConf)
+    function init(&$storageConf, $structure)
     {
-        parent::init($storageConf);
+        parent::init($storageConf, $structure);
 
         if (array_key_exists('connection', $storageConf)
             && DB::isConnection($storageConf['connection'])

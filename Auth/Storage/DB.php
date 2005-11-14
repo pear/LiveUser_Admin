@@ -67,17 +67,8 @@
 require_once 'LiveUser/Admin/Storage/DB.php';
 
 /**
- * This is a PEAR::DB backend driver for the LiveUser class.
- * A PEAR::DB connection object can be passed to the constructor to reuse an
- * existing connection. Alternatively, a DSN can be passed to open a new one.
- *
- * Requirements:
- * - File "Liveuser.php" (contains the parent class "LiveUser")
- * - Array of connection options or a PEAR::DB connection object must be
- *   passed to the constructor.
- *   Example: array('dsn' => 'mysql://user:pass@host/db_name')
- *              OR
- *            &$conn (PEAR::DB connection object)
+ * This is a PEAR::DB backend storage driver for the LiveUser Admin auth class.
+ * All it does is read the Globals.php file and the container and database config on
  *
  * @category authentication
  * @package  LiveUser_Admin
@@ -92,8 +83,6 @@ class LiveUser_Admin_Auth_Storage_DB extends LiveUser_Admin_Storage_DB
 {
     /**
      * Initializes database storage container.
-     * Merges tables/fields/aliases together if needed or set the default
-     * ones if any of those vars are empty.
      *
      * @param array &$storageConf Storage Configuration
      * @return void
@@ -103,24 +92,8 @@ class LiveUser_Admin_Auth_Storage_DB extends LiveUser_Admin_Storage_DB
      */
     function init(&$storageConf)
     {
-        parent::init($storageConf);
-
         require_once 'LiveUser/Auth/Storage/Globals.php';
-        if (empty($this->tables)) {
-            $this->tables = $GLOBALS['_LiveUser']['auth']['tables'];
-        } else {
-            $this->tables = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['tables'], $this->tables);
-        }
-        if (empty($this->fields)) {
-            $this->fields = $GLOBALS['_LiveUser']['auth']['fields'];
-        } else {
-            $this->fields = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['fields'], $this->fields);
-        }
-        if (empty($this->alias)) {
-            $this->alias = $GLOBALS['_LiveUser']['auth']['alias'];
-        } else {
-            $this->alias = LiveUser::arrayMergeClobber($GLOBALS['_LiveUser']['auth']['alias'], $this->alias);
-        }
+        parent::init($storageConf, $GLOBALS['_LiveUser']['auth']);
     }
 }
 ?>
