@@ -117,11 +117,12 @@ class LiveUser_Admin_Storage
      * a var
      *
      * @param array &$storageConf Storage Configuration
+     * @param array $structure containing the database structure (tables, fields, alias)
      * @return boolean false on failure and true on success
      *
      * @access public
      */
-    function init(&$storageConf)
+    function init(&$storageConf, $structure)
     {
         if (is_array($storageConf)) {
             $keys = array_keys($storageConf);
@@ -130,6 +131,22 @@ class LiveUser_Admin_Storage
                     $this->$key =& $storageConf[$key];
                 }
             }
+        }
+
+        if (empty($this->tables)) {
+            $this->tables = $structure['tables'];
+        } else {
+            $this->tables = LiveUser::arrayMergeClobber($structure['tables'], $this->tables);
+        }
+        if (empty($this->fields)) {
+            $this->fields = $structure['fields'];
+        } else {
+            $this->fields = LiveUser::arrayMergeClobber($structure['fields'], $this->fields);
+        }
+        if (empty($this->alias)) {
+            $this->alias = $structure['alias'];
+        } else {
+            $this->alias = LiveUser::arrayMergeClobber($structure['alias'], $this->alias);
         }
 
         return true;
