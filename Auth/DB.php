@@ -74,16 +74,8 @@
 require_once 'LiveUser/Admin/Auth/Common.php';
 
 /**
- * DB-based authentication admin container for LiveUser.
- *
- * Description:
- * This admin class provides the following functionalities
- * - adding users
- * - removing users
- * - update user data (auth related: username, pwd, active)
- * - adding rights
- * - removing rights
- * - get all users
+ * This is a PEAR::DB backend container driver for the LiveUser Admin auth class.
+ * It does not contain any logic and simply extends the common driver
  *
  * @category authentication
  * @package  LiveUser_Admin

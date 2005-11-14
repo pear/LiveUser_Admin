@@ -96,10 +96,12 @@ class LiveUser_Admin_Auth_Common
      * @access private
      * @var    array
      */
-    var $encryptionModes = array('MD5'   => 'MD5',
-                                 'RC4'   => 'RC4',
-                                 'PLAIN' => 'PLAIN',
-                                 'SHA1'  => 'SHA1');
+    var $encryptionModes = array(
+        'MD5'   => 'MD5',
+        'RC4'   => 'RC4',
+        'PLAIN' => 'PLAIN',
+        'SHA1'  => 'SHA1'
+    );
 
     /**
      * Defines the algorithm used for encrypting/decrypting
@@ -130,15 +132,16 @@ class LiveUser_Admin_Auth_Common
     var $containerName = null;
 
     /**
-     * Allow multiple users in the database to have the same
-     * login handle. Default: false.
+     * Allow multiple users in the database to have the same login handle.
+     * This is usually handled in the database schema. Default: false.
      *
      * @var    boolean
      */
     var $allowDuplicateHandles = false;
 
     /**
-     * Allow empty passwords to be passed to LiveUser. Default: false.
+     * Allow empty passwords to be passed to LiveUser.
+     *  This is usually handled in the database schema. Default: false.
      *
      * @var    boolean
      */
@@ -158,7 +161,8 @@ class LiveUser_Admin_Auth_Common
      * Load the storage container
      *
      * @access  public
-     * @param  mixed         Name of array containing the configuration.
+     * @param   array contains configuration of the container
+     * @param   string name of container
      * @return  boolean true on success or false on failure
      */
     function init(&$conf, $containerName)
@@ -228,7 +232,7 @@ class LiveUser_Admin_Auth_Common
      * Uses the algorithm defined in the passwordEncryptionMode
      * property.
      *
-     * @param string  encryption type
+     * @param string  password to encrypt
      * @return string The encrypted password
      */
     function encryptPW($plainPW)
@@ -259,11 +263,11 @@ class LiveUser_Admin_Auth_Common
     }
 
     /**
-     * Add user
+     * Add a user
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing atleast the key-value-pairs of all required
+     *              columns in the user table
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -278,12 +282,11 @@ class LiveUser_Admin_Auth_Common
     }
 
     /**
-     * Update usr
+     * Update a user
      *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
+     * @param array containing the key value pairs of columns to update
+     * @param array $filters key values pairs (value may be a string or an array)
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -298,12 +301,10 @@ class LiveUser_Admin_Auth_Common
     }
 
     /**
-     * Remove user
+     * Remove a user
      *
-     *
-     * @param array $filters Array containing the filters on what user(s)
-     *                       should be removed
-     * @return
+     * @param array $filters key values pairs (value may be a string or an array)
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -313,12 +314,26 @@ class LiveUser_Admin_Auth_Common
         // notify observer
         return $result;
     }
+
     /**
      * Fetches users
      *
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean | array false on failure or array with selected data
      *
      * @access public
      */
