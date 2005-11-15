@@ -151,6 +151,14 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $fields = array();
         $values = array();
         foreach ($data as $field => $value) {
+            // sanity checks
+            if (!array_key_exists($field, $this->tables[$table]['fields'])) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => 'field to insert is not defined: '.$field)
+                );
+                return false;
+            }
             $fields[] = $this->alias[$field];
             $value_quoted = $this->quote($value, $this->fields[$field]);
             if ($value_quoted === false) {
@@ -202,9 +210,21 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      */
     function update($table, $data, $filters)
     {
+        if (empty($data)) {
+            return true;
+        }
+
         $fields = $values = array();
         foreach ($data as $field => $value) {
             // sanity checks
+            if (!array_key_exists($field, $this->tables[$table]['fields'])) {
+                $this->_stack->push(
+                    LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
+                    array('reason' => 'field to insert is not defined: '.$field)
+                );
+                return false;
+            }
+
             if ($this->tables[$table]['fields'][$field]
                 && (!array_key_exists($field, $data) || $data[$field] === '')
             ) {
