@@ -141,7 +141,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 } elseif (!isset($data[$field])) {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                        array('reason' => 'field may not be empty: '.$field)
+                        array('reason' => 'field may not be unset: '.$field)
                     );
                     return false;
                 }
@@ -225,12 +225,10 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 return false;
             }
 
-            if ($this->tables[$table]['fields'][$field]
-                && (!array_key_exists($field, $data) || $data[$field] === '')
-            ) {
+            if ($this->tables[$table]['fields'][$field] && !isset($data[$field]))) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                    array('reason' => 'field may not be empty: '.$field)
+                    array('reason' => 'field may not be unset: '.$field)
                 );
                 return false;
             }
