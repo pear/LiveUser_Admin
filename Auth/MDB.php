@@ -47,11 +47,11 @@
  *
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author  Markus Wolff <wolff@21st.de>
- * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @author  Lukas Smith <smith@pooteeweet.org>
- * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Arnaud Limbourg <arnaud@php.net>
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Matt Scifo <mscifo@php.net>
  * @author  Bjoern Kraus <krausbn@php.net>
@@ -77,7 +77,7 @@ require_once 'LiveUser/Admin/Auth/Common.php';
  * It does not contain any logic and simply extends the common driver
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author  Lukas Smith <smith@pooteeweet.org>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt

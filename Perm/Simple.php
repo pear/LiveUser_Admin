@@ -47,11 +47,11 @@
  *
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author  Markus Wolff <wolff@21st.de>
- * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @author  Lukas Smith <smith@pooteeweet.org>
- * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Arnaud Limbourg <arnaud@php.net>
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Matt Scifo <mscifo@php.net>
  * @author  Bjoern Kraus <krausbn@php.net>
@@ -71,10 +71,10 @@ require_once 'LiveUser/Perm/Simple.php';
  * backends/containers must be extensions of this base class.
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author  Markus Wolff <wolff@21st.de>
  * @author  Bjoern Kraus <krausbn@php.net>
- * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version Release: @package_version@
@@ -98,6 +98,12 @@ class LiveUser_Admin_Perm_Simple
      */
     var $_storage = null;
 
+    /**
+     * Key (method names), with array lists of selectable tables for the given method
+     *
+     * @var array
+     * @access public
+     */
     var $selectable_tables = array(
         'getUsers' => array('perm_users', 'userrights', 'rights'),
         'getRights' => array('rights', 'userrights', 'translations', 'areas', 'applications'),
@@ -106,6 +112,13 @@ class LiveUser_Admin_Perm_Simple
         'getTranslations' => array('translations'),
     );
 
+    /**
+     * Key (field name), with method names as values to determine what method
+     * should be called to get data when the 'with' option is used in a get*() method
+     *
+     * @var array
+     * @access public
+     */
     var $withFieldMethodMap = array(
         'perm_user_id' => 'getUsers',
         'right_id' => 'getRights',
@@ -122,11 +135,12 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Load the storage container
+     * Initialize the storage container
+     *
+     * @param  array   array containing the configuration.
+     * @return boolean true on success or false on failure
      *
      * @access  public
-     * @param  mixed         Name of array containing the configuration.
-     * @return  boolean true on success or false on failure
      */
     function init(&$conf)
     {
@@ -158,11 +172,11 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Add user
+     * Add a user
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing atleast the key-value-pairs of all required
+     *              columns in the perm_users table
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -177,19 +191,18 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-   /**
-    * Update user - This will update the liveuser_perm_users table
-    *
-    *
-    * @param array    associative array in the form of $fieldname => $data
-    * @param array associative array in the form of $fieldname => $data
-    *                       This will construct the WHERE clause of your update
-    *                       Be careful, if you leave this blank no WHERE clause
-    *                       will be used and all users will be affected by the update
-    * @return mixed false on error, the affected rows on success
-    *
-    * @access public
-    */
+    /**
+     * Update users
+     *
+     * @param array containing the key value pairs of columns to update
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the update
+     * @return integer|boolean false on error, the affected rows on success
+     *
+     * @access public
+     */
     function updateUser($data, $filters)
     {
         $result = $this->_storage->update('perm_users', $data, $filters);
@@ -198,15 +211,15 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove user
+     * Remove users
      *
-     *
-     * @param array Array containing the filters on what user(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the removed
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Simple::revokeUserRight
      */
     function removeUser($filters)
     {
@@ -226,10 +239,11 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Add right
+     * Add a right
      *
-     * @param array    associative array in the form of $fieldname => $data
-     * @return
+     * @param array containing atleast the key-value-pairs of all required
+     *              columns in the rights table
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -240,20 +254,18 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-   /**
-    * Update right
-    * 
-    * Use this to update a right's information
-    *
-    * @param array    associative array in the form of $fieldname => $data
-    * @param array associative array in the form of $fieldname => $data
-    *                       This will construct the WHERE clause of your update
-    *                       Be careful, if you leave this blank no WHERE clause
-    *                       will be used and all rights will be affected by the update
-    * @return int|false the affected rows on success or false on error
-    *
-    * @access public
-    */ 
+    /**
+     * Update rights
+     *
+     * @param array containing the key value pairs of columns to update
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all rights will be affected by the update
+     * @return integer|boolean false on error, the affected rows on success
+     *
+     * @access public
+     */
     function updateRight($data, $filters)
     {
         $result = $this->_storage->update('rights', $data, $filters);
@@ -262,14 +274,15 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove right
+     * Remove rights
      *
-     * @param array Array containing the filters on what right(s)
-     *                       should be removed
-     * @return false|int false on error
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all rights will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Simple::revokeUserRight
      */
     function removeRight($filters)
     {
@@ -289,11 +302,11 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Add area
+     * Add an area
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing atleast the key-value-pairs of all required
+     *              columns in the areas table
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -304,19 +317,18 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-   /**
-    * Update area - This will update the liveuser_perm_users table
-    *
-    *
-    * @param array    associative array in the form of $fieldname => $data
-    * @param array associative array in the form of $fieldname => $data
-    *                       This will construct the WHERE clause of your update
-    *                       Be careful, if you leave this blank no WHERE clause
-    *                       will be used and all areas will be affected by the update
-    * @return mixed false on error, the affected rows on success
-    *
-    * @access public
-    */ 
+    /**
+     * Update areas
+     *
+     * @param array    associative array in the form of $fieldname => $data
+     * @param array associative array in the form of $fieldname => $data
+     *                       This will construct the WHERE clause of your update
+     *                       Be careful, if you leave this blank no WHERE clause
+     *                       will be used and all areas will be affected by the update
+     * @return integer|boolean false on error, the affected rows on success
+     *
+     * @access public
+     */ 
     function updateArea($data, $filters)
     {
         $result = $this->_storage->update('areas', $data, $filters);
@@ -344,9 +356,11 @@ class LiveUser_Admin_Perm_Simple
      *  $foo = $admin->perm->removeArea($filters);
      * </code>
      *
-     * @param array Array containing the filters on what area(s)
-     *                       should be removed
-     * @return
+     * @param array associative array in the form of $fieldname => $data
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all areas will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      * @uses LiveUser_Admin_Perm_Simple::removeRight
@@ -371,7 +385,6 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Set current application
      *
-     *
      * @param  integer  id of application
      * @return boolean  always true
      *
@@ -387,7 +400,6 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Get current application
      *
-     *
      * @return string name of the current application
      *
      * @access public
@@ -398,11 +410,11 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Add application
+     * Add an application
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing atleast the key-value-pairs of all required
+     *              columns in the applications table
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -413,19 +425,18 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-   /**
-    * Update application - This will update the liveuser_perm_users table
-    *
-    *
-    * @param array    associative array in the form of $fieldname => $data
-    * @param array associative array in the form of $fieldname => $data
-    *                       This will construct the WHERE clause of your update
-    *                       Be careful, if you leave this blank no WHERE clause
-    *                       will be used and all applications will be affected by the update
-    * @return mixed false on error, the affected rows on success
-    *
-    * @access public
-    */ 
+    /**
+     * Update applications
+     *
+     * @param array containing the key value pairs of columns to update
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all applictions will be affected by the update
+     * @return integer|boolean false on error, the affected rows on success
+     *
+     * @access public
+     */
     function updateApplication($data, $filters)
     {
         $result = $this->_storage->update('applications', $data, $filters);
@@ -434,15 +445,15 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove application(s)
+     * Remove applications
      *
-     *
-     * @param array Array containing the filters on what application(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all applications will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Simple::removeArea
      */
     function removeApplication($filters)
     {
@@ -473,7 +484,7 @@ class LiveUser_Admin_Perm_Simple
      * $lua->perm->grantUserRight($data);
      * </code>
      *
-     * @param array $data
+     * @param array containing the perm_user_id and right_id and optionally a right_level
      * @return
      *
      * @access public
@@ -508,10 +519,12 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Update right(s) for the given user(s)
      *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
+     * @param array containing the key value pairs of columns to update
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the update
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -525,10 +538,11 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Revoke (remove) right(s) from the user(s)
      *
-     *
-     * @param array Array containing the filters on what right(s)
-     *                       should be removed from what user(s)
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -540,11 +554,11 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Add translation
+     * Add a translation
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing atleast the key-value-pairs of all required
+     *              columns in the users table
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -555,19 +569,18 @@ class LiveUser_Admin_Perm_Simple
         return $result;
     }
 
-   /**
-    * Update translation - This will update the liveuser_perm_users table
-    *
-    *
-    * @param array    associative array in the form of $fieldname => $data
-    * @param array associative array in the form of $fieldname => $data
-    *                       This will construct the WHERE clause of your update
-    *                       Be careful, if you leave this blank no WHERE clause
-    *                       will be used and all translations will be affected by the update
-    * @return mixed false on error, the affected rows on success
-    *
-    * @access public
-    */ 
+    /**
+     * Update translations
+     *
+     * @param array containing the key value pairs of columns to update
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all translations will be affected by the update
+     * @return integer|boolean false on error, the affected rows on success
+     *
+     * @access public
+     */
     function updateTranslation($data, $filters)
     {
         $result = $this->_storage->update('translations', $data, $filters);
@@ -576,11 +589,13 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove translation(s)
+     * Remove translations
      *
-     * @param array Array containing the filters on what tranlation(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all translations will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -600,10 +615,14 @@ class LiveUser_Admin_Perm_Simple
      * Makes the filters used by the remove functions and also
      * checks if there is actually something that needs removing.
      *
-     * @param mixed $filteres
-     * @param string $key
-     * @param string $method
-     * @return array
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the update
+     * @param string name of the column for which we require a filter to be set
+     * @param string name of the method that should be used to determine the filter
+     * @return integer|array|boolean 0, an array containing the filter for the key
+     *                                  or false on error
      *
      * @access private
      */
@@ -642,10 +661,25 @@ class LiveUser_Admin_Perm_Simple
     /**
      * This function holds up most of the heat for all the get* functions.
      *
-     * @param array $params
-     * @param string $root_table
-     * @param array $selectable_tables
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @param string name of the table from which to start looking
+     *               for join points
+     * @param array list of tables that may be joined to
+     * @return boolean|array false on failure or array with selected data
      *
      * @access private
      */
@@ -684,9 +718,22 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Fetches users
      *
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access public
      */
@@ -701,10 +748,22 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Fetches rights
      *
-     * the array expected should follow the form of
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access public
      */
@@ -719,9 +778,22 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Fetches areas
      *
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access public
      */
@@ -736,9 +808,24 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Fetches applications
      *
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
+     *
      * @access public
-     * @param array $params
-     * @return
      */
     function getApplications($params = array())
     {
@@ -751,9 +838,22 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Fetches translations
      *
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access public
      */
@@ -787,7 +887,8 @@ class LiveUser_Admin_Perm_Simple
      * @param  string  type of output (constant or array)
      * @param  array   options for constants generation
      * @param  string  output mode desired (file or direct)
-     * @return mixed   boolean, array or DB Error object
+     * @return boolean|array depending on the type an array with the data or
+     *                       a boolean denoting success or failure
      *
      * @access public
      */

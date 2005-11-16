@@ -47,7 +47,7 @@
  *
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @permor  Markus Wolff <wolff@21st.de>
  * @permor Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @permor  Lukas Smith <smith@pooteeweet.org>
@@ -71,7 +71,7 @@ require_once 'LiveUser/Admin/Storage/DB.php';
  * All it does is read the Globals.php file and the container and database config on
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @permor  Lukas Smith <smith@pooteeweet.org>
  * @permor  Bjoern Kraus <krausbn@php.net>
  * @copyright 2002-2005 Markus Wolff

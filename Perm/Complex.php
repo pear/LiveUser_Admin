@@ -47,11 +47,11 @@
  *
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author Markus Wolff <wolff@21st.de>
- * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @author Lukas Smith <smith@pooteeweet.org>
- * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Arnaud Limbourg <arnaud@php.net>
  * @author Christian Dickmann <dickmann@php.net>
  * @author Matt Scifo <mscifo@php.net>
  * @author Bjoern Kraus <krausbn@php.net>
@@ -74,7 +74,7 @@ require_once 'LiveUser/Admin/Perm/Medium.php';
  * backends/containers must be extensions of this base class.
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Markus Wolff <wolff@21st.de>
  * @author  Matt Scifo <mscifo@php.net>
@@ -622,7 +622,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *    Where 1 is the group_id
      *
      * @param array $params
-     * @return boolean | array
+     * @return boolean|array
      *
      * @access public
      */
@@ -653,7 +653,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Helper method to fetch all groups including the subgroups
      *
      * @param array $params
-     * @return boolean | array
+     * @return boolean|array
      *
      * @access private
      */
@@ -710,7 +710,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * hierarchy tree structure
      *
      * @param array $params
-     * @return boolean | array
+     * @return boolean|array
      *
      * @access private
      */
@@ -772,7 +772,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      *
      * @param array $params
-     * @return boolean | array
+     * @return boolean|array
      *
      * @access public
      */
@@ -890,7 +890,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      *
      * @param array $params
-     * @return boolean | array false for error and array with impliedRights on success
+     * @return boolean|array false for error and array with impliedRights on success
      *
      * @access private
      */
@@ -920,7 +920,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      *
      * @param array $params
-     * @return boolean | array false for error and array with inheritedRights on success
+     * @return boolean|array false for error and array with inheritedRights on success
      *
      * @access private
      */

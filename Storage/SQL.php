@@ -47,11 +47,11 @@
  *
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author  Markus Wolff <wolff@21st.de>
- * @author Helgi Þormar Þorbjörnsson <dufuz@php.net>
+ * @author  Helgi Þormar Þorbjörnsson <dufuz@php.net>
  * @author  Lukas Smith <smith@pooteeweet.org>
- * @author Arnaud Limbourg <arnaud@php.net>
+ * @author  Arnaud Limbourg <arnaud@php.net>
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Matt Scifo <mscifo@php.net>
  * @author  Bjoern Kraus <krausbn@php.net>
@@ -80,7 +80,7 @@ require_once 'LiveUser/Admin/Storage.php';
  *            &$conn (PEAR::MDB2 connection object)
  *
  * @category authentication
- * @package  LiveUser_Admin
+ * @package LiveUser_Admin
  * @author  Lukas Smith <smith@pooteeweet.org>
  * @copyright 2002-2005 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
@@ -159,6 +159,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 );
                 return false;
             }
+
             $fields[] = $this->alias[$field];
             $value_quoted = $this->quote($value, $this->fields[$field]);
             if ($value_quoted === false) {
