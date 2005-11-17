@@ -67,7 +67,8 @@
 require_once 'LiveUser/Admin/Perm/Medium.php';
 
 /**
- * Complex permission administration class
+ * Complex permission administration class that extends the Medium class with the
+ * ability to manage subgroups, implied rights and area admins
  *
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
@@ -89,8 +90,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     /**
      * Constructor
      *
-     *
-     * @param  mixed      configuration array
      * @return void
      *
      * @access protected
@@ -113,8 +112,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      * If so it returns false and pushes the error into stack
      *
-     * @param array $data
-     * @return mixed false on error, blah on success
+     * @param array containing the subgroup_id and group_id
+     * @return boolean false on error, true on success
      *
      * @access public
      */
@@ -156,14 +155,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Don't let the function name fool ya, it actually can remove more
-     * then one subgroup record at a time via the filters.
-     * Most of the time you pass either group_id or subgroup_id or both
-     * with the filters to remove one or more record.
+     * Unassign subgroup(s) from group(s)
      *
-     *
-     * @param array $filters
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all groups will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -177,9 +175,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     /**
      * Imply Right
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing the implied_right_id and right_id
+     * @return boolean false on error, true on success
      *
      * @access public
      */
@@ -231,11 +228,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Unimply Right
+     * Unimply right(s)
      *
-     *
-     * @param array $filters
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all groups will be affected by the remove
+     * @param boolean determines if the implied rights field in the rights table
+     *                should be updated or not
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -262,9 +263,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     /**
      * Add Area Admin
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing the area_id and perm_user_id
+     * @return boolean false on error, true on success
      *
      * @access public
      */
@@ -320,12 +320,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Remove Area Admin
+     * Remove Area Admin(s)
      *
-     *
-     * @param array Array containing the filters on what area admin(s)
-     *                       should be removed
-     * @return mixed
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all groups will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -341,12 +342,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Remove Area
+     * Remove areas and all their relevant relations
      *
-     *
-     * @param array Array containing the filters on what area(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all areas will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -369,17 +371,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Remove Right
+     * Remove rights and all their relevant relations
      *
-     *
-     * @param array Array containing the filters on what right(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all rights will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Medium::removeRight
-     *       LiveUser_Admin_Perm_Complex::_updateImpliedStatus
-     *       LiveUser_Admin_Perm_Complex::unimplyRight
      */
     function removeRight($filters)
     {
@@ -400,16 +400,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Remove User
+     * Remove users and all their relevant relations
      *
-     *
-     * @param array Array containing the filters on what user(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the removed
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Medium::removeUser
-     *       LiveUser_Admin_Perm_Complex::updateGroup
      */
     function removeUser($filters)
     {
@@ -427,9 +426,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     /**
      * Get SubGroups
      *
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access private
      */
@@ -445,9 +457,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     /**
      * Get Implied Rights
      *
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access private
      */
@@ -461,16 +486,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Removes groups, can remove subgroups recursively if
-     * option recursive is passed on as true.
+     * Remove groups and all their relevant relations
      *
-     *
-     * @param array Array containing the filters on what group(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all groups will be affected by the removed
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Medium::removeGroup
      */
     function removeGroup($filters)
     {
@@ -507,28 +531,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Grant Group Rights
-     *
-     *
-     * @param array $data
-     * @return
-     *
-     * @access public
-     * @uses LiveUser_Admin_Perm_Medium::grantGroupRight
-     */
-    function grantGroupRight($data)
-    {
-        $result = parent::grantGroupRight($data);
-        // notify observer
-        return $result;
-    }
-
-    /**
      * Updates implied status
      *
-     *
-     * @param array $filters
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all rights will be affected by the update
+     * @return boolean denotes success or failure
      *
      * @access private
      */
@@ -564,11 +573,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Get parent of the group that's passed via param
+     * Get parent of a subgroup
      *
-     *
-     * @param int Id of the group that is used to fetch parents
-     * @return array
+     * @param Id of the subgroup_id that is used to fetch the parent
+     * @return boolean|integer false on failure or integer with the parent group_id
      *
      * @access public
      */
@@ -598,10 +606,24 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Get groups
+     * Fetches groups
      *
-     * Params:
-     * subgroups - defaults to false
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'subgroups' - defaults to false
      *    If subgroups should be included, if false then it acts same as the
      *    medium container getGroups, if set to true it will return all subgroups
      *    like they are directly assigned, if set to 'hierarchy' it will place
@@ -609,20 +631,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      *    note that 'hierarchy' requires 'rekey' enabled, 'group' is disabled,
      *    'select' set to 'all' and the first field needs to be 'group_id'
-     *
-     * rekey = defaults to false
-     *    By default (false) we return things in this fashion
-     *    <code>
-     *       array(0 => array('group_id' => '1'))
-     *    </code>
-     *    But if rekey is turned on you get
-     *    <code>
-     *       array(1 => array('group_define_name' => 'FOO'))
-     *    </code>
-     *    Where 1 is the group_id
-     *
-     * @param array $params
-     * @return boolean|array
+     * @return boolean|array false on failure or array with selected data
      *
      * @access public
      */
@@ -650,10 +659,24 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Helper method to fetch all groups including the subgroups
+     * Fetches groups with their subgroups into a flat structure
      *
-     * @param array $params
-     * @return boolean|array
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access private
      */
@@ -706,15 +729,27 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Helper method to fetch all groups including the subgroups in a
-     * hierarchy tree structure
+     * Fetches groups with their subgroups into a hierarchal structure
      *
-     * @param array $params
-     * @return boolean|array
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access private
      */
-
     function _getGroupsWithHierarchy($params)
     {
         if ((!array_key_exists('rekey', $params) || !$params['rekey'])
@@ -770,9 +805,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     /**
      * Fetches rights
      *
-     *
-     * @param array $params
-     * @return boolean|array
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access public
      */
@@ -886,11 +934,24 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Fetches implied rights
+     * Fetches implied rights for a given right
      *
-     *
-     * @param array $params
-     * @return boolean|array false for error and array with impliedRights on success
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access private
      */
@@ -916,11 +977,24 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Fetches inherited rights
+     * Fetches all rights gained through subgroup memberships
      *
-     *
-     * @param array $params
-     * @return boolean|array false for error and array with inheritedRights on success
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access private
      */

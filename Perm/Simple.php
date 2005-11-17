@@ -64,7 +64,13 @@
 require_once 'LiveUser/Perm/Simple.php';
 
 /**
- * Simple permission administration class
+ * Simple permission administration class that features support for
+ * creating, updating, removing and assigning:
+ * - users
+ * - rights
+ * - areas (categorize rights)
+ * - applications (categorize areas)
+ * - translations (for rights, areas, applications and groups)
  *
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
@@ -127,7 +133,11 @@ class LiveUser_Admin_Perm_Simple
     );
 
     /**
-     * Class constructor. Feel free to override in backend subclasses.
+     * Constructor
+     *
+     * @return void
+     *
+     * @access protected
      */
     function LiveUser_Admin_Perm_Simple()
     {
@@ -211,7 +221,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove users
+     * Remove users and all their relevant relations
      *
      * @param array key values pairs (value may be a string or an array)
      *                      This will construct the WHERE clause of your update
@@ -274,7 +284,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove rights
+     * Remove rights and all their relevant relations
      *
      * @param array key values pairs (value may be a string or an array)
      *                      This will construct the WHERE clause of your update
@@ -337,33 +347,15 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Removes all areas define in the filter as well as any
-     * rights assigned to that area.
+     * Remove areas and all their relevant relations
      *
-     * <code>
-     *  $filters = array(
-     *      'area_id' => '34'
-     *  );
-     *  $foo = $admin->perm->removeArea($filters);
-     * </code>
-     *
-     * Or you can also remove by any other field like so
-     *
-     * <code>
-     *  $filters = array(
-     *      'area_define_name' => 'area232'
-     *  );
-     *  $foo = $admin->perm->removeArea($filters);
-     * </code>
-     *
-     * @param array associative array in the form of $fieldname => $data
+     * @param array key values pairs (value may be a string or an array)
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all areas will be affected by the remove
      * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Simple::removeRight
      */
     function removeArea($filters)
     {
@@ -445,7 +437,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove applications
+     * Remove applications and all their relevant relations
      *
      * @param array key values pairs (value may be a string or an array)
      *                      This will construct the WHERE clause of your update
@@ -589,7 +581,7 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Remove translations
+     * Remove translations and all their relevant relations
      *
      * @param array key values pairs (value may be a string or an array)
      *                      This will construct the WHERE clause of your update

@@ -71,7 +71,8 @@ define('LIVEUSER_GROUP_TYPE_USER',  3);
 require_once 'LiveUser/Admin/Perm/Simple.php';
 
 /**
- * Medium container for permission handling
+ * Medium permission administration class that extends the Simple class with the
+ * ability to create, update, remove and assign groups.
  *
  * This class provides a set of functions for implementing a user
  * permission management system on live websites. All authorisation
@@ -92,9 +93,9 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     /**
      * Constructor
      *
-     * @access protected
-     * @param  mixed      configuration array
      * @return void
+     *
+     * @access protected
      */
     function LiveUser_Admin_Perm_Medium()
     {
@@ -106,11 +107,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Adds a group
+     * Add a group
      *
-     *
-     * @param array $data
-     * @return
+     * @param array containing atleast the key-value-pairs of all required
+     *              columns in the group table
+     * @return integer|boolean false on error, true (or new id) on success
      *
      * @access public
      */
@@ -122,15 +123,14 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Update group - This will update the liveuser_perm_users table
+     * Update groups
      *
-     *
-     * @param array    associative array in the form of $fieldname => $data
-     * @param array associative array in the form of $fieldname => $data
+     * @param array containing the key value pairs of columns to update
+     * @param array key values pairs (value may be a string or an array)
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all groups will be affected by the update
-     * @return mixed false on error, the affected rows on success
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -142,16 +142,15 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Removes group(s)
+     * Remove groups and all their relevant relations
      *
-     *
-     * @param array Array containing the filters on what group(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all groups will be affected by the removed
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Medium::removeUserFromGroup
-     *       LiveUser_Admin_Perm_Medium::revokeGroupRight
      */
     function removeGroup($filters)
     {
@@ -176,10 +175,18 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Grants a group X rights
+     * Grant group a right
      *
+     * <code>
+     * // grant user idd 13 the right NEWS_CHANGE
+     * $data = array(
+     *      'right_id'     => NEWS_CHANGE,
+     *      'group_id' => 13
+     * );
+     * $lua->perm->grantGroupRight($data);
+     * </code>
      *
-     * @param array $data
+     * @param array containing the group_id and right_id and optionally a right_level
      * @return
      *
      * @access public
@@ -211,12 +218,14 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Updates group(s) right(s)
+     * Update right(s) for the given group(s)
      *
-     *
-     * @param array $data
-     * @param array $filters
-     * @return
+     * @param array containing the key value pairs of columns to update
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all groups will be affected by the update
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -228,12 +237,13 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Revokes (removes) right(s) from group(s)
+     * Revoke (remove) right(s) from the group(s)
      *
-     *
-     * @param array Array containing the filters on what right(s)
-     *                       should be removed from what group(s)
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all groups will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -245,11 +255,11 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Adds a user to a group
+     * Add a user to agroup
      *
-     *
-     * @param array $data
+     * @param array containing the perm_user_id and group_id
      * @return
+     *
      * @access public
      */
     function addUserToGroup($data)
@@ -270,12 +280,13 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Removes user(s) from group(s)
+     * Remove user(s) from group(s)
      *
-     *
-     * @param array Array containing the filters on what user(s)
-     *                       should be removed from what group(s)
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
      */
@@ -287,16 +298,15 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Removes right(s)
+     * Remove rights and all their relevant relations
      *
-     *
-     * @param array Array containing the filters on what right(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all rights will be affected by the remove
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Simple::removeRight
-     *       LiveUser_Admin_Perm_Medium::revokeGroupRight
      */
     function removeRight($filters)
     {
@@ -314,16 +324,15 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Removes user(s)
+     * Remove users and all their relevant relations
      *
-     *
-     * @param array Array containing the filters on what user(s)
-     *                       should be removed
-     * @return
+     * @param array key values pairs (value may be a string or an array)
+     *                      This will construct the WHERE clause of your update
+     *                      Be careful, if you leave this blank no WHERE clause
+     *                      will be used and all users will be affected by the removed
+     * @return integer|boolean false on error, the affected rows on success
      *
      * @access public
-     * @uses LiveUser_Admin_Perm_Simple::removeUser
-     *       LiveUser_Admin_Perm_Medium::removeUserFromGroup
      */
     function removeUser($filters)
     {
@@ -341,11 +350,24 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Fetches group(s)
+     * Fetches groups
      *
-     *
-     * @param array $params
-     * @return
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @return boolean|array false on failure or array with selected data
      *
      * @access public
      */
@@ -356,6 +378,5 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
     }
-
 }
 ?>
