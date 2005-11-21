@@ -232,16 +232,6 @@
     <type>boolean</type>
    </field>
 
-   <field>
-    <name>owner_user_id</name>
-    <type>integer</type>
-   </field>
-
-   <field>
-    <name>owner_group_id</name>
-    <type>integer</type>
-   </field>
-
    <index>
     <name>group_id</name>
     <unique>1</unique>
@@ -578,16 +568,6 @@
     <name>passwd</name>
     <type>text</type>
     <length>32</length>
-   </field>
-
-   <field>
-    <name>owner_user_id</name>
-    <type>integer</type>
-   </field>
-
-   <field>
-    <name>owner_group_id</name>
-    <type>integer</type>
    </field>
 
    <field>
