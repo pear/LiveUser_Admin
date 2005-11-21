@@ -141,7 +141,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 } elseif (!isset($data[$field])) {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                        array('reason' => 'field may not be unset: '.$field)
+                        array('reason' => 'field to insert may not be unset: '.$field)
                     );
                     return false;
                 }
@@ -215,21 +215,21 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             return true;
         }
 
-        $fields = $values = array();
+        $fields = array();
         foreach ($data as $field => $value) {
             // sanity checks
             if (!array_key_exists($field, $this->tables[$table]['fields'])) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                    array('reason' => 'field to insert is not defined: '.$field)
+                    array('reason' => 'field to update is not defined: '.$field)
                 );
                 return false;
             }
 
-            if ($this->tables[$table]['fields'][$field] && !isset($data[$field]))) {
+            if ($this->tables[$table]['fields'][$field] && !isset($data[$field])) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                    array('reason' => 'field may not be unset: '.$field)
+                    array('reason' => 'field tp update may not be unset: '.$field)
                 );
                 return false;
             }
@@ -414,7 +414,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     {
         // find the tables to be used inside the query FROM
         $tables = $this->findTables($fields, $filters, $orders, $selectable_tables);
-
         if (!$tables) {
             $this->_stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
@@ -699,8 +698,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * Recursively find all the tables that need to be joined to be able to select
      * all requested columns and to be able to filter the joined rows
      *
-     * @param string name of the table from which to start looking
-     *               for join points
+     * @param string name of the table from which to start looking for join points
      * @param array list of fields to fetch
      * @param array list of tables that are joined
      * @param array list of tables that may be joined to
@@ -731,12 +729,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $tables_orig = $tables;
 
         // find tables that can be join directly with the root table
-        $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), $selectable_tables);
+        $direct_matches = array_intersect(array_keys($this->tables[$root_table]['joins']), array_intersect($selectable_tables, array_keys($tables)));
         foreach ($direct_matches as $table) {
-            // verify that the table is in the selectable_tables list
-            if (!array_key_exists($table, $tables)) {
-                continue;
-            }
             // handle multi column join
             if (is_array($this->tables[$root_table]['joins'][$table])) {
                 foreach ($this->tables[$root_table]['joins'][$table] as $joinsource => $jointarget) {
@@ -776,10 +770,19 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 $filters[$this->prefix.$this->alias[$root_table].'.'.$this->tables[$root_table]['joins'][$table]] =
                     $this->prefix.$this->alias[$table].'.'.$this->tables[$root_table]['joins'][$table];
             }
+            unset($tables[$table]);
+        }
+
+        // all tables have been joined
+        if (empty($tables)) {
+            return array($filters, null);
+        }
+
+        foreach ($direct_matches as $table) {
             $result = $this->createJoinFilter($table, $filters, $tables, $selectable_tables, $visited);
             // check if the recursion was able to find a join that would reduce
             // the number of to be joined tables
-            if ($result) {
+            if (is_array($result)) {
                 if (!$result[1]) {
                     return $result;
                 }
@@ -843,7 +846,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $result = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
             // check if the recursion was able to find a join that would reduce
             // the number of to be joined tables
-            if ($result) {
+            if (is_array($result)) {
                 if (!$result[1]) {
                     return $result;
                 }
