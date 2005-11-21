@@ -400,30 +400,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     }
 
     /**
-     * Remove users and all their relevant relations
-     *
-     * @param array key values pairs (value may be a string or an array)
-     *                      This will construct the WHERE clause of your update
-     *                      Be careful, if you leave this blank no WHERE clause
-     *                      will be used and all users will be affected by the removed
-     * @return integer|boolean false on error, the affected rows on success
-     *
-     * @access public
-     */
-    function removeUser($filters)
-    {
-        $data = array('owner_user_id' => null);
-        $filter = array('owner_user_id' => $filters['perm_user_id']);
-        $result = $this->updateGroup($data, $filter);
-        if ($result === false) {
-            return false;
-        }
-
-        // notify observer
-        return parent::removeUser($filters);
-    }
-
-    /**
      * Get SubGroups
      *
      * @param array containing key-value pairs for:
