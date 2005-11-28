@@ -43,7 +43,6 @@ $liveuserConfig = array(
     'authContainers'    => array(
         'DB' => array(
             'type'          => 'MDB2',
-            'loginTimeout' => 0,
             'expireTime'   => 0,
             'idleTime'     => 0,
             'allowDuplicateHandles'  => 1,

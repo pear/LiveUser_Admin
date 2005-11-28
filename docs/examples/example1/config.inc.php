@@ -77,7 +77,6 @@ $conf =
         'authContainers' => array(
             'DB_Local' => array(
                 'type' => $storage,
-                'loginTimeout'  => 0,
                 'expireTime'    => 3600,
                 'idleTime'      => 1800,
                 'allowDuplicateHandles' => false,
