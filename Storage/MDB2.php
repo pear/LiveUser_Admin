@@ -174,7 +174,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      */
     function implodeArray($array, $type)
     {
-        $this->dbc->loadModule('datatype');
+        $this->dbc->loadModule('Datatype');
         return $this->dbc->datatype->implodeArray($array, $type);
     }
 
