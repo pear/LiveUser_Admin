@@ -110,7 +110,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * the child group does have a parent group already assigned to it.
      * (Just to difference between what kinda error was hit)
      *
-     * If so it returns false and pushes the error into stack
+     * If so it returns false and pushes the error into stack.
+     *
+     * The expected parameter array is of the form
+     * <code>
+     * $lua->perm->assignSubGroup(
+     *     array('group_id' => 'id', 'subgroup_id' => 'id')
+     * );
+     * </code>
      *
      * @param array containing the subgroup_id and group_id
      * @return boolean false on error, true on success
