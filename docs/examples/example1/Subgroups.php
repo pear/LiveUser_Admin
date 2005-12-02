@@ -27,7 +27,7 @@ for ($i = 0; $i < 10; $i++) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo '<strong>' . $groups[$subgroup]['group_id'] . '</strong> is now 
+        echo '<strong>' . $groups[$subgroup]['group_id'] . '</strong> is now
               subgroup of <strong>'. $groups[$group]['group_id'] .'</strong><br />';
     }
 }

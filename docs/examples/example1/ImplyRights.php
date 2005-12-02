@@ -22,7 +22,7 @@ for ($i = 0; $i < 25; $i++) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
-        echo '<strong>' . $rights[$imright]['right_id'] . '</strong> is now 
+        echo '<strong>' . $rights[$imright]['right_id'] . '</strong> is now
               implied right from <strong>'. $rights[$right]['right_id'] .'</strong><br />';
     }
 }

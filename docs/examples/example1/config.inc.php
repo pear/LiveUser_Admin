@@ -24,7 +24,7 @@ $dsn = "mysql://$db_user:$db_pass@$db_host/$db_name";
 $backends = array(
     'DB' => array(
         'options' => array()
-    ), 
+    ),
     'MDB' => array(
         'options' => array()
     ),

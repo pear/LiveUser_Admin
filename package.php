@@ -28,7 +28,7 @@ $description = <<<EOT
   LiveUser_Admin is meant to be used with the LiveUser package.
   It is composed of all the classes necessary to administrate
   data used by LiveUser.
-  
+
   You'll be able to add/edit/delete/get things like:
   * Rights
   * Users
@@ -37,14 +37,14 @@ $description = <<<EOT
   * Applications
   * Subgroups
   * ImpliedRights
-  
+
   And all other entities within LiveUser.
-  
+
   At the moment we support the following storage containers:
   * DB
   * MDB
   * MDB2
-  
+
   But it takes no time to write up your own storage container,
   so if you like to use native mysql functions straight, then it's possible
   to do so in under a hour!

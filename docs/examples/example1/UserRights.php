@@ -106,7 +106,7 @@ if ($user_rights === false) {
             Var_Dump::display($result);
         }
     }
-}    
+}
 
 $user = array_rand($users);
 $params = array(

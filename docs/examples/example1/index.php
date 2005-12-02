@@ -17,11 +17,11 @@ Var_Dump::displayInit(
         color: #006600;
         text-decoration: none;
     }
-    
+
     a:visisted {
         text-decoration: none;
     }
-    
+
     a:hover {
         text-decoration: underline;
     }
@@ -57,15 +57,15 @@ Var_Dump::displayInit(
 $qstring = array_key_exists('QUERY_STRING', $_SERVER) && !array_key_exists('del', $_GET) ? '?'.$_SERVER['QUERY_STRING'] : '';
 
 echo '
-<a href="Application.php'.$qstring.'">Application</a> | 
+<a href="Application.php'.$qstring.'">Application</a> |
 <a href="Area.php'.$qstring.'">Area</a> |
-<a href="Group.php'.$qstring.'">Group</a> | 
+<a href="Group.php'.$qstring.'">Group</a> |
 <a href="GroupRights.php'.$qstring.'">GroupRights</a> |
-<a href="ImplyRights.php'.$qstring.'">ImplyRights</a> | 
+<a href="ImplyRights.php'.$qstring.'">ImplyRights</a> |
 <a href="User.php'.$qstring.'">User</a> |
-<a href="Rights.php'.$qstring.'">Rights</a> | 
+<a href="Rights.php'.$qstring.'">Rights</a> |
 <a href="Subgroups.php'.$qstring.'">Subgroups</a> |
-<a href="UserGroup.php'.$qstring.'">UserGroup</a> | 
+<a href="UserGroup.php'.$qstring.'">UserGroup</a> |
 <a href="UserRights.php'.$qstring.'">UserRights</a> |
 <a href="OutputRightsConstants.php'.$qstring.'">OutputRightsConstants</a> |
 <a href="Translation.php'.$qstring.'">Translation</a> |

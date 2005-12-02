@@ -130,7 +130,7 @@ if ($rights_group === false) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
             print_r($admin->getErrors());
         } elseif (empty($result)) {
-            echo 'Nothing was found with the right id <strong>' . $rights_group[$right]['right_id'] . '</strong> 
+            echo 'Nothing was found with the right id <strong>' . $rights_group[$right]['right_id'] . '</strong>
                   and group id <strong>' . $groups[$group]['group_id']. '</strong><br />';
         } else {
             Var_Dump::display($result);

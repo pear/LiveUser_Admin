@@ -2,14 +2,18 @@
 require_once 'index.php';
 echo '<h3>Test</h3>';
 
-$filters = array('application_id' => '109');
-$rmArea = $admin->perm->removeArea($filters);
+$params = array(
+    'fields' => array(
+        'right_id',
+        'right_define_name',
+        'area_id',
+        'area_define_name'
+    ),
+    'filters' => array(
+        'perm_user_id' => 12
+    )
+);
 
-if ($rmArea === false) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-    print_r($admin->getErrors());
-} elseif ($rmArea === 0) {
-    echo '<strong>Area</strong> to remove did not exist<br />';
-} else {
-    echo '<strong>Area</strong> was removed<br />';
-}
+$user_rights = $admin->perm->getRights($params);
+
+var_dump($admin->getErrors());
