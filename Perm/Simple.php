@@ -148,7 +148,7 @@ class LiveUser_Admin_Perm_Simple
      * Initialize the storage container
      *
      * @param  array   array containing the configuration.
-     * @return boolean true on success or false on failure
+     * @return bool true on success or false on failure
      *
      * @access  public
      */
@@ -186,7 +186,7 @@ class LiveUser_Admin_Perm_Simple
      *
      * @param array containing atleast the key-value-pairs of all required
      *              columns in the perm_users table
-     * @return integer|boolean false on error, true (or new id) on success
+     * @return int|bool false on error, true (or new id) on success
      *
      * @access public
      */
@@ -209,7 +209,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all users will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -227,7 +227,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all users will be affected by the removed
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -253,7 +253,7 @@ class LiveUser_Admin_Perm_Simple
      *
      * @param array containing atleast the key-value-pairs of all required
      *              columns in the rights table
-     * @return integer|boolean false on error, true (or new id) on success
+     * @return int|bool false on error, true (or new id) on success
      *
      * @access public
      */
@@ -272,7 +272,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all rights will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -290,7 +290,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all rights will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -316,7 +316,7 @@ class LiveUser_Admin_Perm_Simple
      *
      * @param array containing atleast the key-value-pairs of all required
      *              columns in the areas table
-     * @return integer|boolean false on error, true (or new id) on success
+     * @return int|bool false on error, true (or new id) on success
      *
      * @access public
      */
@@ -335,7 +335,7 @@ class LiveUser_Admin_Perm_Simple
      *                       This will construct the WHERE clause of your update
      *                       Be careful, if you leave this blank no WHERE clause
      *                       will be used and all areas will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */ 
@@ -353,7 +353,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all areas will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -377,8 +377,8 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Set current application
      *
-     * @param  integer  id of application
-     * @return boolean  always true
+     * @param int  id of application
+     * @return bool  always true
      *
      * @access public
      */
@@ -406,7 +406,7 @@ class LiveUser_Admin_Perm_Simple
      *
      * @param array containing atleast the key-value-pairs of all required
      *              columns in the applications table
-     * @return integer|boolean false on error, true (or new id) on success
+     * @return int|bool false on error, true (or new id) on success
      *
      * @access public
      */
@@ -425,7 +425,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all applictions will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -443,7 +443,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all applications will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -516,7 +516,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all users will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -534,7 +534,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all users will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -550,7 +550,7 @@ class LiveUser_Admin_Perm_Simple
      *
      * @param array containing atleast the key-value-pairs of all required
      *              columns in the users table
-     * @return integer|boolean false on error, true (or new id) on success
+     * @return int|bool false on error, true (or new id) on success
      *
      * @access public
      */
@@ -569,7 +569,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all translations will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -587,7 +587,7 @@ class LiveUser_Admin_Perm_Simple
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all translations will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -613,7 +613,7 @@ class LiveUser_Admin_Perm_Simple
      *                      will be used and all users will be affected by the update
      * @param string name of the column for which we require a filter to be set
      * @param string name of the method that should be used to determine the filter
-     * @return integer|array|boolean 0, an array containing the filter for the key
+     * @return int|array|bool 0, an array containing the filter for the key
      *                                  or false on error
      *
      * @access private
@@ -671,7 +671,7 @@ class LiveUser_Admin_Perm_Simple
      * @param string name of the table from which to start looking
      *               for join points
      * @param array list of tables that may be joined to
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
@@ -725,7 +725,7 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -755,7 +755,7 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -785,7 +785,7 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -815,7 +815,7 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -845,7 +845,7 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -879,7 +879,7 @@ class LiveUser_Admin_Perm_Simple
      * @param  string  type of output (constant or array)
      * @param  array   options for constants generation
      * @param  string  output mode desired (file or direct)
-     * @return boolean|array depending on the type an array with the data or
+     * @return bool|array depending on the type an array with the data or
      *                       a boolean denoting success or failure
      *
      * @access public

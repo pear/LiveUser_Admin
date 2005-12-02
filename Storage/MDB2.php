@@ -94,7 +94,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     /**
      * determines of the use of sequences should be forced
      *
-     * @var boolean
+     * @var bool
      * @access private
      */
     var $force_seq = true;
@@ -105,7 +105,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      *
      * @param array Storage Configuration
      * @param array containing the database structure (tables, fields, alias)
-     * @return boolean false on failure and true on success
+     * @return bool true on success and false on failure
      *
      * @access public
      */
@@ -184,7 +184,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @param string number of rows to select
      * @param string first row to select
      *
-     * @return boolean
+     * @return bool true on success and false on failure
      *
      * @access public
      * @uses MDB2::setLimit
@@ -208,7 +208,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * Execute DML query
      *
      * @param string DML query
-     * @return boolean | integer of the affected rows
+     * @return bool|int of the affected rows
      *
      * @access public
      * @uses MDB2::exec
@@ -234,7 +234,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @param string argument that specifies the expected datatype of the
      *       result set field, so that an eventual conversion may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @return boolean | scalar
+     * @return bool|string
      *
      * @access public
      * @uses MDB2::queryOne
@@ -261,7 +261,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @param array argument that specifies a list of expected datatypes
      *       of theresult set columns, so that the conversions may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @return boolean | array
+     * @return bool|array
      *
      * @access public
      * @uses MDB2::queryRow
@@ -287,7 +287,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @param string argument that specifies the expected datatype of the
      *       result set field, so that an eventual conversion may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @return boolean | array
+     * @return bool|array
      *
      * @access public
      * @uses MDB2::queryCol
@@ -313,11 +313,11 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * @param array argument that specifies a list of expected datatypes
      *       of theresult set columns, so that the conversions may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @param boolean if set to true, returned array will have the first
+     * @param bool if set to true, returned array will have the first
      *       column as its first dimension
-     * @param boolean if set to true and $rekey is set to true, then
+     * @param bool if set to true and $rekey is set to true, then
      *      all values with the same first column will be wrapped in an array
-     * @return boolean | array
+     * @return bool|array
      *
      * @access public
      * @uses MDB2::queryAll
@@ -339,9 +339,9 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * returns the next free id of a sequence
      *
      * @param string name of the sequence
-     * @param boolean when true the seqence is
+     * @param bool when true the seqence is
      *                           automatic created, if it not exists
-     * @return boolean | integer false on failure or next id for the table
+     * @return bool|int false on failure or next id for the table
      *
      * @access public
      * @uses MDB2::nextId
@@ -364,9 +364,9 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * does not support auto increment
      *
      * @param string name of the table into which a new row was inserted
-     * @param boolean when true the seqence is
+     * @param bool when true the seqence is
      *                          automatic created, if it not exists
-     * @return boolean | integer
+     * @return bool|int
      *
      * @access public
      * @uses MDB2::nextId MDB2_Extended::getBeforeId
@@ -395,7 +395,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      *
      * @param string value as returned by getBeforeId()
      * @param string name of the table into which a new row was inserted
-     * @return  boolean | integer returns the id that the users passed via params
+     * @return  bool|int returns the id that the users passed via params
      *
      * @access public
      * @uses MDB2_Extended::getAfterId

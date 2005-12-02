@@ -97,7 +97,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param array Storage Configuration
      * @param array containing the database structure (tables, fields, alias)
-     * @return boolean false on failure and true on success
+     * @return bool true on success and false on failure
      *
      * @access public
      */
@@ -174,7 +174,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * @param string number of rows to select
      * @param string first row to select
      *
-     * @return boolean false This feature isn't supported by DB
+     * @return bool false This feature isn't supported by DB
      *
      * @access public
      */
@@ -193,7 +193,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * Execute DML query
      *
      * @param string DML query
-     * @return boolean | integer of the affected rows
+     * @return bool|int of the affected rows
      *
      * @access public
      * @uses DB::query DB::affectedRows
@@ -219,7 +219,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * @param string argument that specifies the expected datatype of the
      *       result set field, so that an eventual conversion may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @return boolean | scalar
+     * @return bool|string
      *
      * @access public
      * @uses DB::getOne
@@ -246,7 +246,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * @param array argument that specifies a list of expected datatypes
      *       of theresult set columns, so that the conversions may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @return boolean | array
+     * @return bool|array
      *
      * @access public
      * @uses DB::getRow
@@ -272,7 +272,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * @param string argument that specifies the expected datatype of the
      *       result set field, so that an eventual conversion may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @return boolean | array
+     * @return bool|array
      *
      * @access public
      * @uses DB::getCol
@@ -298,11 +298,11 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * @param array argument that specifies a list of expected datatypes
      *       of theresult set columns, so that the conversions may be performed.
      *       The default datatype is text, meaning no conversion is performed.
-     * @param boolean if set to true, returned array will have the first
+     * @param bool if set to true, returned array will have the first
      *       column as its first dimension
-     * @param boolean if set to true and $rekey is set to true, then
+     * @param bool if set to true and $rekey is set to true, then
      *      all values with the same first column will be wrapped in an array
-     * @return boolean | array
+     * @return bool|array
      *
      * @access public
      * @uses DB::getAll DB::getAssoc
@@ -328,9 +328,9 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * returns the next free id of a sequence
      *
      * @param string name of the sequence
-     * @param boolean when true the seqence is
+     * @param bool when true the seqence is
      *                           automatic created, if it not exists
-     * @return boolean | integer false on failure or next id for the table
+     * @return bool|int false on failure or next id for the table
      *
      * @access public
      * @uses DB::nextId
@@ -353,9 +353,9 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * the call is redirected to nextID()
      *
      * @param string name of the table into which a new row was inserted
-     * @param boolean when true the seqence is
+     * @param bool when true the seqence is
      *                          automatic created, if it not exists
-     * @return boolean | integer
+     * @return bool|int
      *
      * @access public
      */
@@ -370,7 +370,7 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string value as returned by getBeforeId()
      * @param string name of the table into which a new row was inserted
-     * @return integer returns the id that the users passed via params
+     * @return int returns the id that the users passed via params
      *
      * @access public
      */

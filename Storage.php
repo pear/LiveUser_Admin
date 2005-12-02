@@ -118,7 +118,7 @@ class LiveUser_Admin_Storage
      *
      * @param array Storage Configuration
      * @param array containing the database structure (tables, fields, alias)
-     * @return boolean false on failure and true on success
+     * @return bool true on success and false on failure
      *
      * @access public
      */

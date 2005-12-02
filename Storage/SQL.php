@@ -118,7 +118,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      *
      * @param string name of the table
      * @param array key value pairs
-     * @return integer|boolean false on error, true (or new id) on success
+     * @return int|bool false on error, true (or new id) on success
      *
      * @access public
      */
@@ -205,7 +205,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param string name of the table
      * @param array key value pairs
      * @param array key values pairs (value may be a string or an array)
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -268,7 +268,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      *
      * @param string name of the table
      * @param array key values pairs (value may be a string or an array)
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -307,7 +307,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param string name of the table
      * @param string field name to count
      * @param array key values pairs (value may be a string or an array)
-     * @return boolean|integer false on failure and integer of how many 
+     * @return bool|int false on failure and integer of how many 
      *                         rows contain the filtered data
      *
      * @access public
@@ -346,16 +346,16 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param array list of fields to fetch
      * @param array key values pairs (value may be a string or an array)
      * @param array key value pairs (values 'ASC' or 'DESC')
-     * @param boolean if set to true, returned array will have the first
+     * @param bool if set to true, returned array will have the first
      *       column as its first dimension
-     * @param boolean if set to true and $rekey is set to true, then
+     * @param bool if set to true and $rekey is set to true, then
      *      all values with the same first column will be wrapped in an array
      * @param string number of rows to select
      * @param string first row to select
      * @param string name of the table from which to start looking
      *               for join points
      * @param array list of tables that may be joined to
-     * @return boolean | array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -402,7 +402,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param string name of the table from which to start looking
      *               for join points
      * @param array list of tables that may be joined to
-     * @return boolean | string false on failure or a string with SQL query
+     * @return bool|string false on failure or a string with SQL query
      *
      * @access public
      */
@@ -458,7 +458,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      *
      * @param array key values pairs (value may be a string or an array)
      * @param array key values pairs of join related filters
-     * @return boolean | string false on failure or string with SQL WHERE
+     * @return bool|string false on failure or string with SQL WHERE
      *
      * @access public
      */
@@ -523,7 +523,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      *
      * @param string (qualified) field name
      * @param array list of tables that may be joined to
-     * @return boolean|array null or false on failure
+     * @return bool|array null or false on failure
      *
      * @access private
      */
@@ -557,7 +557,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param array key values pairs (value may be a string or an array)
      * @param array key value pairs (values 'ASC' or 'DESC')
      * @param array list of tables that may be joined to
-     * @return boolean | array of table names required or false on failure
+     * @return bool|array of table names required or false on failure
      *
      * @access public
      */
@@ -696,7 +696,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param array list of tables that are joined
      * @param array list of tables that may be joined to
      * @param array array of table already visisted to prevent infinite recursions
-     * @return boolean | array false on failure
+     * @return bool|array false on failure
      *
      * @access public
      */

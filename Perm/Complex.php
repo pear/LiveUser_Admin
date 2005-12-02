@@ -120,7 +120,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * </code>
      *
      * @param array containing the subgroup_id and group_id
-     * @return boolean false on error, true on success
+     * @return bool false on error, true on success
      *
      * @access public
      */
@@ -168,7 +168,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all groups will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -183,7 +183,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Imply Right
      *
      * @param array containing the implied_right_id and right_id
-     * @return boolean false on error, true on success
+     * @return bool false on error, true on success
      *
      * @access public
      */
@@ -241,9 +241,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all groups will be affected by the remove
-     * @param boolean determines if the implied rights field in the rights table
+     * @param bool determines if the implied rights field in the rights table
      *                should be updated or not
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -271,7 +271,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Add Area Admin
      *
      * @param array containing the area_id and perm_user_id
-     * @return boolean false on error, true on success
+     * @return bool false on error, true on success
      *
      * @access public
      */
@@ -333,7 +333,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all groups will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -355,7 +355,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all areas will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -384,7 +384,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all rights will be affected by the remove
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -424,7 +424,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
@@ -455,7 +455,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
@@ -475,7 +475,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all groups will be affected by the removed
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -520,7 +520,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all rights will be affected by the update
-     * @return boolean denotes success or failure
+     * @return bool denotes success or failure
      *
      * @access private
      */
@@ -559,7 +559,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      * Get parent of a subgroup
      *
      * @param Id of the subgroup_id that is used to fetch the parent
-     * @return boolean|integer false on failure or integer with the parent group_id
+     * @return bool|int false on failure or integer with the parent group_id
      *
      * @access public
      */
@@ -614,7 +614,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      *    note that 'hierarchy' requires 'rekey' enabled, 'group' is disabled,
      *    'select' set to 'all' and the first field needs to be 'group_id'
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -659,7 +659,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
@@ -729,7 +729,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
@@ -803,7 +803,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
@@ -934,7 +934,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
@@ -977,7 +977,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean|array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access private
      */

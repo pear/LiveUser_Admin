@@ -135,7 +135,7 @@ class LiveUser_Admin_Auth_Common
      * Allow multiple users in the database to have the same login handle.
      * This is usually handled in the database schema. Default: false.
      *
-     * @var    boolean
+     * @var    bool
      */
     var $allowDuplicateHandles = false;
 
@@ -143,7 +143,7 @@ class LiveUser_Admin_Auth_Common
      * Allow empty passwords to be passed to LiveUser.
      *  This is usually handled in the database schema. Default: false.
      *
-     * @var    boolean
+     * @var    bool
      */
     var $allowEmptyPasswords = false;
 
@@ -163,7 +163,7 @@ class LiveUser_Admin_Auth_Common
      * @access  public
      * @param   array contains configuration of the container
      * @param   string name of container
-     * @return  boolean true on success or false on failure
+     * @return  bool true on success or false on failure
      */
     function init(&$conf, $containerName)
     {
@@ -267,7 +267,7 @@ class LiveUser_Admin_Auth_Common
      *
      * @param array containing atleast the key-value-pairs of all required
      *              columns in the users table
-     * @return integer|boolean false on error, true (or new id) on success
+     * @return int|bool false on error, true (or new id) on success
      *
      * @access public
      */
@@ -289,7 +289,7 @@ class LiveUser_Admin_Auth_Common
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all users will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -310,7 +310,7 @@ class LiveUser_Admin_Auth_Common
      *                      This will construct the WHERE clause of your update
      *                      Be careful, if you leave this blank no WHERE clause
      *                      will be used and all users will be affected by the update
-     * @return integer|boolean false on error, the affected rows on success
+     * @return int|bool false on error, the affected rows on success
      *
      * @access public
      */
@@ -339,7 +339,7 @@ class LiveUser_Admin_Auth_Common
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     * @return boolean | array false on failure or array with selected data
+     * @return bool|array false on failure or array with selected data
      *
      * @access public
      */

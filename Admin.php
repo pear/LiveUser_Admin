@@ -66,7 +66,7 @@ require_once 'LiveUser.php';
 /**#@+
  * Error related constants definition
  *
- * @var integer
+ * @var int
  */
 define('LIVEUSER_ADMIN_ERROR',                  -1);
 define('LIVEUSER_ADMIN_ERROR_FILTER',           -2);
@@ -172,7 +172,7 @@ class LiveUser_Admin
 
     /**
      *
-     * @param boolean|log boolean value to denote if the debug mode should be
+     * @param bool|log boolean value to denote if the debug mode should be
        enabled, or instance of a PEAR_ErrorStack compatible Log object
      * @return LiveUser_Admin
      *
@@ -194,7 +194,7 @@ class LiveUser_Admin
     /**
      *
      * @param array configuration array
-     * @return LiveUser_Admin|boolean
+     * @return LiveUser_Admin|bool
      *
      * @access public
      * @see setAdminContainers
@@ -218,7 +218,7 @@ class LiveUser_Admin
     /**
      *
      * @param array configuration array
-     * @return LiveUser_Admin|boolean
+     * @return LiveUser_Admin|bool
      *
      * @access public
      * @see factory
@@ -248,7 +248,7 @@ class LiveUser_Admin
      * e.g.: $admin->auth->addUser(); or $auth->addUser();
      *
      * @param  string auth container name
-     * @return LiveUser_Admin_Auth_Common|boolean auth instance upon success, false otherwise
+     * @return LiveUser_Admin_Auth_Common|bool auth instance upon success, false otherwise
      *
      * @access public
      */
@@ -289,7 +289,7 @@ class LiveUser_Admin
      *
      * e.g.: $admin->perm->addUser(); or $perm->addUser();
      *
-     * @return LiveUser_Admin_Perm_Simple|boolean auth instance upon success, false otherwise
+     * @return LiveUser_Admin_Perm_Simple|bool auth instance upon success, false otherwise
      *
      * @access public
      */
@@ -322,9 +322,9 @@ class LiveUser_Admin
      *
      * e.g.: $admin->perm->getUsers();
      *
-     * @param  integer user auth id
+     * @param int user auth id
      * @param  string auth container name
-     * @return boolean true upon success, false otherwise
+     * @return bool true upon success, false otherwise
      *
      * @access public
      */
@@ -390,8 +390,8 @@ class LiveUser_Admin
      * Add a user to both containers.
      *
      * @param  array authentication user data
-     * @param  integer permission user type
-     * @return integer|boolean perm user id or false
+     * @param int permission user type
+     * @return int|bool perm user id or false
      *
      * @access public
      */
@@ -419,10 +419,10 @@ class LiveUser_Admin
     /**
      * Changes user data for both containers.
      *
-     * @param integer permission user id
+     * @param int permission user id
      * @param  array authentication user data
-     * @param  integer permission user type
-     * @return integer|boolean affected rows on success or false otherwise
+     * @param int permission user type
+     * @return int|bool affected rows on success or false otherwise
      *
      * @access public
      */
@@ -470,8 +470,8 @@ class LiveUser_Admin
     /**
      * Removes user from both Perm and Auth containers
      *
-     * @param  integer Perm ID
-     * @return integer|boolean affected rows on success or false otherwise
+     * @param int Perm ID
+     * @return int|bool affected rows on success or false otherwise
      *
      * @access public
      */
@@ -515,8 +515,8 @@ class LiveUser_Admin
      * @param  string either 'auth' or 'perm' to determine if users should first
      *                be searched in the 'auth' or 'perm' container
      * @param  array filters (as for getUsers()
-     * @param  boolean if only one row should be returned
-     * @return array|boolean array with userinfo if found on success or false otherwise
+     * @param bool if only one row should be returned
+     * @return array|bool array with userinfo if found on success or false otherwise
      *
      * @access public
      */
@@ -532,8 +532,8 @@ class LiveUser_Admin
      * Finds and gets full userinfo by filtering inside the perm container
      *
      * @param  array perm filters (as for getUsers() from the perm container
-     * @param  boolean if only one row should be returned
-     * @return array|boolean Array with userinfo if found on success or false otherwise
+     * @param bool if only one row should be returned
+     * @return array|bool Array with userinfo if found on success or false otherwise
      *
      * @access private
      */
@@ -584,8 +584,8 @@ class LiveUser_Admin
      * Finds and gets full userinfo by filtering inside the auth container
      *
      * @param  array auth filters (as for getUsers() from the auth container
-     * @param  boolean if only one row should be returned
-     * @return array|boolean Array with userinfo if found on success or false otherwise
+     * @param bool if only one row should be returned
+     * @return array|bool Array with userinfo if found on success or false otherwise
      *
      * @access private
      */
