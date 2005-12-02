@@ -248,7 +248,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     /**
      * Create the SQL necessary for an update
      *
-     *
      * @param string name of the table
      * @param array array of field names
      * @param array array containing the filtering to apply
@@ -289,7 +288,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     /**
      * Create the SQL necessary for an delete
      *
-     *
      * @param string name of the table
      * @param array array containing the filtering to apply
      * @return string SQL delete query
@@ -309,8 +307,8 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @param string name of the table
      * @param string field name to count
      * @param array key values pairs (value may be a string or an array)
-     * @return boolean | integer false on failure and integer of how many 
-     *                           rows contain the filtered data
+     * @return boolean|integer false on failure and integer of how many 
+     *                         rows contain the filtered data
      *
      * @access public
      */
@@ -341,7 +339,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     /**
      * Select data from a set of tables
-     *
      *
      * @param string determines what query method to use:
      *               'one' -> queryOne, 'row' -> queryRow, 'col' -> queryCol,
@@ -398,7 +395,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     /**
      * Create the SQL necessary for a select
-     *
      *
      * @param array list of fields to fetch
      * @param array key values pairs (value may be a string or an array)
@@ -459,7 +455,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
     /**
      * Create the SQL necessary for a where statement
-     *
      *
      * @param array key values pairs (value may be a string or an array)
      * @param array key values pairs of join related filters
@@ -526,7 +521,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * Determine if an explicitly prefixed table is in the selectable table
      * list and is a valid field
      *
-     *
      * @param string (qualified) field name
      * @param array list of tables that may be joined to
      * @return boolean|array null or false on failure
@@ -558,7 +552,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     /**
      * Find all the tables that need to be joined to be able to select
      * all requested columns and to be able to filter the joined rows
-     *
      *
      * @param array list of fields to fetch
      * @param array key values pairs (value may be a string or an array)
