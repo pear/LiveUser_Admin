@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.2">
+<package version="1.0" packagerversion="1.4.5">
  <name>LiveUser_Admin</name>
  <summary>User authentication and permission management framework</summary>
  <description>LiveUser_Admin is meant to be used with the LiveUser package.
   It is composed of all the classes necessary to administrate
   data used by LiveUser.
-  
+
   You&apos;ll be able to add/edit/delete/get things like:
   * Rights
   * Users
@@ -15,14 +15,14 @@
   * Applications
   * Subgroups
   * ImpliedRights
-  
+
   And all other entities within LiveUser.
-  
+
   At the moment we support the following storage containers:
   * DB
   * MDB
   * MDB2
-  
+
   But it takes no time to write up your own storage container,
   so if you like to use native mysql functions straight, then it&apos;s possible
   to do so in under a hour!
@@ -54,20 +54,29 @@
   </maintainer>
   </maintainers>
  <release>
-  <version>0.3.5</version>
-  <date>2005-10-10</date>
+  <version>0.3.6</version>
+  <date>2005-12-03</date>
   <license>LGPL</license>
   <state>beta</state>
-  <notes>- only alias orders fields if needed (bug #5310)
-- fixed warning in _getGroupsWithHierarchy() if filters match no group
-- several typo fixes in getGroups() in the complex container
-- several fixes to getRights() in the complex container (bug #5453)
-- added test.php to the linkbar in example1
-- removed autoInit (call setAdminContainers() manually instead) *BC BREAK*
-- reworked log/debug handling (there is a new &apos;debug&apos; conf option which can
-  either be a bool or a log instance)
-- made the log property public which made it possible to remove addErrorLog()
-- use static LiveUser::PEARLogFactory instead of loadPEARLog()
+  <notes>- dont raise an error when no user is found in getUsers() helper method (bug #5690)
+- fixed bug in handling of _checkExplicitTable() return value in findTables() (bug #5706)
+- tweaked error messages for failed factory method calls
+- renamed query() to exec() to match the MDB2 beta7 API
+- use exec() instead of query()
+- handle database structure merging inside the Storage class
+  (previously handled in the auth/perm backend drivers)
+- improved sanity checking in insert and update when values for undefined fields are passed
+- do nothing in update() if an empty data array is passed
+- required fields may not be unset, but may be empty strings
+  (corrected overly strict check in update() method)
+- owner_*_id is no longer necessary for the tests
+- leave owner_user_id management to the developer
+- tweaked errors messages in insert() and update()
+- in createJoinFilter first work through all the direct matches before recursing
+- typo in loadModule call in the MDB2 backend (bug #6092)
+- removed loginTimeout feature (disable lastlogin if you are concerned about
+  the cost of updating the lastlogin time)
+- tons of phpdoc and whitespace fixes and additions
   </notes>
   <deps>
    <dep type="php" rel="ge" version="4.2.0" optional="no"/>
@@ -76,7 +85,7 @@
    <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
    <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
    <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
-   <dep type="pkg" rel="ge" version="2.0.0beta4" optional="yes">MDB2</dep>
+   <dep type="pkg" rel="ge" version="2.0.0beta7" optional="yes">MDB2</dep>
    <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
    <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
   </deps>
@@ -152,6 +161,32 @@
   </filelist>
  </release>
  <changelog>
+   <release>
+    <version>0.3.6</version>
+    <date>2005-12-03</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- dont raise an error when no user is found in getUsers() helper method (bug #5690)
+- fixed bug in handling of _checkExplicitTable() return value in findTables() (bug #5706)
+- tweaked error messages for failed factory method calls
+- renamed query() to exec() to match the MDB2 beta7 API
+- use exec() instead of query()
+- handle database structure merging inside the Storage class
+  (previously handled in the auth/perm backend drivers)
+- improved sanity checking in insert and update when values for undefined fields are passed
+- do nothing in update() if an empty data array is passed
+- required fields may not be unset, but may be empty strings
+  (corrected overly strict check in update() method)
+- owner_*_id is no longer necessary for the tests
+- leave owner_user_id management to the developer
+- tweaked errors messages in insert() and update()
+- in createJoinFilter first work through all the direct matches before recursing
+- typo in loadModule call in the MDB2 backend (bug #6092)
+- removed loginTimeout feature (disable lastlogin if you are concerned about
+  the cost of updating the lastlogin time)
+- tons of phpdoc and whitespace fixes and additions
+    </notes>
+   </release>
    <release>
     <version>0.3.5</version>
     <date>2005-10-10</date>
