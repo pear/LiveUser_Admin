@@ -15,7 +15,7 @@ $notes = <<<EOT
 - dont raise an error when no user is found in getUsers() helper method (bug #5690)
 - fixed bug in handling of _checkExplicitTable() return value in findTables() (bug #5706)
 - tweaked error messages for failed factory method calls
-- renamed query() to exec() to match the MDB2 beta7 API
+- renamed query() to exec() to match the MDB2 RC1 API
 - use exec() instead of query()
 - handle database structure merging inside the Storage class
   (previously handled in the auth/perm backend drivers)
@@ -109,7 +109,7 @@ $package->addDependency('LiveUser',  '0.16.0',     'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0',      'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0',      'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4',      'ge',  'pkg', true);
-$package->addDependency('MDB2',      '2.0.0beta7', 'ge',  'pkg', true);
+$package->addDependency('MDB2',      '2.0.0RC1', 'ge',  'pkg', true);
 
 if (array_key_exists('make', $_GET)
     || (isset($_SERVER['argv'][1])
