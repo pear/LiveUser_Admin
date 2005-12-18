@@ -31,6 +31,8 @@ $notes = <<<EOT
 - removed loginTimeout feature (disable lastlogin if you are concerned about
   the cost of updating the lastlogin time)
 - tons of phpdoc and whitespace fixes and additions
+- updated API calls to LiveUser to version 0.16.8
+- renamed setAdminContainers() to init()
 EOT;
 
 $description = <<<EOT
