@@ -123,19 +123,28 @@ function eHandler($errObj)
 // Create new LiveUser object
 $LU =& LiveUser::factory($liveuserConfig);
 
+if (!$LU->init()) {
+    var_dump($LU->getErrors());
+    die();
+}
+
 $handle = (array_key_exists('handle', $_REQUEST)) ? $_REQUEST['handle'] : null;
 $passwd = (array_key_exists('passwd', $_REQUEST)) ? $_REQUEST['passwd'] : null;
 $logout = (array_key_exists('logout', $_REQUEST)) ? $_REQUEST['logout'] : false;
 $remember = (array_key_exists('rememberMe', $_REQUEST)) ? $_REQUEST['rememberMe'] : false;
-
-if (!$LU->init($handle, $passwd, $logout, $remember)) {
-    var_dump($LU->getErrors());
-    die();
+if ($logout) {
+    $LU->logout(true);
+} elseif(!$LU->isLoggedIn() || ($handle && $LU->getProperty('handle') != $handle)) {
+    if (!$handle) {
+        $LU->login(null, null, true);
+    } else {
+        $LU->login($handle, $passwd, $remember);
+    }
 }
 
 require_once 'LiveUser/Admin.php';
 
 $luadmin =& LiveUser_Admin::factory($liveuserConfig);
-$luadmin->setAdminContainers();
+$luadmin->init();
 
 $language_selected = array_key_exists('language', $_GET) ? $_GET['language'] : 'de';

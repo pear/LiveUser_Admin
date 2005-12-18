@@ -126,4 +126,4 @@ $admin =& LiveUser_Admin::factory($conf);
 $logconf = array('mode' => 0666, 'timeFormat' => '%X %x');
 $logger = &Log::factory('file', 'liveuser_test.log', 'ident', $logconf);
 $admin->log->addChild($logger);
-$admin->setAdminContainers();
+$admin->init();
