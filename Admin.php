@@ -177,7 +177,7 @@ class LiveUser_Admin
      * @return LiveUser_Admin
      *
      * @access public
-     * @see setAdminContainers
+     * @see init
      */
     function LiveUser_Admin($debug)
     {
@@ -197,7 +197,7 @@ class LiveUser_Admin
      * @return LiveUser_Admin|bool
      *
      * @access public
-     * @see setAdminContainers
+     * @see init
      */
     function &factory(&$conf)
     {
@@ -328,7 +328,7 @@ class LiveUser_Admin
      *
      * @access public
      */
-    function setAdminContainers($authUserId = null, $authName = null)
+    function init($authUserId = null, $authName = null)
     {
         if (!is_array($this->_conf)) {
             $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
