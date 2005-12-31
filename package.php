@@ -9,30 +9,10 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.6';
+$version = '0.3.7';
 
 $notes = <<<EOT
-- dont raise an error when no user is found in getUsers() helper method (bug #5690)
-- fixed bug in handling of _checkExplicitTable() return value in findTables() (bug #5706)
-- tweaked error messages for failed factory method calls
-- renamed query() to exec() to match the MDB2 RC1 API
-- use exec() instead of query()
-- handle database structure merging inside the Storage class
-  (previously handled in the auth/perm backend drivers)
-- improved sanity checking in insert and update when values for undefined fields are passed
-- do nothing in update() if an empty data array is passed
-- required fields may not be unset, but may be empty strings
-  (corrected overly strict check in update() method)
-- owner_*_id is no longer necessary for the tests
-- leave owner_user_id management to the developer
-- tweaked errors messages in insert() and update()
-- in createJoinFilter first work through all the direct matches before recursing
-- typo in loadModule call in the MDB2 backend (bug #6092)
-- removed loginTimeout feature (disable lastlogin if you are concerned about
-  the cost of updating the lastlogin time)
-- tons of phpdoc and whitespace fixes and additions
-- updated API calls to LiveUser to version 0.16.8
-- renamed setAdminContainers() to init()
+- fix "No rights for a user if the user only has inherited rights" (bug #6374)
 EOT;
 
 $description = <<<EOT
