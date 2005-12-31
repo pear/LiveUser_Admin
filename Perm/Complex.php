@@ -846,7 +846,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         // if the result was empty or no additional work is needed
-        if (empty($rights) || (!$params['inherited'] && !$params['implied'])) {
+        if (empty($rights) && !$params['inherited'] && !$params['implied']) {
             return $rights;
         }
 
