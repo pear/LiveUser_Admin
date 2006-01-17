@@ -706,7 +706,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $groups = array_merge($groups, (array)$subgroups);
         } while(!empty($subgroups));
 
-        $params['filters'] = array('group_id' => $groups);
+        $params['filters']['group_id'] = $groups;
 
         return parent::getGroups($params);
     }
@@ -954,7 +954,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        $params['filters'] = array('right_id' => $result);
+        $params['filters']['right_id'] = $result;
         unset($params['inherited']);
         return $this->getRights($params);
     }
@@ -997,7 +997,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return array();
         }
 
-        $params['filters'] = array('group_id' => $result);
+        $params['filters']['group_id'] = $result;
         unset($params['implied']);
         unset($params['inherited']);
         return $this->getRights($params);
