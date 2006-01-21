@@ -71,11 +71,11 @@ $liveuserConfig = array(
     ),
     'permContainer' => array(
         'type'  => 'Medium',
-        'alias' => array(),
         'storage' => array(
             'MDB2' => array(
                 'dsn' => $dsn,
                 'prefix' => 'liveuser_',
+                'alias' => array(),
                 'tables' => array(),
                 'fields' => array(),
             ),
