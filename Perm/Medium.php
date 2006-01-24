@@ -101,7 +101,6 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     {
         $this->LiveUser_Admin_Perm_Simple();
         $this->selectable_tables['getUsers'][] = 'groupusers';
-        $this->selectable_tables['getRights'][] = 'grouprights';
         $this->selectable_tables['getGroups'] = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
         $this->withFieldMethodMap['group_id'] = 'getGroups';
     }
@@ -295,6 +294,50 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         $result = $this->_storage->delete('groupusers', $filters);
         // notify observer
         return $result;
+    }
+
+    /**
+     * Fetches rights
+     *
+     * @param array containing key-value pairs for:
+     *                 'fields'  - ordered array containing the fields to fetch
+     *                             if empty all fields from the user table are fetched
+     *                 'filters' - key values pairs (value may be a string or an array)
+     *                 'orders'  - key value pairs (values 'ASC' or 'DESC')
+     *                 'rekey'   - if set to true, returned array will have the
+     *                             first column as its first dimension
+     *                 'group'   - if set to true and $rekey is set to true, then
+     *                             all values with the same first column will be
+     *                             wrapped in an array
+     *                 'limit'   - number of rows to select
+     *                 'offset'  - first row to select
+     *                 'select'  - determines what query method to use:
+     *                             'one' -> queryOne, 'row' -> queryRow,
+     *                             'col' -> queryCol, 'all' ->queryAll (default)
+     * @param bool determines if joins should be done using the 'userrights'
+     *              (default) or through the 'grouprights' and 'groupusers' tables
+     * @return bool|array false on failure or array with selected data
+     *
+     * @access public
+     */
+    function getRights($params = array(), $by_user = true)
+    {
+        $selectable_tables = $this->selectable_tables['getRights'];
+        $root_table = reset($selectable_tables);
+        if (!$by_user && !in_array('grouprights', $selectable_tables)) {
+            $key = array_search('userrights', $selectable_tables);
+            if ($key) {
+                $selectable_tables[0] = 'groupusers';
+                $selectable_tables[$key] = 'grouprights';
+                array_unshift($selectable_tables, $root_table);
+            } else {
+                $selectable_tables[0] = 'groupusers';
+                array_unshift($selectable_tables, 'grouprights');
+                array_unshift($selectable_tables, $root_table);
+            }
+        }
+
+        return $this->_makeGet($params, $root_table, $selectable_tables);
     }
 
     /**
