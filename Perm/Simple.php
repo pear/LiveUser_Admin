@@ -112,7 +112,7 @@ class LiveUser_Admin_Perm_Simple
      */
     var $selectable_tables = array(
         'getUsers' => array('perm_users', 'userrights', 'rights'),
-        'getRights' => array('rights', 'userrights', 'translations', 'areas', 'applications'),
+        'getRights' => array('rights', 'userrights', 'areas', 'applications', 'translations'),
         'getAreas' => array('areas', 'applications', 'translations'),
         'getApplications' => array('applications', 'translations'),
         'getTranslations' => array('translations'),
