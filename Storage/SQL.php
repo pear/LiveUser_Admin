@@ -432,6 +432,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 return false;
             }
             $joinfilters = $result[0];
+            $tables = array_merge($tables, array_flip($result[2]));
         }
 
         $tables = array_keys($tables);
@@ -700,25 +701,20 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      *
      * @access public
      */
-    function createJoinFilter($root_table, $filters, $tables, $selectable_tables, $visited = array())
+    function createJoinFilter($root_table, $filters, $tables, $selectable_tables, $visited = array(), $depth = 0)
     {
         // table has been joint
         unset($tables[$root_table]);
 
         if (empty($tables)) {
-            return array($filters, null);
+            return array($filters, null, $visited);
         }
 
         // check for possible infinite recursion
         if (in_array($root_table, $visited)) {
-            $this->_stack->push(
-                LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                array('reason' => 'infinite recursion detected: ' . $root_table)
-            );
             return false;
         }
         $visited[] = $root_table;
-
         $tables_orig = $tables;
 
         // find tables that can be join directly with the root table
@@ -768,11 +764,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         // all tables have been joined
         if (empty($tables)) {
-            return array($filters, null);
+            return array($filters, null, $visited);
         }
 
+        $tmp_filters = $filters;
         foreach ($direct_matches as $table) {
-            $result = $this->createJoinFilter($table, $filters, $tables, $selectable_tables, $visited);
+            $result = $this->createJoinFilter($table, $tmp_filters, $tables, $selectable_tables, $visited, ($depth+1));
             // check if the recursion was able to find a join that would reduce
             // the number of to be joined tables
             if (is_array($result)) {
@@ -786,7 +783,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         // all tables have been joined
         if (empty($tables)) {
-            return array($filters, null);
+            return array($filters, null, $visited);
         }
 
         foreach ($this->tables[$root_table]['joins'] as $table => $fields) {
@@ -836,7 +833,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     $this->prefix.$this->alias[$table].'.'.$fields;
             }
             // recurse
-            $result = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited);
+            $result = $this->createJoinFilter($table, $tmp_filters, $tmp_tables, $selectable_tables, $visited, ($depth+1));
             // check if the recursion was able to find a join that would reduce
             // the number of to be joined tables
             if (is_array($result)) {
@@ -849,12 +846,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         }
 
         // return false if list of tables was not reduced using the current root table
-        if ($tables_orig == $table) {
+        if ($tables_orig === $tables) {
             return false;
         }
 
         // return the generated new filters and reduced table list
-        return array($filters, $tables);
+        return array($filters, $tables, $visited);
     }
 
     /**
