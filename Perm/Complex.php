@@ -249,7 +249,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function unimplyRight($filters, $update = true)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
+        $filters = $this->_makeRemoveFilter($filters, 'implied_right_id', 'getRights');
         if (!$filters) {
             return $filters;
         }
@@ -907,7 +907,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     }
                 }
             }
-        } else {
+        } elseif (!array_key_exists('select', $params) || $params['select'] == 'all') {
             foreach ($rights as $right_id => $right) {
                 if (!isset($rights[$right_id]['_type']) || !$rights[$right_id]['_type']) {
                     $rights[$right_id]['_type'] = 'granted';
