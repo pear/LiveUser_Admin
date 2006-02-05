@@ -78,7 +78,7 @@ require_once 'MDB2.php';
  *   passed to the init() method
  *   Example: array('dsn' => 'mysql://user:pass@host/db_name')
  *              OR
- *            array('connection' => &$conn) ($conn is a PEAR::MDB2 connection object)
+ *            array('dbc' => &$conn) ($conn is a PEAR::MDB2 connection object)
  *
  * @category authentication
  * @package LiveUser_Admin
@@ -113,34 +113,36 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
     {
         parent::init($storageConf, $structure);
 
-        if (array_key_exists('connection', $storageConf)
-            && MDB2::isConnection($storageConf['connection'])
-        ) {
-            $this->dbc = &$storageConf['connection'];
-        } elseif (array_key_exists('dsn', $storageConf)) {
-            $this->dsn = $storageConf['dsn'];
+        if (!MDB2::isConnection($this->dbc) && $this->dsn) {
             $function = null;
-            if (array_key_exists('function', $storageConf)) {
+            if (isset($storageConf['function'])) {
                 $function = $storageConf['function'];
             }
             $options = null;
-            if (array_key_exists('options', $storageConf)) {
+            if (isset($storageConf['options'])) {
                 $options = $storageConf['options'];
             }
             $options['portability'] = MDB2_PORTABILITY_ALL;
             if ($function == 'singleton') {
-                $this->dbc =& MDB2::singleton($storageConf['dsn'], $options);
+                $dbc =& MDB2::singleton($storageConf['dsn'], $options);
             } else {
-                $this->dbc =& MDB2::connect($storageConf['dsn'], $options);
+                $dbc =& MDB2::connect($storageConf['dsn'], $options);
             }
-            if (PEAR::isError($this->dbc)) {
-                $this->_stack->push(
-                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                    array('msg' => 'could not create connection: '.$this->dbc->getMessage())
-                );
+            if (PEAR::isError($dbc)) {
+                $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                    array('container' => 'could not connect: '.$dbc->getMessage(),
+                    'debug' => $dbc->getUserInfo()));
                 return false;
             }
+            $this->dbc =& $dbc;
         }
+
+        if (!MDB2::isConnection($this->dbc)) {
+            $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                array('container' => 'storage layer configuration missing'));
+            return false;
+        }
+
         return true;
     }
 

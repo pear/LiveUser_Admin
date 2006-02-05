@@ -95,7 +95,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @var string
      * @access private
      */
-    var $dsn = null;
+    var $dsn = false;
 
     /**
      * Database connection object.
@@ -103,7 +103,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
      * @var    object
      * @access private
      */
-    var $dbc = null;
+    var $dbc = false;
 
     /**
      * Table prefix for all db tables the container has.
@@ -872,7 +872,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 );
                 return false;
             }
-            $this->dbc = null;
+            $this->dbc = false;
         }
         return true;
     }

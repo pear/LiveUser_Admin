@@ -78,7 +78,7 @@ require_once 'DB.php';
  *   passed to the init() method
  *   Example: array('dsn' => 'mysql://user:pass@host/db_name')
  *              OR
- *            array('connection' => &$conn) ($conn is a PEAR::DB connection object)
+ *            array('dbc' => &$conn) ($conn is a PEAR::DB connection object)
  *
  * @category authentication
  * @package LiveUser_Admin
@@ -105,26 +105,28 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     {
         parent::init($storageConf, $structure);
 
-        if (array_key_exists('connection', $storageConf)
-            && DB::isConnection($storageConf['connection'])
-        ) {
-            $this->dbc = &$storageConf['connection'];
-        } elseif (array_key_exists('dsn', $storageConf)) {
-            $this->dsn = $storageConf['dsn'];
+        if (!is_a($this->dbc, 'db_common') && $this->dsn) {
             $options = null;
-            if (array_key_exists('options', $storageConf)) {
+            if (isset($storageConf['options'])) {
                 $options = $storageConf['options'];
             }
             $options['portability'] = DB_PORTABILITY_ALL;
-            $this->dbc =& DB::connect($storageConf['dsn'], $options);
-            if (PEAR::isError($this->dbc)) {
-                $this->_stack->push(
-                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                    array('msg' => 'could not create connection: '.$this->dbc->getMessage())
-                );
+            $dbc =& DB::connect($storageConf['dsn'], $options);
+            if (PEAR::isError($dbc)) {
+                $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                    array('container' => 'could not connect: '.$dbc->getMessage(),
+                    'debug' => $dbc->getUserInfo()));
                 return false;
             }
+            $this->dbc =& $dbc;
         }
+
+        if (!is_a($this->dbc, 'db_common')) {
+            $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                array('container' => 'storage layer configuration missing'));
+            return false;
+        }
+
         return true;
     }
 
