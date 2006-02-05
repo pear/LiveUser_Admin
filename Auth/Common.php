@@ -273,6 +273,13 @@ class LiveUser_Admin_Auth_Common
      */
     function addUser($data)
     {
+        if (!$this->allowEmptyPasswords
+            && (!array_key_exists('passwd', $data) || empty($data['passwd']))
+        ) {
+            $this->_stack->push(LIVEUSER_ERROR,
+                'exception', array(), 'Password may not be empty');
+            return false;
+        }
         if (array_key_exists('passwd', $data)) {
             $data['passwd'] = $this->encryptPW($data['passwd']);
         }
@@ -295,6 +302,14 @@ class LiveUser_Admin_Auth_Common
      */
     function updateUser($data, $filters)
     {
+        if (!$this->allowEmptyPasswords
+            && array_key_exists('passwd', $data)
+            && empty($data['passwd'])
+        ) {
+            $this->_stack->push(LIVEUSER_ERROR,
+                'exception', array(), 'Password may not be empty');
+            return false;
+        }
         if (array_key_exists('passwd', $data)) {
             $data['passwd'] = $this->encryptPW($data['passwd']);
         }
