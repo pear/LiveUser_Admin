@@ -364,6 +364,9 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     {
         if (!is_array($fields) || empty($fields)) {
             $fields = array_keys($this->tables[$root_table]['fields']);
+        } elseif (($key = array_search('*', $fields)) !== false) {
+            unset($fields[$key]);
+            $fields = array_merge($fields, array_keys($this->tables[$root_table]['fields']));
         }
 
         $types = array();
