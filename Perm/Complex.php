@@ -809,7 +809,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      * @access public
      */
-    function getRights($params = array(), $by_user = true)
+    function getRights($params = array())
     {
         // ensure optional parameters are set
         !array_key_exists('inherited', $params) ? $params['inherited'] = false : null;
@@ -842,7 +842,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         // handle select, fields and rekey
-        $rights = parent::getRights($params, $by_user);
+        $rights = parent::getRights($params);
         if ($rights === false) {
             return false;
         }
@@ -886,7 +886,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 }
 
                 // consider adding a NOT IN filter
-                $implied_rights = $this->_getImpliedRights($right_id, $params, $by_user);
+                $implied_rights = $this->_getImpliedRights($right_id, $params);
                 if ($implied_rights === false) {
                     return false;
                 } elseif (empty($implied_rights)) {
@@ -940,7 +940,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *
      * @access private
      */
-    function _getImpliedRights($right_id, $params, $by_user = true)
+    function _getImpliedRights($right_id, $params)
     {
         $selectable_tables = array('right_implied', 'rights');
         $root_table = 'right_implied';
@@ -958,7 +958,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $params['filters']['right_id'] = $result;
         unset($params['inherited']);
-        return $this->getRights($params, $by_user);
+        return $this->getRights($params);
     }
 
     /**

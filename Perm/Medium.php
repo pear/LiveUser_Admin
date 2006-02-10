@@ -320,11 +320,15 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *
      * @access public
      */
-    function getRights($params = array(), $by_user = true)
+    function getRights($params = array())
     {
         $selectable_tables = $this->selectable_tables['getRights'];
         $root_table = reset($selectable_tables);
-        if (!$by_user && !in_array('grouprights', $selectable_tables)) {
+        if (array_key_exists('by_group', $params)
+            && $params['by_group']
+            && !in_array('grouprights', $selectable_tables)
+        ) {
+            unset($params['by_group']);
             $key = array_search('userrights', $selectable_tables);
             if ($key) {
                 $selectable_tables[0] = 'groupusers';
