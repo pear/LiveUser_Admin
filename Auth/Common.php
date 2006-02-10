@@ -132,22 +132,6 @@ class LiveUser_Admin_Auth_Common
     var $containerName = null;
 
     /**
-     * Allow multiple users in the database to have the same login handle.
-     * This is usually handled in the database schema. Default: false.
-     *
-     * @var    bool
-     */
-    var $allowDuplicateHandles = false;
-
-    /**
-     * Allow empty passwords to be passed to LiveUser.
-     *  This is usually handled in the database schema. Default: false.
-     *
-     * @var    bool
-     */
-    var $allowEmptyPasswords = false;
-
-    /**
      * Class constructor. Feel free to override in backend subclasses.
      *
      * @access protected
@@ -205,6 +189,10 @@ class LiveUser_Admin_Auth_Common
      */
     function decryptPW($encryptedPW)
     {
+        if (empty($encryptedPW) && $encryptedPW !== 0) {
+            return '';
+        }
+
         $decryptedPW = 'Encryption type not supported.';
 
         switch (strtoupper($this->passwordEncryptionMode)) {
@@ -237,6 +225,10 @@ class LiveUser_Admin_Auth_Common
      */
     function encryptPW($plainPW)
     {
+        if (empty($plainPW) && $plainPW !== 0) {
+            return '';
+        }
+
         $encryptedPW = 'Encryption type not supported.';
 
         switch (strtoupper($this->passwordEncryptionMode)) {
@@ -273,13 +265,6 @@ class LiveUser_Admin_Auth_Common
      */
     function addUser($data)
     {
-        if (!$this->allowEmptyPasswords
-            && (!array_key_exists('passwd', $data) || empty($data['passwd']))
-        ) {
-            $this->_stack->push(LIVEUSER_ERROR,
-                'exception', array(), 'Password may not be empty');
-            return false;
-        }
         if (array_key_exists('passwd', $data)) {
             $data['passwd'] = $this->encryptPW($data['passwd']);
         }
@@ -302,14 +287,6 @@ class LiveUser_Admin_Auth_Common
      */
     function updateUser($data, $filters)
     {
-        if (!$this->allowEmptyPasswords
-            && array_key_exists('passwd', $data)
-            && empty($data['passwd'])
-        ) {
-            $this->_stack->push(LIVEUSER_ERROR,
-                'exception', array(), 'Password may not be empty');
-            return false;
-        }
         if (array_key_exists('passwd', $data)) {
             $data['passwd'] = $this->encryptPW($data['passwd']);
         }

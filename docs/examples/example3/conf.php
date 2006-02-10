@@ -45,7 +45,6 @@ $liveuserConfig = array(
             'type'          => 'MDB2',
             'expireTime'   => 0,
             'idleTime'     => 0,
-            'allowDuplicateHandles'  => 1,
             'passwordEncryptionMode' => 'PLAIN',
             'storage' => array(
                 'dsn' => $dsn,

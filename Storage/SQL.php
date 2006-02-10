@@ -137,7 +137,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         foreach ($this->tables[$table]['fields'] as $field => $required) {
             if ($required) {
                 if ($required === 'seq') {
-                    if (!isset($data[$field])) {
+                    if (!array_key_exists($field, $data) || empty($data[$field])) {
                         $result = $this->getBeforeId($this->prefix . $this->alias[$table], true);
                         if ($result === false) {
                             return false;
@@ -146,10 +146,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     } else {
                         $sequence_id = $data[$field];
                     }
-                } elseif (!isset($data[$field])) {
+                } elseif (!array_key_exists($field, $data)
+                    || (empty($data[$field]) && $data[$field] !== 0)
+                ) {
                     $this->_stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                        array('reason' => 'field to insert may not be unset: '.$field)
+                        array('reason' => 'field to insert may not be empty: '.$field)
                     );
                     return false;
                 }
@@ -234,10 +236,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 return false;
             }
 
-            if ($this->tables[$table]['fields'][$field] && !isset($data[$field])) {
+            if ($this->tables[$table]['fields'][$field]
+                && empty($data[$field]) && $data[$field] !== 0
+            ) {
                 $this->_stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
-                    array('reason' => 'field tp update may not be unset: '.$field)
+                    array('reason' => 'field tp update may not be empty: '.$field)
                 );
                 return false;
             }

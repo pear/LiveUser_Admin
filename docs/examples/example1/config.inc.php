@@ -79,7 +79,6 @@ $conf =
                 'type' => $storage,
                 'expireTime'    => 3600,
                 'idleTime'      => 1800,
-                'allowDuplicateHandles' => false,
                 'storage' => array(
                     'dbc' => $db,
                     'dsn' => $dsn,
