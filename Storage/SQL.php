@@ -106,6 +106,14 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     var $dbc = false;
 
     /**
+     * Database connection options.
+     *
+     * @var    object
+     * @access private
+     */
+    var $options = array();
+
+    /**
      * Table prefix for all db tables the container has.
      *
      * @var    string
@@ -515,9 +523,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 $where[] = $tmp_field.$op.$value_quoted;
             }
         }
-        foreach ($joinfilters as $field => $value) {
-            $where[] = $field.' = '.$value;
-        }
+        $where = array_merge($joinfilters, $where);
         return "\n".' WHERE '.implode("\n".'     AND ', $where);
     }
 
@@ -730,7 +736,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                     if (isset($this->tables[$root_table]['fields'][$joinsource])
                         && isset($this->tables[$table]['fields'][$jointarget])
                     ) {
-                        $filters[$this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource]] =
+                        $filters[] = $this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource].' = '.
                             $this->prefix.$this->alias[$table].'.'.$this->alias[$jointarget];
                     // target table uses a field in the join and source table
                     // a constant value
@@ -739,7 +745,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         if ($value_quoted === false) {
                             return false;
                         }
-                        $filters[$this->prefix.$this->alias[$table].'.'.$this->alias[$jointarget]] = $value_quoted;
+                        $filters[] = $this->prefix.$this->alias[$table].'.'.$this->alias[$jointarget].' = '.$value_quoted;
                     // source table uses a field in the join and target table
                     // a constant value
                     } elseif (isset($this->tables[$root_table]['fields'][$joinsource])) {
@@ -747,7 +753,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         if ($value_quoted === false) {
                             return false;
                         }
-                        $filters[$this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource]] = $value_quoted;
+                        $filters[] = $this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource].' = '.$value_quoted;
                     // neither tables uses a field in the join
                     } else {
                         $this->_stack->push(
@@ -759,7 +765,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 }
             // handle single column join
             } else {
-                $filters[$this->prefix.$this->alias[$root_table].'.'.$this->tables[$root_table]['joins'][$table]] =
+                $filters[] = $this->prefix.$this->alias[$root_table].'.'.$this->tables[$root_table]['joins'][$table].' = '.
                     $this->prefix.$this->alias[$table].'.'.$this->tables[$root_table]['joins'][$table];
             }
             unset($tables[$table]);
