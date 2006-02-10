@@ -105,13 +105,9 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
     {
         parent::init($storageConf, $structure);
 
-        if (!is_a($this->dbc, 'db_common') && $this->dsn) {
-            $options = null;
-            if (isset($storageConf['options'])) {
-                $options = $storageConf['options'];
-            }
-            $options['portability'] = DB_PORTABILITY_ALL;
-            $dbc =& DB::connect($storageConf['dsn'], $options);
+        if (!is_a($this->dbc, 'db_common') && !is_null($this->dsn)) {
+            $this->options['portability'] = DB_PORTABILITY_ALL;
+            $dbc =& DB::connect($this->dsn, $this->options);
             if (PEAR::isError($dbc)) {
                 $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
                     array('container' => 'could not connect: '.$dbc->getMessage(),

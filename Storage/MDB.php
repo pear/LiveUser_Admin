@@ -92,6 +92,14 @@ require_once 'MDB.php';
 class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
 {
     /**
+     * Database connection functions
+     *
+     * @var    object
+     * @access private
+     */
+    var $function = 'connect';
+
+    /**
      * Initializes database storage container.
      * Connects to database or uses existing database connection.
      *
@@ -105,20 +113,12 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
     {
         parent::init($storageConf, $structure);
 
-        if (!MDB::isConnection($this->dbc) && $this->dsn) {
-            $function = null;
-            if (isset($storageConf['function'])) {
-                $function = $storageConf['function'];
-            }
-            $options = null;
-            if (isset($storageConf['options'])) {
-                $options = $storageConf['options'];
-            }
-            $options['optimize'] = 'portability';
-            if ($function == 'singleton') {
-                $dbc =& MDB::singleton($storageConf['dsn'], $options);
+        if (!MDB::isConnection($this->dbc) && !is_null($this->dsn)) {
+            $this->options['optimize'] = 'portability';
+            if ($this->function == 'singleton') {
+                $dbc =& MDB::singleton($this->dsn, $this->options);
             } else {
-                $dbc =& MDB::connect($storageConf['dsn'], $options);
+                $dbc =& MDB::connect($this->dsn, $this->options);
             }
             if (PEAR::isError($dbc)) {
                 $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
