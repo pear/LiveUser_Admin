@@ -13,6 +13,24 @@ $version = '0.3.7';
 
 $notes = <<<EOT
 - fix "No rights for a user if the user only has inherited rights" (bug #6374)
+- do not overwrite all filters in _get*() helper methods
+- minor issue with 'alias' position in the config array in example1
+- make sure that tables required as intermediate join steps are listed in the from
+- add depth parameter to createJoinFilter (may be used to determine shortest join path eventually)
+- fixed detection if list of tables has been reduced or not
+- do not push an error on the stack for a possible recursion because it may just
+  be one possible path we are evaluating
+- added "by_group" optional parameter to params getRights() which determines if
+  the userrights table should be used or rather the grouprights and groupupsers tables
+- incorrect handling of filters inside unimplyRights() (bug #6592)
+- renamed "connection" config option to "dbc" *BC BREAK*
+- cleaned up and unified init() in the storage classes
+- added support for '*' in fields list as an alias to fetch all fields in the root table
+- made LiveUser_Admin::getUsers() API as flexible as in the containers *BC BREAK*
+- fixed serious issue in join filter handling that caused join filters to be ignored
+- removed allowDuplicateHandles and allowEmptyPasswords options, they are now
+  handled through the table definition in the given Globals.php (overwriteable
+  via the config array) *BC BREAK*
 EOT;
 
 $description = <<<EOT
