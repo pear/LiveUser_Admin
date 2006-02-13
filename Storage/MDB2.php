@@ -378,7 +378,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
         if ($this->force_seq) {
             $result = $this->dbc->nextId($table, $ondemand);
         } else {
-            $this->loadModule('Extended');
+            $this->dbc->loadModule('Extended');
             $result = $this->dbc->extended->getBeforeId($table);
         }
 
@@ -408,7 +408,7 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
             return $id;
         }
 
-        $this->loadModule('Extended');
+        $this->dbc->loadModule('Extended');
         $result = $this->dbc->extended->getAfterId($id, $table);
         if (PEAR::isError($result)) {
             $this->_stack->push(
