@@ -848,7 +848,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         // if the result was empty or no additional work is needed
-        if (empty($rights) && !$params['inherited'] && !$params['implied']) {
+        if (empty($rights) || (!$params['inherited'] && !$params['implied'])) {
             return $rights;
         }
 
@@ -907,7 +907,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     }
                 }
             }
-        } elseif (!array_key_exists('select', $params) || $params['select'] == 'all') {
+        } elseif ((!array_key_exists('select', $params) || $params['select'] == 'all')
+           && (
+            !array_key_exists('fields', $params)
+            || count($params['fields']) > 1)
+            || reset($params['fields']) === '*'
+        ) {
             foreach ($rights as $right_id => $right) {
                 if (!isset($rights[$right_id]['_type']) || !$rights[$right_id]['_type']) {
                     $rights[$right_id]['_type'] = 'granted';
