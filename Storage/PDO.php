@@ -391,6 +391,7 @@ class LiveUser_Admin_Storage_PDO extends LiveUser_Admin_Storage_SQL
      */
     function getBeforeId($table, $ondemand = true)
     {
+        // todo: need to figure out what to do here
         return null;
     }
 
@@ -406,6 +407,7 @@ class LiveUser_Admin_Storage_PDO extends LiveUser_Admin_Storage_SQL
      */
     function getAfterId($id, $table)
     {
+        // todo: need to figure out what to do here
         try {
             $result = $this->dbc->lastInsertId($table);
         } catch (PDOException $e) {
