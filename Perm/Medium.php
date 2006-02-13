@@ -314,6 +314,9 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                  'by_group' - if joins should be done using the 'userrights'
+     *                              (false default) or through the 'grouprights'
+     *                              and 'groupusers' tables (true)
      * @param bool determines if joins should be done using the 'userrights'
      *              (default) or through the 'grouprights' and 'groupusers' tables
      * @return bool|array false on failure or array with selected data
