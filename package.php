@@ -31,6 +31,8 @@ $notes = <<<EOT
 - removed allowDuplicateHandles and allowEmptyPasswords options, they are now
   handled through the table definition in the given Globals.php (overwriteable
   via the config array) *BC BREAK*
+- typo fix in extended module loading in the MDB2 storage container
+- fixed inherited and implied handling in getRights() when fetching only 2 columns
 EOT;
 
 $description = <<<EOT
