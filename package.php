@@ -33,6 +33,7 @@ $notes = <<<EOT
   via the config array) *BC BREAK*
 - typo fix in extended module loading in the MDB2 storage container
 - fixed inherited and implied handling in getRights() when fetching only 2 columns
+- added initial version of a PDO storage container (needs more testing)
 EOT;
 
 $description = <<<EOT
@@ -71,7 +72,7 @@ $result = $package->setOptions(array(
     'state'             => 'beta',
     'license'           => 'LGPL',
     'filelistgenerator' => 'cvs',
-    'ignore'            => array('package.php', 'package.xml', '*pdo*'),
+    'ignore'            => array('package.php', 'package.xml'),
     'notes'             => $notes,
     'changelogoldtonew' => false,
     'simpleoutput'      => true,
