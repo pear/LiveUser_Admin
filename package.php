@@ -34,6 +34,8 @@ $notes = <<<EOT
 - typo fix in extended module loading in the MDB2 storage container
 - fixed inherited and implied handling in getRights() when fetching only 2 columns
 - added initial version of a PDO storage container (needs more testing)
+- removed setCurrentApplication()/getCurrentApplication() methods since they are
+  no longer relevant *BC BREAK*
 EOT;
 
 $description = <<<EOT

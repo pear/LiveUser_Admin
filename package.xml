@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.5">
+<package version="1.0" packagerversion="1.4.6">
  <name>LiveUser_Admin</name>
  <summary>User authentication and permission management framework</summary>
  <description>LiveUser_Admin is meant to be used with the LiveUser package.
@@ -54,31 +54,34 @@
   </maintainer>
   </maintainers>
  <release>
-  <version>0.3.6</version>
-  <date>2005-12-21</date>
+  <version>0.3.7</version>
+  <date>2006-02-21</date>
   <license>LGPL</license>
   <state>beta</state>
-  <notes>- dont raise an error when no user is found in getUsers() helper method (bug #5690)
-- fixed bug in handling of _checkExplicitTable() return value in findTables() (bug #5706)
-- tweaked error messages for failed factory method calls
-- renamed query() to exec() to match the MDB2 RC1 API
-- use exec() instead of query()
-- handle database structure merging inside the Storage class
-  (previously handled in the auth/perm backend drivers)
-- improved sanity checking in insert and update when values for undefined fields are passed
-- do nothing in update() if an empty data array is passed
-- required fields may not be unset, but may be empty strings
-  (corrected overly strict check in update() method)
-- owner_*_id is no longer necessary for the tests
-- leave owner_user_id management to the developer
-- tweaked errors messages in insert() and update()
-- in createJoinFilter first work through all the direct matches before recursing
-- typo in loadModule call in the MDB2 backend (bug #6092)
-- removed loginTimeout feature (disable lastlogin if you are concerned about
-  the cost of updating the lastlogin time)
-- tons of phpdoc and whitespace fixes and additions
-- updated API calls to LiveUser to version 0.16.8
-- renamed setAdminContainers() to init()
+  <notes>- fix &quot;No rights for a user if the user only has inherited rights&quot; (bug #6374)
+- do not overwrite all filters in _get*() helper methods
+- minor issue with &apos;alias&apos; position in the config array in example1
+- make sure that tables required as intermediate join steps are listed in the from
+- add depth parameter to createJoinFilter (may be used to determine shortest join path eventually)
+- fixed detection if list of tables has been reduced or not
+- do not push an error on the stack for a possible recursion because it may just
+  be one possible path we are evaluating
+- added &quot;by_group&quot; optional parameter to params getRights() which determines if
+  the userrights table should be used or rather the grouprights and groupupsers tables
+- incorrect handling of filters inside unimplyRights() (bug #6592)
+- renamed &quot;connection&quot; config option to &quot;dbc&quot; *BC BREAK*
+- cleaned up and unified init() in the storage classes
+- added support for &apos;*&apos; in fields list as an alias to fetch all fields in the root table
+- made LiveUser_Admin::getUsers() API as flexible as in the containers *BC BREAK*
+- fixed serious issue in join filter handling that caused join filters to be ignored
+- removed allowDuplicateHandles and allowEmptyPasswords options, they are now
+  handled through the table definition in the given Globals.php (overwriteable
+  via the config array) *BC BREAK*
+- typo fix in extended module loading in the MDB2 storage container
+- fixed inherited and implied handling in getRights() when fetching only 2 columns
+- added initial version of a PDO storage container (needs more testing)
+- removed setCurrentApplication()/getCurrentApplication() methods since they are
+  no longer relevant *BC BREAK*
   </notes>
   <deps>
    <dep type="php" rel="ge" version="4.2.0" optional="no"/>
@@ -98,11 +101,13 @@
       <file role="php" name="DB.php"/>
       <file role="php" name="MDB.php"/>
       <file role="php" name="MDB2.php"/>
+      <file role="php" name="PDO.php"/>
      </dir> <!-- /Auth/Storage -->
      <file role="php" name="Common.php"/>
      <file role="php" name="DB.php"/>
      <file role="php" name="MDB.php"/>
      <file role="php" name="MDB2.php"/>
+     <file role="php" name="PDO.php"/>
     </dir> <!-- /Auth -->
     <dir name="docs">
      <dir name="examples">
@@ -145,6 +150,7 @@
       <file role="php" name="DB.php"/>
       <file role="php" name="MDB.php"/>
       <file role="php" name="MDB2.php"/>
+      <file role="php" name="PDO.php"/>
      </dir> <!-- /Perm/Storage -->
      <file role="php" name="Complex.php"/>
      <file role="php" name="Medium.php"/>
@@ -154,6 +160,7 @@
      <file role="php" name="DB.php"/>
      <file role="php" name="MDB.php"/>
      <file role="php" name="MDB2.php"/>
+     <file role="php" name="PDO.php"/>
      <file role="php" name="SQL.php"/>
     </dir> <!-- /Storage -->
     <file role="php" baseinstalldir="/LiveUser" name="Admin.php"/>
@@ -163,6 +170,37 @@
   </filelist>
  </release>
  <changelog>
+   <release>
+    <version>0.3.7</version>
+    <date>2006-02-21</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- fix &quot;No rights for a user if the user only has inherited rights&quot; (bug #6374)
+- do not overwrite all filters in _get*() helper methods
+- minor issue with &apos;alias&apos; position in the config array in example1
+- make sure that tables required as intermediate join steps are listed in the from
+- add depth parameter to createJoinFilter (may be used to determine shortest join path eventually)
+- fixed detection if list of tables has been reduced or not
+- do not push an error on the stack for a possible recursion because it may just
+  be one possible path we are evaluating
+- added &quot;by_group&quot; optional parameter to params getRights() which determines if
+  the userrights table should be used or rather the grouprights and groupupsers tables
+- incorrect handling of filters inside unimplyRights() (bug #6592)
+- renamed &quot;connection&quot; config option to &quot;dbc&quot; *BC BREAK*
+- cleaned up and unified init() in the storage classes
+- added support for &apos;*&apos; in fields list as an alias to fetch all fields in the root table
+- made LiveUser_Admin::getUsers() API as flexible as in the containers *BC BREAK*
+- fixed serious issue in join filter handling that caused join filters to be ignored
+- removed allowDuplicateHandles and allowEmptyPasswords options, they are now
+  handled through the table definition in the given Globals.php (overwriteable
+  via the config array) *BC BREAK*
+- typo fix in extended module loading in the MDB2 storage container
+- fixed inherited and implied handling in getRights() when fetching only 2 columns
+- added initial version of a PDO storage container (needs more testing)
+- removed setCurrentApplication()/getCurrentApplication() methods since they are
+  no longer relevant *BC BREAK*
+    </notes>
+   </release>
    <release>
     <version>0.3.6</version>
     <date>2005-12-21</date>
