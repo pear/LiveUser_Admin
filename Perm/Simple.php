@@ -375,33 +375,6 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
-     * Set current application
-     *
-     * @param int  id of application
-     * @return bool  always true
-     *
-     * @access public
-     */
-    function setCurrentApplication($applicationId)
-    {
-        $this->_application = $applicationId;
-
-        return true;
-    }
-
-    /**
-     * Get current application
-     *
-     * @return string name of the current application
-     *
-     * @access public
-     */
-    function getCurrentApplication()
-    {
-        return $this->_application;
-    }
-
-    /**
      * Add an application
      *
      * @param array containing atleast the key-value-pairs of all required

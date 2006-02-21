@@ -28,12 +28,6 @@ if ($applications === false) {
     Var_Dump::display($applications);
     echo '<br />';
 
-    // Set/Get current Application
-    $id = array_rand($applications);
-    $admin->perm->setCurrentApplication($applications[$id]['application_id']);
-    $currentApp = $admin->perm->getCurrentApplication();
-    echo '<strong>'.$currentApp.'</strong> is our current application now.<br />';
-
     // Remove
     $id = array_rand($applications);
     $filters = array('application_id' => $applications[$id]['application_id']);
