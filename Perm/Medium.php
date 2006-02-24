@@ -177,7 +177,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      * Grant group a right
      *
      * <code>
-     * // grant user idd 13 the right NEWS_CHANGE
+     * // grant user id 13 the right NEWS_CHANGE
      * $data = array(
      *      'right_id'     => NEWS_CHANGE,
      *      'group_id' => 13
