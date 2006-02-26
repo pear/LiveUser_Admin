@@ -603,7 +603,7 @@ class LiveUser_Admin
             return false;
         }
 
-        $first = ($permParam['select'] == 'row');
+        $first = ($authParam['select'] == 'row');
         $authUsers = $this->auth->getUsers($authParam);
         if (!$authUsers) {
             return $authUsers;
