@@ -9,33 +9,10 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.7';
+$version = '0.3.8';
 
 $notes = <<<EOT
-- fix "No rights for a user if the user only has inherited rights" (bug #6374)
-- do not overwrite all filters in _get*() helper methods
-- minor issue with 'alias' position in the config array in example1
-- make sure that tables required as intermediate join steps are listed in the from
-- add depth parameter to createJoinFilter (may be used to determine shortest join path eventually)
-- fixed detection if list of tables has been reduced or not
-- do not push an error on the stack for a possible recursion because it may just
-  be one possible path we are evaluating
-- added "by_group" optional parameter to params getRights() which determines if
-  the userrights table should be used or rather the grouprights and groupupsers tables
-- incorrect handling of filters inside unimplyRights() (bug #6592)
-- renamed "connection" config option to "dbc" *BC BREAK*
-- cleaned up and unified init() in the storage classes
-- added support for '*' in fields list as an alias to fetch all fields in the root table
-- made LiveUser_Admin::getUsers() API as flexible as in the containers *BC BREAK*
-- fixed serious issue in join filter handling that caused join filters to be ignored
-- removed allowDuplicateHandles and allowEmptyPasswords options, they are now
-  handled through the table definition in the given Globals.php (overwriteable
-  via the config array) *BC BREAK*
-- typo fix in extended module loading in the MDB2 storage container
-- fixed inherited and implied handling in getRights() when fetching only 2 columns
-- added initial version of a PDO storage container (needs more testing)
-- removed setCurrentApplication()/getCurrentApplication() methods since they are
-  no longer relevant *BC BREAK*
+- wrong parameter used in getUsers('auth', ..) (report by gregory)
 EOT;
 
 $description = <<<EOT
@@ -108,13 +85,13 @@ $package->addMaintainer(
     'dufuz', 'lead', 'Helgi Þormar', 'dufuz@php.net'
 );
 
-$package->addDependency('php',       '4.2.0',      'ge',  'php', false);
-$package->addDependency('PEAR',      '1.3.1',      'ge',  'pkg', false);
-$package->addDependency('LiveUser',  '0.16.0',     'ge',  'pkg', false);
-$package->addDependency('Log',       '1.7.0',      'ge',  'pkg', true);
-$package->addDependency('DB',        '1.6.0',      'ge',  'pkg', true);
-$package->addDependency('MDB',       '1.1.4',      'ge',  'pkg', true);
-$package->addDependency('MDB2',      '2.0.0RC1', 'ge',  'pkg', true);
+$package->addDependency('php',       '4.2.0', 'ge',  'php', false);
+$package->addDependency('PEAR',      '1.3.1', 'ge',  'pkg', false);
+$package->addDependency('LiveUser', '0.16.0', 'ge',  'pkg', false);
+$package->addDependency('Log',       '1.7.0', 'ge',  'pkg', true);
+$package->addDependency('DB',        '1.6.0', 'ge',  'pkg', true);
+$package->addDependency('MDB',       '1.1.4', 'ge',  'pkg', true);
+$package->addDependency('MDB2',      '2.0.0', 'ge',  'pkg', true);
 
 if (array_key_exists('make', $_GET)
     || (isset($_SERVER['argv'][1])
