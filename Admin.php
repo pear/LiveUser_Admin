@@ -55,7 +55,7 @@
  * @author  Christian Dickmann <dickmann@php.net>
  * @author  Matt Scifo <mscifo@php.net>
  * @author  Bjoern Kraus <krausbn@php.net>
- * @copyright 2002-2005 Markus Wolff
+ * @copyright 2002-2006 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version CVS: $Id$
  * @link http://pear.php.net/LiveUser_Admin
@@ -100,7 +100,7 @@ define('LIVEUSER_ADMIN_ERROR_NOT_SUPPORTED',    -6);
  * @author  Lukas Smith <smith@pooteeweet.org>
  * @author  Arnaud Limbourg <arnaud@php.net>
  * @author  Helgi Þormar Þorbjörnsson <dufuz@php.net>
- * @copyright 2002-2005 Markus Wolff
+ * @copyright 2002-2006 Markus Wolff
  * @license http://www.gnu.org/licenses/lgpl.txt
  * @version Release: @package_version@
  * @link http://pear.php.net/LiveUser_Admin
