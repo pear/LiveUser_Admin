@@ -356,21 +356,20 @@ class LiveUser_Admin
 
                     if (!is_null($authUserId)) {
                         $match = $this->_authContainers[$key]->getUsers(
-                            array('auth_user_id' => $authUserId)
+                            array('filters' => array('auth_user_id' => $authUserId))
                         );
-                        if (is_array($match) && sizeof($match) > 0) {
+                        if (is_array($match) && count($match) > 0) {
                             $authName = $key;
                             break;
                         }
                     }
                 }
             }
-        }
-
-        if (!isset($authName)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Could not determine what auth container to use'));
-            return false;
+            if (!isset($authName)) {
+                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => 'Could not determine what auth container to use'));
+                return false;
+            }
         }
 
         if (!$this->setAdminAuthContainer($authName)) {
