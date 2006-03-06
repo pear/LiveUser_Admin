@@ -833,9 +833,8 @@ class LiveUser_Admin_Perm_Simple
     /**
      * Generate the constants to a file or define them directly.
      *
-     * $type can be either 'file' or 'php'. File will write the constant
-     * in the given file, replacing/adding constants as needed. Php will
-     * call define() function to actually define the constants.
+     * $type can be either 'constant' or 'array'. Constant will result in
+     * defining constants while array results in defining an array.
      *
      * $options can contain
      * 'prefix'      => 'prefix_goes_here',
@@ -844,14 +843,21 @@ class LiveUser_Admin_Perm_Simple
      * 'naming'      => LIVEUSER_SECTION_RIGHT for PREFIX_RIGHTNAME  <- DEFAULT
      *                  LIVEUSER_SECTION_AREA for PREFIX_AREANAME_RIGHTNAME
      *                  LIVEUSER_SECTION_APPLICATION for PREFIX_APPLICATIONNAME_AREANAME_RIGHTNAME
-     * 'filename'    => if $mode is file you must give the full path for the
+     * 'filename'    => if $mode is 'file' you must give the full path for the
      *                  output file
+     * 'varname'     => if $mode is 'file' and $type is 'array' you must give
+     *                  the name of the variable to define
      *
-     * If no prefix is given it will not be used to generate the constants
+     * If no prefix is given it will not be used to generate the constants/arrays
      *
-     * @param  string  type of output (constant or array)
+     * $mode can either be 'file' or 'direct' and will determine of the
+     * constants/arrays will be written to a file, or returned/defined.
+     * returned as an array when $type is set to 'array' and defined when $type
+     * is set to 'constant'
+     *
+     * @param  string  type of output ('constant' or 'array')
      * @param  array   options for constants generation
-     * @param  string  output mode desired (file or direct)
+     * @param  string  output mode desired ('file' or 'direct')
      * @return bool|array depending on the type an array with the data or
      *                       a boolean denoting success or failure
      *
