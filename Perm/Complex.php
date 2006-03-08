@@ -806,8 +806,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                  'by_group' - if joins should be done using the 'userrights'
      *                              (false default) or through the 'grouprights'
      *                              and 'groupusers' tables (true)
-     * @param bool determines if joins should be done using the 'userrights'
-     *              (default) or through the 'grouprights' and 'groupusers' tables
      * @return bool|array false on failure or array with selected data
      *
      * @access public
