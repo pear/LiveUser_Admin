@@ -314,18 +314,19 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     *                  'by_group' - if joins should be done using the 'userrights'
-     *                              (false default) or through the 'grouprights'
-     *                              and 'groupusers' tables (true)
-     * @param bool determines if joins should be done using the 'userrights'
-     *              (default) or through the 'grouprights' and 'groupusers' tables
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
+     *                 'by_group'  - if joins should be done using the 'userrights'
+     *                             (false default) or through the 'grouprights'
+     *                             and 'groupusers' tables (true)
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getRights($params = array())
     {
-        $selectable_tables = $this->selectable_tables['getRights'];
+        $selectable_tables = $this->_findSelectableTables('getRights' , $params);
         $root_table = reset($selectable_tables);
         if (array_key_exists('by_group', $params)
             && $params['by_group']
@@ -417,13 +418,16 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getGroups($params = array())
     {
-        $selectable_tables = $this->selectable_tables['getGroups'];
+        $selectable_tables = $this->_findSelectableTables('getGroups' , $params);
         $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
