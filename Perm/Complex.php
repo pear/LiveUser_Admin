@@ -606,6 +606,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      *                 'subgroups' - defaults to false
      *    If subgroups should be included, if false then it acts same as the
      *    medium container getGroups, if set to true it will return all subgroups
@@ -803,9 +806,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
-     *                  'by_group' - if joins should be done using the 'userrights'
-     *                              (false default) or through the 'grouprights'
-     *                              and 'groupusers' tables (true)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
+     *                 'by_group' - if joins should be done using the 'userrights'
+     *                             (false default) or through the 'grouprights'
+     *                             and 'groupusers' tables (true)
      * @return bool|array false on failure or array with selected data
      *
      * @access public

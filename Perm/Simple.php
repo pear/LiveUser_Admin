@@ -624,6 +624,30 @@ class LiveUser_Admin_Perm_Simple
     }
 
     /**
+     * This function finds the list of selectable tables either from the params
+     * or from the selectable_tables property using the method parameter
+     *
+     * @param string name of the method
+     * @param array containing the parameters passed to a get*() method
+     * @return array contains the selectable tables
+     *
+     * @access private
+     */
+    function _findSelectableTables($method, $params = array())
+    {
+        $selectable_tables = array();
+        if (array_key_exists('selectable_tables', $params)
+            && !empty($params['selectable_tables'])
+            && is_array($params['selectable_tables'])
+        ) {
+            $selectable_tables = $params['selectable_tables'];
+        } elseif (array_key_exists($method, $this->selectable_tables)) {
+            $selectable_tables = $this->selectable_tables[$method];
+        }
+        return $selectable_tables;
+    }
+
+    /**
      * This function holds up most of the heat for all the get* functions.
      *
      * @param array containing key-value pairs for:
@@ -698,13 +722,16 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getUsers($params = array())
     {
-        $selectable_tables = $this->selectable_tables['getUsers'];
+        $selectable_tables = $this->_findSelectableTables('getUsers' , $params);
         $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
@@ -728,13 +755,16 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getRights($params = array())
     {
-        $selectable_tables = $this->selectable_tables['getRights'];
+        $selectable_tables = $this->_findSelectableTables('getRights' , $params);
         $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
@@ -758,13 +788,16 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getAreas($params = array())
     {
-        $selectable_tables = $this->selectable_tables['getAreas'];
+        $selectable_tables = $this->_findSelectableTables('getAreas' , $params);
         $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
@@ -788,13 +821,16 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getApplications($params = array())
     {
-        $selectable_tables = $this->selectable_tables['getApplications'];
+        $selectable_tables = $this->_findSelectableTables('getApplications' , $params);
         $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
@@ -818,13 +854,16 @@ class LiveUser_Admin_Perm_Simple
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getTranslations($params = array())
     {
-        $selectable_tables = $this->selectable_tables['getTranslations'];
+        $selectable_tables = $this->_findSelectableTables('getTranslations' , $params);
         $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);
