@@ -249,18 +249,25 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function unimplyRight($filters, $update = true)
     {
-        $filters = $this->_makeRemoveFilter($filters, 'implied_right_id', 'getRights');
-        if (!$filters) {
-            return $filters;
+        $implied_filters = $this->_makeRemoveFilter($filters, 'implied_right_id', 'getRights');
+        if (!$implied_filters) {
+            return $implied_filters;
         }
 
-        $result = $this->_storage->delete('right_implied', $filters);
+        if ($update) {
+            $right_filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
+            if (!$right_filters) {
+                return $right_filters;
+            }
+        }
+
+        $result = $this->_storage->delete('right_implied', $implied_filters);
         if ($result === false) {
             return false;
         }
 
         if ($update) {
-            $this->_updateImpliedStatus($filters);
+            $this->_updateImpliedStatus($right_filters);
         }
 
         // notify observer
