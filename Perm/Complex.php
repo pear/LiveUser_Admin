@@ -148,14 +148,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        if (!empty($result)) {
-            $this->stack->push(
-                LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Child group already has a parent group')
-            );
-            return false;
-        }
-
         $result = $this->_storage->insert('group_subgroups', $data);
         // notify observer
         return $result;
