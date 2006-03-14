@@ -121,7 +121,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
                 $dbc =& MDB::connect($this->dsn, $this->options);
             }
             if (PEAR::isError($dbc)) {
-                $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+                $this->stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
                     array('container' => 'could not connect: '.$dbc->getMessage(),
                     'debug' => $dbc->getUserInfo()));
                 return false;
@@ -130,7 +130,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
         }
 
         if (!MDB::isConnection($this->dbc)) {
-            $this->_stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
+            $this->stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
                 array('container' => 'storage layer configuration missing'));
             return false;
         }
@@ -193,7 +193,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
         if ($limit || $offset) {
             $result = $this->dbc->setSelectedRowRange($offset, $limit);
             if (PEAR::isError($result)) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
                 );
@@ -216,7 +216,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
     {
         $result = $this->dbc->query($query);
         if (PEAR::isError($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
@@ -246,7 +246,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
 
         $result = $this->dbc->queryOne($query, $type);
         if (PEAR::isError($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
@@ -273,7 +273,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
     {
         $result = $this->dbc->queryRow($query, $type, MDB_FETCHMODE_ASSOC);
         if (PEAR::isError($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
@@ -303,7 +303,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
 
         $result = $this->dbc->queryCol($query, $type);
         if (PEAR::isError($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
@@ -333,7 +333,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
     {
         $result = $this->dbc->queryAll($query, $types, MDB_FETCHMODE_ASSOC, $rekey, false, $group);
         if (PEAR::isError($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );
@@ -357,7 +357,7 @@ class LiveUser_Admin_Storage_MDB extends LiveUser_Admin_Storage_SQL
     {
         $result = $this->dbc->nextId($seqname, $ondemand);
         if (PEAR::isError($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
             );

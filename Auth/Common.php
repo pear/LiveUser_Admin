@@ -78,9 +78,9 @@ class LiveUser_Admin_Auth_Common
      * Error stack
      *
      * @var object PEAR_ErrorStack
-     * @access private
+     * @access public
      */
-    var $_stack = null;
+    var $stack = null;
 
     /**
      * Storage Container
@@ -138,7 +138,7 @@ class LiveUser_Admin_Auth_Common
      */
     function LiveUser_Admin_Auth_Common()
     {
-        $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+        $this->stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
     }
 
     /**
@@ -153,7 +153,7 @@ class LiveUser_Admin_Auth_Common
     {
         $this->containerName = $containerName;
         if (!array_key_exists('storage', $conf)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Missing storage configuration array'));
             return false;
         }
@@ -171,7 +171,7 @@ class LiveUser_Admin_Auth_Common
         $storageConf[$conf['type']] =& $conf['storage'];
         $this->_storage = LiveUser::storageFactory($storageConf, 'LiveUser_Admin_Auth_');
         if ($this->_storage === false) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not instanciate auth storage container: '.$conf['type']));
             return false;
         }
@@ -243,7 +243,7 @@ class LiveUser_Admin_Auth_Common
             break;
         case 'SHA1':
             if (!function_exists('sha1')) {
-                $this->_stack->push(LIVEUSER_ERROR_NOT_SUPPORTED,
+                $this->stack->push(LIVEUSER_ERROR_NOT_SUPPORTED,
                     'exception', array(), 'SHA1 function doesn\'t exist. Upgrade your PHP version');
                 return false;
             }

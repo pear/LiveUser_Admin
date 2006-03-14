@@ -92,9 +92,9 @@ class LiveUser_Admin_Perm_Simple
      * Error stack
      *
      * @var object PEAR_ErrorStack
-     * @access private
+     * @access public
      */
-    var $_stack = null;
+    var $stack = null;
 
     /**
      * Storage Container
@@ -141,7 +141,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function LiveUser_Admin_Perm_Simple()
     {
-        $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+        $this->stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
     }
 
     /**
@@ -155,7 +155,7 @@ class LiveUser_Admin_Perm_Simple
     function init(&$conf)
     {
         if (!array_key_exists('storage', $conf)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Missing storage configuration array'));
             return false;
         }
@@ -173,7 +173,7 @@ class LiveUser_Admin_Perm_Simple
         if ($this->_storage === false) {
             end($conf['storage']);
             $key = key($conf['storage']);
-            $this->_stack->push(LIVEUSER_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ERROR, 'exception',
                 array('msg' => 'Could not instanciate perm storage container: '.$key));
             return false;
         }
@@ -468,7 +468,7 @@ class LiveUser_Admin_Perm_Simple
 
         $count = $this->_storage->selectCount('userrights', 'right_id', $filters);
         if ($count > 0) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'This user with perm id '.$data['perm_user_id'].
                     ' has already been granted the right id '.$data['right_id'])
@@ -596,7 +596,7 @@ class LiveUser_Admin_Perm_Simple
         // notes:
         // if all filters apply to the given table only then we can probably
         // skip running the select ..
-        // also do we not want to all people to delete the entire contents of
+        // also do we not want to allow people to delete the entire contents of
         // a given table?
 
         if (empty($filters) || !is_array($filters)) {
@@ -991,7 +991,7 @@ class LiveUser_Admin_Perm_Simple
                 if (!array_key_exists('varname', $options)
                     || !preg_match('/^[a-zA-Z_0-9]+$/', $options['varname'])
                 ) {
-                    $this->_stack->push(
+                    $this->stack->push(
                         LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
                         array('msg' => 'varname is not a valid variable name in PHP: '.$options['varname'])
                     );
@@ -1004,7 +1004,7 @@ class LiveUser_Admin_Perm_Simple
         } else {
             foreach ($generate as $v => $k) {
                 if (!preg_match('/^[a-zA-Z_0-9]+$/', $v)) {
-                    $this->_stack->push(
+                    $this->stack->push(
                         LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
                         array('msg' => 'varname is not a valid variable name in PHP: '.$v)
                     );
@@ -1024,7 +1024,7 @@ class LiveUser_Admin_Perm_Simple
 
         if ($mode == 'file') {
             if (!array_key_exists('filename', $options) || !$options['filename']) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
                     array('msg' => 'no filename is set for output mode file')
                 );
@@ -1034,7 +1034,7 @@ class LiveUser_Admin_Perm_Simple
             $fp = @fopen($options['filename'], 'wb');
 
             if (!$fp) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
                     array('msg' => 'file could not be opened: '.$options['filename'])
                 );

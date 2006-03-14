@@ -108,7 +108,7 @@ class LiveUser_Admin_Storage
      */
     function LiveUser_Admin_Storage()
     {
-        $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+        $this->stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
     }
 
     /**

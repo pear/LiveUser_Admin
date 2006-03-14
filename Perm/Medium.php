@@ -203,7 +203,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         );
         $count = $this->_storage->selectCount('grouprights', 'right_id', $filters);
         if ($count > 0) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'This group with id '.$data['group_id'].
                     ' has already been granted the right id '.$data['right_id'])

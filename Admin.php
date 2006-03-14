@@ -181,14 +181,14 @@ class LiveUser_Admin
      */
     function LiveUser_Admin($debug)
     {
-        $this->_stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
+        $this->stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
 
         if ($debug) {
             $this->log =& LiveUser::PEARLogFactory($debug);
-            $this->_stack->setLogger($this->log);
+            $this->stack->setLogger($this->log);
         }
 
-        $this->_stack->setErrorMessageTemplate($this->_errorMessages);
+        $this->stack->setErrorMessageTemplate($this->_errorMessages);
     }
 
     /**
@@ -258,7 +258,7 @@ class LiveUser_Admin
             || !is_object($this->_authContainers[$authName])
         ) {
             if (!isset($this->_conf['authContainers'][$authName])) {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Could not create auth container instance'));
                 $result = false;
                 return $result;
@@ -269,7 +269,7 @@ class LiveUser_Admin
                 'LiveUser_Admin_'
             );
             if ($auth === false) {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Could not instanciate auth container: '.$authName));
                 return $auth;
             }
@@ -296,7 +296,7 @@ class LiveUser_Admin
     function &setAdminPermContainer()
     {
         if (!isset($this->_conf['permContainer'])) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not create perm container instance'));
             $result = false;
             return $result;
@@ -304,7 +304,7 @@ class LiveUser_Admin
 
         $perm = &LiveUser::permFactory($this->_conf['permContainer'], 'LiveUser_Admin_');
         if ($perm === false) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not instanciate perm container of type: '.$this->_conf['permContainer']['type']));
             return $perm;
         }
@@ -331,7 +331,7 @@ class LiveUser_Admin
     function init($authUserId = null, $authName = null)
     {
         if (!is_array($this->_conf)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Missing configuration array'));
             return false;
         }
@@ -347,7 +347,7 @@ class LiveUser_Admin
                     ) {
                         $auth = &LiveUser::authFactory($value, $key, 'LiveUser_Admin_');
                         if ($auth === false) {
-                            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                                 array('msg' => 'Could not instanciate auth container: '.$key));
                             return $auth;
                         }
@@ -366,7 +366,7 @@ class LiveUser_Admin
                 }
             }
             if (!isset($authName)) {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Could not determine what auth container to use'));
                 return false;
             }
@@ -397,7 +397,7 @@ class LiveUser_Admin
     function addUser($data, $type = LIVEUSER_USER_TYPE_ID)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Perm and/or Auth container not set.'));
             return false;
         }
@@ -428,7 +428,7 @@ class LiveUser_Admin
     function updateUser($permUserId, $data, $type = null)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Perm and/or Auth container not set.'));
             return false;
         }
@@ -442,7 +442,7 @@ class LiveUser_Admin
          );
 
         if (!$permData) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not find user in the permission backend'));
             return false;
         }
@@ -477,7 +477,7 @@ class LiveUser_Admin
     function removeUser($permUserId)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Perm and/or Auth container not set.'));
             return false;
         }
@@ -491,7 +491,7 @@ class LiveUser_Admin
          );
 
         if (!$permData) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not find user in the permission backend'));
             return false;
         }
@@ -522,7 +522,7 @@ class LiveUser_Admin
     {
         if (array_key_exists('select', $param)) {
             if ($param['select'] != 'row' && $param['select'] != 'all') {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Select must be "row" or "all"'));
                 return false;
             }
@@ -547,7 +547,7 @@ class LiveUser_Admin
     function _getUsersByPerm($permParam = array())
     {
         if (!is_object($this->perm)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Perm container not set.'));
             return false;
         }
@@ -565,7 +565,7 @@ class LiveUser_Admin
         $users = array();
         foreach ($permUsers as $permData) {
             if (!$this->setAdminAuthContainer($permData['auth_container_name'])) {
-                $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => 'Auth container could not be set.'));
                 return false;
             }
@@ -597,7 +597,7 @@ class LiveUser_Admin
     function _getUsersByAuth($authParam = array(), $first = false)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
-            $this->_stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Perm and/or Auth container not set.'));
             return false;
         }
@@ -643,8 +643,8 @@ class LiveUser_Admin
      */
     function getErrors()
     {
-        if (is_object($this->_stack)) {
-            return $this->_stack->getErrors();
+        if (is_object($this->stack)) {
+            return $this->stack->getErrors();
         }
         return false;
     }

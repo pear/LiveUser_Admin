@@ -127,7 +127,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function assignSubGroup($data)
     {
         if ($data['subgroup_id'] == $data['group_id']) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Parent group id is the same as the subgroup id')
             );
@@ -141,7 +141,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         if ($result == $data['group_id']) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'This child group is already a Parent of this group')
             );
@@ -149,7 +149,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         if (!empty($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Child group already has a parent group')
             );
@@ -192,7 +192,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         if (array_key_exists('right_id', $data) && array_key_exists('implied_right_id', $data)
             && $data['implied_right_id'] == $data['right_id']
         ) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Right id is the same as the implied right id')
             );
@@ -215,7 +215,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         if (!empty($result)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'This implied right is already implied from this right')
             );
@@ -289,7 +289,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         // below perm_type 3 that a entry from area_admin_areas is removed
 
         if (!is_numeric($data['area_id'])) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
                 array('key' => 'area_id')
             );
@@ -297,7 +297,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         if (!is_numeric($data['perm_user_id'])) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_DATA, 'exception',
                 array('key' => 'perm_user_id')
             );
@@ -320,7 +320,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         if (!array_key_exists('perm_type', $result) || $result['perm_type'] < 3) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'The user doesn\'t have sufficient rights')
             );
@@ -573,7 +573,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getParentGroup($subGroupId)
     {
         if (!is_numeric($subGroupId)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Something wrong with your param, make sure its a
                                numeric value and not empty')
@@ -750,7 +750,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             || (array_key_exists('select', $params) && $params['select'] != 'all')
             || (array_key_exists('fields', $params) && reset($params['fields']) !== 'group_id')
         ) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => "Setting 'subgroups' to 'hierarchy' is only allowed if 'rekey' is enabled, ".
                     "'group' is disabled, 'select' is 'all' and the first field is 'group_id'")
@@ -835,7 +835,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 || (array_key_exists('select', $params) && $params['select'] != 'all')
                 || (array_key_exists('fields', $params) && reset($params['fields']) !== 'right_id')
             ) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => "Setting 'implied' or 'inherited' is only allowed if 'rekey' is enabled, ".
                         "'group' is disabled, 'select' is 'all' and the first field is 'right_id'")
@@ -847,7 +847,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 && array_key_exists('fields', $params)
                 && !in_array('has_implied', $params['fields'])
             ) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => "Setting 'implied' requires that 'has_implied' field needs to be in the select list")
                 );

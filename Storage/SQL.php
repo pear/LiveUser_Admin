@@ -149,7 +149,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 } elseif (!array_key_exists($field, $data)
                     || (empty($data[$field]) && $data[$field] !== 0)
                 ) {
-                    $this->_stack->push(
+                    $this->stack->push(
                         LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                         array('reason' => 'field to insert may not be empty: '.$field)
                     );
@@ -163,7 +163,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         foreach ($data as $field => $value) {
             // sanity checks
             if (!array_key_exists($field, $this->tables[$table]['fields'])) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'field to insert is not defined: '.$field)
                 );
@@ -229,7 +229,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         foreach ($data as $field => $value) {
             // sanity checks
             if (!array_key_exists($field, $this->tables[$table]['fields'])) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'field to update is not defined: '.$field)
                 );
@@ -239,7 +239,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             if ($this->tables[$table]['fields'][$field]
                 && empty($data[$field]) && $data[$field] !== 0
             ) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'field tp update may not be empty: '.$field)
                 );
@@ -327,7 +327,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
     function selectCount($table, $field, $filters)
     {
         if (empty($field)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'field is missing')
             );
@@ -335,7 +335,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         }
 
         if (empty($table)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'table is missing')
             );
@@ -426,7 +426,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         // find the tables to be used inside the query FROM
         $tables = $this->findTables($fields, $filters, $orders, $selectable_tables);
         if (!$tables) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'no tables were found')
             );
@@ -440,7 +440,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $joinfilters = array();
             $result = $this->createJoinFilter($root_table, $joinfilters, $tables, $selectable_tables);
             if (!$result) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'joins could not be set')
                 );
@@ -497,7 +497,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 $type = $this->fields[$match[2]];
                 $tmp_field = $match[1].$this->alias[$match[2]];
             } else {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'field could not be mapped to a type : '.$field)
                 );
@@ -547,14 +547,14 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             return null;
         }
         if (!isset($this->tables[$match[1]]['fields'][$match[2]])) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'table/field is not defined in the schema structure: '.$field)
             );
             return false;
         }
         if (!in_array($match[1], $selectable_tables)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'explicit field is not a selectable: ' . $match[1])
             );
@@ -632,7 +632,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         $table_prefix = !empty($tables);
         foreach ($selectable_tables as $table) {
             if (!isset($this->tables[$table]['fields'])) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                     array('reason' => 'table is not defined in the schema structure: '.$table)
                 );
@@ -691,7 +691,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         }
 
         if (!empty($fields_not_yet_linked)) {
-            $this->_stack->push(
+            $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                 array('reason' => 'not all fields ('.implode(', ', $fields_not_yet_linked).
                     ') could be linked to a table ('.implode(', ', $selectable_tables).')')
@@ -760,7 +760,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         $filters[] = $this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource].' = '.$value_quoted;
                     // neither tables uses a field in the join
                     } else {
-                        $this->_stack->push(
+                        $this->stack->push(
                             LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                             array('reason' => 'join structure incorrect, one of the two needs to be a field')
                         );
@@ -833,7 +833,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                         $tmp_filters[$this->prefix.$this->alias[$root_table].'.'.$this->alias[$joinsource]] = $value_quoted;
                     // neither tables uses a field in the join
                     } else {
-                        $this->_stack->push(
+                        $this->stack->push(
                             LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',
                             array('reason' => 'join structure incorrect, one of the two needs to be a field')
                         );
@@ -879,7 +879,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if ($this->dsn) {
             $result = $this->dbc->disconnect();
             if (PEAR::isError($result)) {
-                $this->_stack->push(
+                $this->stack->push(
                     LIVEUSER_ERROR, 'exception',
                     array('reason' => $result->getMessage() . '-' . $result->getUserInfo())
                 );
