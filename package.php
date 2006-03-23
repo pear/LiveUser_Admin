@@ -13,6 +13,13 @@ $version = '0.3.8';
 
 $notes = <<<EOT
 - wrong parameter used in getUsers('auth', ..) (report by gregory)
+- fixed usage of outdated getUsers() API in init()
+- phpdoc fix in outputRightsConstants() (bug #7037)
+- removed bogus parameter from phpdoc in getRights()
+- added support for selectable_tables in the param array in get*() methods
+- fixed updating of implied right field in umimplyRight() (bug #7050)
+- made stack property public
+- remove artificial limitation that prevented groups to have multiple parents
 EOT;
 
 $description = <<<EOT
