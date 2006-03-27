@@ -311,7 +311,7 @@ class LiveUser_Admin_Storage_PDO extends LiveUser_Admin_Storage_SQL
     {
         try {
             $stmt = $this->dbc->query($query);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_COLUMN);
+            $result = $stmt->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
             $this->stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
                 array(
@@ -345,7 +345,28 @@ class LiveUser_Admin_Storage_PDO extends LiveUser_Admin_Storage_SQL
     {
         try {
             $stmt = $this->dbc->query($query);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_COLUMN|PDO::FETCH_GROUP);
+            $fetchmode = $rekey ? PDO::FETCH_ASSOC|PDO::FETCH_GROUP : PDO::FETCH_ASSOC;
+            $result = $stmt->fetchAll($fetchmode);
+            if ($rekey && !empty($result)) {
+                $make_scalar = (count(reset(reset($result))) == 1);
+                if ($group) {
+                    if ($make_scalar) {
+                        foreach ($result as $group => $array) {
+                            foreach ($array as $key => $value) {
+                                $result[$group][$key] = reset($value);
+                            }
+                        }
+                    }
+                } elseif ($make_scalar) {
+                    foreach ($result as $group => $array) {
+                        $result[$group] = reset(end($array));
+                    }
+                } else {
+                    foreach ($result as $group => $array) {
+                        $result[$group] = end($array);
+                    }
+                }
+            }
         } catch (PDOException $e) {
             $this->stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
                 array(
