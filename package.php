@@ -15,11 +15,12 @@ $notes = <<<EOT
 - wrong parameter used in getUsers('auth', ..) (report by gregory)
 - fixed usage of outdated getUsers() API in init()
 - phpdoc fix in outputRightsConstants() (bug #7037)
-- removed bogus parameter from phpdoc in getRights()
+- removed bogus parameter from phpdoc in getRights() in medium/complex container
 - added support for selectable_tables in the param array in get*() methods
 - fixed updating of implied right field in umimplyRight() (bug #7050)
 - made stack property public
 - remove artificial limitation that prevented groups to have multiple parents
+- fixed PDO storage layer queryAll() method (bug #7213)
 EOT;
 
 $description = <<<EOT
