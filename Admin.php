@@ -184,8 +184,11 @@ class LiveUser_Admin
         $this->stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
 
         if ($debug) {
-            $this->log =& LiveUser::PEARLogFactory($debug);
-            $this->stack->setLogger($this->log);
+            $log =& LiveUser::PEARLogFactory($debug);
+            if ($log) {
+                $this->log =& $log;
+                $this->stack->setLogger($this->log);
+            }
         }
 
         $this->stack->setErrorMessageTemplate($this->_errorMessages);
