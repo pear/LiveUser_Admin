@@ -1011,9 +1011,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         $params['filters']['group_id'] = $result;
+        $params['by_group'] = true;
         unset($params['implied']);
         unset($params['inherited']);
-        return $this->getRights($params, false);
+        return $this->getRights($params);
     }
 }
 ?>
