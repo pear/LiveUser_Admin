@@ -257,7 +257,7 @@ class LiveUser_Admin
      */
     function &setAdminAuthContainer($authName)
     {
-        if (!isset($this->_authContainers[$authName])
+        if (!array_key_exists($authName, $this->_authContainers)
             || !is_object($this->_authContainers[$authName])
         ) {
             if (!isset($this->_conf['authContainers'][$authName])) {
@@ -298,7 +298,7 @@ class LiveUser_Admin
      */
     function &setAdminPermContainer()
     {
-        if (!isset($this->_conf['permContainer'])) {
+        if (!array_key_exists('permContainer', $this->_conf)) {
             $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Could not create perm container instance'));
             $result = false;
