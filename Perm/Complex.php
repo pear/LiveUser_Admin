@@ -608,10 +608,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'selectable_tables' - array list of tables that may be
      *                             joined to in this query, the first element is
      *                             the root table from which the joins are done
-     *                 'subgroups' - filter array if all subgroups should
-                                   should be fetched into a flat array
-     *                 'hierarchy' - filter array if all subgroups should
-                                   should be fetched into a nested array
+     *                 'subgroups' - filter array if all subgroups should be
+                                   fetched into a flat array
+     *                 'hierarchy' - filter array if all subgroups should be
+                                   fetched into a nested array (overwrites 'subgroups')
      *
      *    note that 'hierarchy' requires 'rekey' enabled, 'group' is disabled,
      *    'select' set to 'all' and the first field needs to be 'group_id'
@@ -665,8 +665,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'selectable_tables' - array list of tables that may be
      *                             joined to in this query, the first element is
      *                             the root table from which the joins are done
-     *                 'subgroups' - filter array if all subgroups should
-                                   should be fetched into a flat array
+     *                 'subgroups' - filter array if all subgroups should be
+                                   fetched into a flat array
      * @return bool|array false on failure or array with selected data
      *
      * @access private
@@ -750,8 +750,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'selectable_tables' - array list of tables that may be
      *                             joined to in this query, the first element is
      *                             the root table from which the joins are done
-     *                 'hierarchy' - filter array if all subgroups should
-                                   should be fetched into a nested array
+     *                 'hierarchy' - filter array if all subgroups should be
+                                   fetched into a nested array
      * @return bool|array false on failure or array with selected data
      *
      * @access private
