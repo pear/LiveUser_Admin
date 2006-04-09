@@ -839,8 +839,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'inherited' - filter array to fetch all rughts from
                                     (sub)group membership
      *                 'implied'  - filter array for fetching implied rights
-     *                 'hierarchy' - boolean if implied rights should be fetched
-                                   into a nested array
+     *                 'hierarchy' - filter array for fetching implied rights
+                                   into a nested array (overwrites 'implied')
      * @return bool|array false on failure or array with selected data
      *
      * @access public
@@ -848,8 +848,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function getRights($params = array())
     {
         $inherited = array_key_exists('inherited', $params);
-        $hierarchy = array_key_exists('hierarchy', $params);
-        $implied = ($hierarchy || array_key_exists('implied', $params));
+        if (array_key_exists('hierarchy', $params)) {
+            $hierarchy = $implied = true;
+            $params['implied'] = $params['hierarchy'];
+        } else {
+            $implied = array_key_exists('implied', $params);
+        }
 
         if ($inherited || $implied) {
             if ((!array_key_exists('rekey', $params) || !$params['rekey'])
