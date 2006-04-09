@@ -37,9 +37,8 @@ for ($i = 0; $i < 10; $i++) {
         array(
             'select' => 'all',
             'rekey' => true,
-            'filters' => array(
-                'group_id' => $groups_with_subgroup),
-            'subgroups' => 'hierarchy',
+            'filters' => array('group_id' => $groups_with_subgroup),
+            'hierarchy' => true,
         )
     );
     if ($groups === false) {
@@ -54,7 +53,7 @@ for ($i = 0; $i < 10; $i++) {
 
 
 echo 'All the groups:<br />';
-$groups = $admin->perm->getGroups(array('subgroups' => true));
+$groups = $admin->perm->getGroups();
 if ($groups === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
@@ -68,6 +67,17 @@ if ($groups === false) {
     // By group id
     $id = array_rand($groups);
     $filters = array('group_id' => $groups[$id]['group_id']);
+
+    echo 'Group with subgroups: '.$groups[$id]['group_id'].'<br />';
+    $subgroups = $admin->perm->getGroups(array('subgroups' => true, 'filters' => $filters));
+    if ($subgroups === false) {
+        echo '<strong>Error on line: '.__LINE__.'</strong><br />';
+        print_r($admin->getErrors());
+    } else {
+        Var_Dump::display($subgroups);
+        echo '<br />';
+    }
+
     $unassign = $admin->perm->unassignSubGroup($filters);
 
     if ($unassign === false) {
