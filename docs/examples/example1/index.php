@@ -69,6 +69,7 @@ echo '
 <a href="UserRights.php'.$qstring.'">UserRights</a> |
 <a href="OutputRightsConstants.php'.$qstring.'">OutputRightsConstants</a> |
 <a href="Translation.php'.$qstring.'">Translation</a> |
+<a href="Area_Admin_Areas.php'.$qstring.'">Area Admin Areas</a> |
 <a href="test.php'.$qstring.'">Test</a><br />';
 ?>
 So that these test will run you have to have <a href="http://pear.php.net/package/Var_Dump">Var_Dump</a> installed<br /><br />
