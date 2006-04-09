@@ -608,11 +608,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'selectable_tables' - array list of tables that may be
      *                             joined to in this query, the first element is
      *                             the root table from which the joins are done
-     *                 'subgroups' - defaults to false
-     *    If subgroups should be included, if false then it acts same as the
-     *    medium container getGroups, if set to true it will return all subgroups
-     *    like they are directly assigned, if set to 'hierarchy' it will place
-     *    a tree of the subgroups under the array key 'subgroups'
+     *                 'subgroups' - filter array if all subgroups should
+                                   should be fetched into a flat array
+     *                 'hierarchy' - filter array if all subgroups should
+                                   should be fetched into a nested array
      *
      *    note that 'hierarchy' requires 'rekey' enabled, 'group' is disabled,
      *    'select' set to 'all' and the first field needs to be 'group_id'
@@ -622,21 +621,23 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getGroups($params = array())
     {
-        $subgroup = false;
-        if (array_key_exists('subgroups', $params)) {
-            $subgroup = $params['subgroups'];
-            unset($params['subgroups']);
-        }
-
-        if (!$subgroup
-            || (array_key_exists('select', $params)
-                && ($params['select'] == 'one' || $params['select'] == 'row')
-            )
+        if (!array_key_exists('subgroups', $params)
+            && !array_key_exists('hierarchy', $params)
         ) {
             return parent::getGroups($params);
         }
 
-        if ($subgroup === 'hierarchy') {
+        if (array_key_exists('select', $params)
+            && ($params['select'] == 'one' || $params['select'] == 'row')
+        ) {
+            $this->stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Setting "subgroups" or "hierarchy" requires select to be set to "col" or "all"')
+            );
+            return false;
+        }
+
+        if (array_key_exists('hierarchy', $params)) {
             return $this->_getGroupsWithHierarchy($params);
         }
 
@@ -661,55 +662,70 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
+     *                 'subgroups' - filter array if all subgroups should
+                                   should be fetched into a flat array
      * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
     function _getGroupsWithSubgroups($params)
     {
+        $subgroups = is_array($params['subgroups']) ? $params['subgroups'] : array();
+
         $tmp_params = array(
             'fields' => array('group_id'),
             'select' => 'col',
+            'filters' => $subgroups,
         );
 
-        if (array_key_exists('filters', $params)) {
-            $tmp_params['filters'] = $params['filters'];
-            unset($params['filters']);
+        $result = parent::getGroups($tmp_params);
+        if (!$result) {
+            return $result;
         }
 
-        $groups = parent::getGroups($tmp_params);
-        if (!$groups) {
-            return $groups;
-        }
-
-        $subgroups = $groups;
-        $new_count = count($subgroups);
+        $subgroup_ids = $result;
 
         do {
             $tmp_params = array(
                 'fields' => array(
                     'subgroup_id',
                 ),
-                'filters' => array(
-                    'group_id' => $subgroups,
-                    'subgroup_id' => array(
-                        'op' => 'NOT IN',
-                        'value' => $groups,
-                    ),
-                 ),
+                'filters' => $subgroups,
                 'select' => 'col',
             );
 
-            $subgroups = $this->_getSubGroups($tmp_params);
-            if ($subgroups === false) {
+            $tmp_params['filters']['subgroup_id'] = array(
+                'op' => 'NOT IN',
+                'value' => $result,
+            );
+
+            if (array_key_exists('group_id', $tmp_params['filters'])
+                && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+            ) {
+                $tmp_params['filters']['group_id'] = array_intersect($subgroup_ids, (array)$params['subgroups']['group_id']);
+            } else {
+                $tmp_params['filters']['group_id'] = $subgroup_ids;
+            }
+
+            $subgroup_ids = $this->_getSubGroups($tmp_params);
+            if ($subgroup_ids === false) {
                 return false;
             }
 
-            $groups = array_merge($groups, (array)$subgroups);
-        } while(!empty($subgroups));
+            $result = array_merge($result, (array)$subgroup_ids);
+        } while(!empty($subgroup_ids));
 
-        $params['filters']['group_id'] = $groups;
-
+        if (array_key_exists('filters', $params)
+            && array_key_exists('group_id', $params['filters'])
+            && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+        ) {
+            $params['filters']['group_id'] = array_intersect($result, (array)$params['filters']['group_id']);
+        } else {
+            $params['filters']['group_id'] = $result;
+        }
         return parent::getGroups($params);
     }
 
@@ -731,6 +747,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
+     *                 'hierarchy' - filter array if all subgroups should
+                                   should be fetched into a nested array
      * @return bool|array false on failure or array with selected data
      *
      * @access private
@@ -744,7 +765,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         ) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => "Setting 'subgroups' to 'hierarchy' is only allowed if 'rekey' is enabled, ".
+                array('msg' => "Setting 'hierarchy' is only allowed if 'rekey' is enabled, ".
                     "'group' is disabled, 'select' is 'all' and the first field is 'group_id'")
             );
             return false;
@@ -755,15 +776,12 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return $groups;
         }
 
-        $group_ids = array_keys($groups);
         $tmp_params = array(
             'fields' => array(
                 'group_id',
                 'subgroup_id',
             ),
-            'filters' => array(
-                'group_id' => $group_ids,
-            ),
+            'filters' => array('group_id' => array_keys($groups)),
             'rekey' => true,
             'group' => true,
         );
@@ -773,11 +791,18 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        $hierarchy = is_array($params['hierarchy']) ? $params['hierarchy'] : array();
+
         foreach ($subgroups as $group_id => $subgroup_ids) {
-            $tmp_params = $params;
-            $tmp_params['subgroups'] = 'hierarchy';
-            $tmp_params['filters'] = array('group_id' => $subgroup_ids);
-            $subgroup_data = $this->_getGroupsWithHierarchy($tmp_params);
+            $params['filters'] = $hierarchy;
+            if (array_key_exists('group_id', $params['filters'])
+                && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+            ) {
+                $params['filters']['group_id'] = array_intersect($subgroup_ids, (array)$params['filters']['group_id']);
+            } else {
+                $params['filters']['group_id'] = $subgroup_ids;
+            }
+            $subgroup_data = $this->_getGroupsWithHierarchy($params);
             if ($subgroup_data === false) {
                 return false;
             }
@@ -811,17 +836,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'by_group' - if joins should be done using the 'userrights'
      *                             (false default) or through the 'grouprights'
      *                             and 'groupusers' tables (true)
+     *                 'inherited' - filter array to fetch all rughts from
+                                    (sub)group membership
+     *                 'implied'  - filter array for fetching implied rights
+     *                 'hierarchy' - boolean if implied rights should be fetched
+                                   into a nested array
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getRights($params = array())
     {
-        // ensure optional parameters are set
-        !array_key_exists('inherited', $params) ? $params['inherited'] = false : null;
-        !array_key_exists('implied', $params) ? $params['implied'] = false : null;
+        $inherited = array_key_exists('inherited', $params);
+        $hierarchy = array_key_exists('hierarchy', $params);
+        $implied = ($hierarchy || array_key_exists('implied', $params));
 
-        if ($params['inherited'] || $params['implied']) {
+        if ($inherited || $implied) {
             if ((!array_key_exists('rekey', $params) || !$params['rekey'])
                 || (array_key_exists('group', $params) && $params['group'])
                 || (array_key_exists('select', $params) && $params['select'] != 'all')
@@ -835,7 +865,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 return false;
             }
 
-            if ($params['implied']
+            if ($implied
                 && array_key_exists('fields', $params)
                 && !in_array('has_implied', $params['fields'])
             ) {
@@ -854,13 +884,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         }
 
         // if the result was empty or no additional work is needed
-        if (empty($rights) || (!$params['inherited'] && !$params['implied'])) {
+        if (empty($rights) || (!$inherited && !$implied)) {
             return $rights;
         }
 
         // read rights inherited by (sub)groups
-        if ($params['inherited']) {
-            // consider adding a NOT IN filter
+        if ($inherited) {
+            // todo: consider adding a NOT IN filter
             $inherited_rights = $this->_getInheritedRights($params);
             if ($inherited_rights === false) {
                 return false;
@@ -878,7 +908,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             }
         }
 
-        if ($params['implied']) {
+        if ($implied) {
             $_rights = $rights;
             $rights = array();
 
@@ -891,8 +921,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     continue;
                 }
 
-                // consider adding a NOT IN filter
-                $implied_rights = $this->_getImpliedRights($right_id, $params);
+                // todo: consider adding a NOT IN filter
+                $implied_rights = $this->_getImpliedRights($params, $right_id);
                 if ($implied_rights === false) {
                     return false;
                 } elseif (empty($implied_rights)) {
@@ -906,7 +936,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
                     $right['_type'] = 'implied';
 
-                    if ($params['implied'] === 'hierarchy') {
+                    if ($hierarchy) {
                         $rights[$right_id]['implied_rights'][$implied_right_id] = $right;
                     } else {
                         $rights[$implied_right_id] = $right;
@@ -914,10 +944,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 }
             }
         } elseif ((!array_key_exists('select', $params) || $params['select'] == 'all')
-           && (
-            !array_key_exists('fields', $params)
-            || count($params['fields']) > 1)
-            || reset($params['fields']) === '*'
+           && (!array_key_exists('fields', $params)
+                || count($params['fields']) > 1
+                || reset($params['fields']) === '*'
+            )
         ) {
             foreach ($rights as $right_id => $right) {
                 if (!isset($rights[$right_id]['_type']) || !$rights[$right_id]['_type']) {
@@ -947,11 +977,18 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
+     *                 'by_group' - if joins should be done using the 'userrights'
+     *                             (false default) or through the 'grouprights'
+     *                             and 'groupusers' tables (true)
+     *                 'implied'  - filter array for fetching implied rights
      * @return bool|array false on failure or array with selected data
      *
      * @access private
      */
-    function _getImpliedRights($right_id, $params)
+    function _getImpliedRights($params, $right_id)
     {
         $selectable_tables = array('right_implied', 'rights');
         $root_table = 'right_implied';
@@ -967,8 +1004,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        $params['filters']['right_id'] = $result;
-        unset($params['inherited']);
+        $params['filters'] = is_array($params['implied']) ? $params['implied'] : array();
+        if (array_key_exists('right_id', $params['filters'])
+            && (!is_array($params['filters']['right_id']) || !array_key_exists('value', $params['filters']['right_id']))
+        ) {
+            $params['filters']['right_id'] = array_intersect($result, (array)$params['filters']['right_id']);
+        } else {
+            $params['filters']['right_id'] = $result;
+        }
         return $this->getRights($params);
     }
 
@@ -990,6 +1033,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
+     *                 'by_group' - if joins should be done using the 'userrights'
+     *                             (false default) or through the 'grouprights'
+     *                             and 'groupusers' tables (true)
+     *                 'inherited' - filter array to fetch all rughts from
+                                    (sub)group membership
      * @return bool|array false on failure or array with selected data
      *
      * @access private
@@ -999,7 +1050,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         $param = array(
             'fields' => array('group_id'),
             'select' => 'col',
-            'filters' => $params['filters'],
+            'filters' => is_array($params['inherited']) ? $params['inherited'] : array(),
             'subgroups' => true,
         );
 
@@ -1010,10 +1061,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return array();
         }
 
-        $params['filters']['group_id'] = $result;
+        if (array_key_exists('filters', $params)
+            && array_key_exists('group_id', $params['filters'])
+            && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+        ) {
+            $params['filters']['group_id'] = array_intersect($result, (array)$params['filters']['group_id']);
+        } else {
+            $params['filters']['group_id'] = $result;
+        }
         $params['by_group'] = true;
-        unset($params['implied']);
-        unset($params['inherited']);
         return $this->getRights($params);
     }
 }
