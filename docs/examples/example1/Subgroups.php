@@ -17,6 +17,10 @@ for ($i = 0; $i < 10; $i++) {
     $subgroup = array_rand($groups);
     $groups_with_subgroup[] = $groups[$group]['group_id'];
 
+    if ($group === $subgroup) {
+        continue;
+    }
+
     $data = array(
         'group_id' => $groups[$group]['group_id'],
         'subgroup_id' => $groups[$subgroup]['group_id']
