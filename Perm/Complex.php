@@ -710,7 +710,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 $tmp_params['filters']['group_id'] = $subgroup_ids;
             }
 
-            $subgroup_ids = $this->_getSubGroups($tmp_params);
+            $subgroup_ids = $this->getGroups($tmp_params);
             if ($subgroup_ids === false) {
                 return false;
             }
@@ -786,7 +786,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'group' => true,
         );
 
-        $subgroups = $this->_getSubGroups($tmp_params);
+        $subgroups = $this->getGroups($tmp_params);
         if ($subgroups === false) {
             return false;
         }
@@ -853,6 +853,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $params['implied'] = $params['hierarchy'];
         } else {
             $implied = array_key_exists('implied', $params);
+            $hierarchy = false;
         }
 
         if ($inherited || $implied) {
@@ -887,11 +888,6 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        // if the result was empty or no additional work is needed
-        if (empty($rights) || (!$inherited && !$implied)) {
-            return $rights;
-        }
-
         // read rights inherited by (sub)groups
         if ($inherited) {
             // todo: consider adding a NOT IN filter
@@ -910,6 +906,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     $rights[$right_id] = $right;
                 }
             }
+        }
+
+        // if the result was empty or no additional work is needed
+        if (empty($rights) || !$implied) {
+            return $rights;
         }
 
         if ($implied) {
@@ -1055,7 +1056,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'fields' => array('group_id'),
             'select' => 'col',
             'filters' => is_array($params['inherited']) ? $params['inherited'] : array(),
-            'subgroups' => true,
+            'subgroups' => is_array($params['inherited']) ? $params['inherited'] : array(),
         );
 
         $result = $this->getGroups($param);
@@ -1074,6 +1075,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $params['filters']['group_id'] = $result;
         }
         $params['by_group'] = true;
+        unset($params['inherited']);
         return $this->getRights($params);
     }
 }
