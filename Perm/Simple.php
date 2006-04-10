@@ -876,9 +876,14 @@ class LiveUser_Admin_Perm_Simple
      * defining constants while array results in defining an array.
      *
      * $options can contain
-     * 'prefix'      => 'prefix_goes_here',
-     * 'area'        => 'specific area id to grab rights from',
-     * 'application' => 'specific application id to grab rights from'
+     * 'prefix'      => prefix for the generated (qualified) names
+     * 'area'        => specific area id to grab rights from
+     * 'application' => specific application id to grab rights from
+     * 'filters'     => specific set of filters to use (overwrites area/application)
+     * 'by_group'    => if joins should be done using the 'userrights' (false default)
+     *                  or through the 'grouprights' and 'groupusers' tables (true)
+     * 'inherited'   => filter array to fetch all rights from (sub)group membership
+     * 'implied'     => filter array for fetching implied rights
      * 'naming'      => LIVEUSER_SECTION_RIGHT for PREFIX_RIGHTNAME  <- DEFAULT
      *                  LIVEUSER_SECTION_AREA for PREFIX_AREANAME_RIGHTNAME
      *                  LIVEUSER_SECTION_APPLICATION for PREFIX_APPLICATIONNAME_AREANAME_RIGHTNAME
@@ -904,30 +909,46 @@ class LiveUser_Admin_Perm_Simple
      */
     function outputRightsConstants($type, $options = array(), $mode = null)
     {
-        $opt = array();
+        $params = array();
 
-        $opt['fields'] = array('right_id', 'right_define_name');
+        $params['fields'] = array('right_id', 'right_define_name');
 
         $naming = LIVEUSER_SECTION_RIGHT;
         if (array_key_exists('naming', $options)) {
             $naming = $options['naming'];
             switch ($naming) {
             case LIVEUSER_SECTION_AREA:
-                $opt['fields'][] = 'area_define_name';
+                $params['fields'][] = 'area_define_name';
                 break;
             case LIVEUSER_SECTION_APPLICATION:
-                $opt['fields'][] = 'application_define_name';
-                $opt['fields'][] = 'area_define_name';
+                $params['fields'][] = 'application_define_name';
+                $params['fields'][] = 'area_define_name';
                 break;
             }
         }
 
-        if (array_key_exists('area', $options)) {
-            $opt['filters']['area_id'] = $options['area'];
+        if (array_key_exists('by_group', $options)) {
+            $params['by_group'] = $options['by_group'];
         }
 
-        if (array_key_exists('application', $options)) {
-            $opt['filters']['application_id'] = $options['application'];
+        if (array_key_exists('inherited', $options)) {
+            $params['inherited'] = $options['inherited'];
+        }
+
+        if (array_key_exists('implied', $options)) {
+            $params['implied'] = $options['implied'];
+        }
+
+        if (array_key_exists('filters', $options)) {
+            $params['filters'] = $options['filters'];
+        } else {
+            if (array_key_exists('area', $options)) {
+                $params['filters']['area_id'] = $options['area'];
+            }
+
+            if (array_key_exists('application', $options)) {
+                $params['filters']['application_id'] = $options['application'];
+            }
         }
 
         $prefix = '';
@@ -940,7 +961,7 @@ class LiveUser_Admin_Perm_Simple
             $rekey = $options['rekey'];
         }
 
-        $rights = $this->getRights($opt);
+        $rights = $this->getRights($params);
 
         if ($rights === false) {
             return false;
