@@ -13,12 +13,12 @@ for ($i = 1; $i < 21; $i++) {
     );
 
     if ($i > 10) {
-        $level = 3;
+        $data['perm_type'] = 3;
     } else {
-        $level = 1;
+        $data['perm_type'] = 1;
     }
 
-    $user_id = $admin->addUser($data, $level);
+    $user_id = $admin->addUser($data);
     if ($user_id === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
@@ -30,7 +30,7 @@ for ($i = 1; $i < 21; $i++) {
 // Get
 // Group of users
 echo 'All the users:<br />';
-$users = $admin->getUsers('auth');
+$users = $admin->getUsers(array('container' => 'auth'));
 if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
@@ -43,7 +43,7 @@ if ($users === false) {
     $id = array_rand($users);
     // single user
     echo 'This user will be removed:<br />';
-    $user = $admin->getUsers('perm', array('filters' => array('perm_user_id' => $users[$id]['perm_user_id'])));
+    $user = $admin->getUsers(array('filters' => array('perm_user_id' => $users[$id]['perm_user_id'])));
     if ($user === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
@@ -72,13 +72,13 @@ if ($users === false) {
         'handle' => 'updated_user'.rand(),
         'passwd' => 'foo',
     );
-    $updated = $admin->updateUser($updateUser, $data);
+    $updated = $admin->updateUser($data, $updateUser);
     if ($updated === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
     } else {
         echo '<strong>' . $updateUser . '</strong> was updated<br />';
-        $user = $admin->getUsers('perm', array('filters' => array('perm_user_id' => $updateUser)));
+        $user = $admin->getUsers(array('filters' => array('perm_user_id' => $updateUser)));
 
         if ($user === false) {
             echo '<strong>Error on line: '.__LINE__.'</strong><br />';
@@ -94,7 +94,7 @@ if ($users === false) {
     // Get
     echo 'All the users:<br />';
 
-    $users = $admin->getUsers('auth');
+    $users = $admin->getUsers(array('container' => 'auth'));
     if ($users === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());
@@ -123,8 +123,8 @@ if ($users === false) {
     unset($user);
 
     echo 'Perm<br />';
-    $filter = array('filters' => array('perm_user_id' => '3'));
-    $user = $admin->perm->getUsers($filter);
+    $params = array('filters' => array('perm_user_id' => '3'));
+    $user = $admin->perm->getUsers($params);
     if ($user === false) {
         echo '<strong>Error on line: '.__LINE__.'</strong><br />';
         print_r($admin->getErrors());

@@ -20,7 +20,7 @@ if ($areas === false) {
     exit;
 }
 
-$users = $admin->getUsers('perm', array('filters' => array('perm_type' => '3')));
+$users = $admin->getUsers(array('filters' => array('perm_type' => '3')));
 if ($users === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
     print_r($admin->getErrors());
