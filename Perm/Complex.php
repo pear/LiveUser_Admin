@@ -126,6 +126,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function assignSubGroup($data)
     {
+        // Checking if the supplied data is valid:
+        // you can't assign a group as it's own subgroup
         if ($data['subgroup_id'] == $data['group_id']) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -134,12 +136,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        // Check if the group is already assigned to this group (retrieve the group_id).
+        // It also checks if the group exists (if not: return false).
         $filter = array('subgroup_id' => $data['subgroup_id']);
         $result = $this->_storage->selectCount('group_subgroups', 'group_id', $filter);
         if ($result === false) {
             return false;
         }
 
+         // Do the actual check
         if ($result == $data['group_id']) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -148,8 +153,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        // Assign the group as a subgroup.
         $result = $this->_storage->insert('group_subgroups', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -166,8 +172,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function unassignSubGroup($filters)
     {
+        // Perform a delete on the group_subgroups table (no data sanity checks required).
         $result = $this->_storage->delete('group_subgroups', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -181,6 +188,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function implyRight($data)
     {
+        // Check if the implied_right_id is the same as the right_id (you can't imply itself)
         if (array_key_exists('right_id', $data) && array_key_exists('implied_right_id', $data)
             && $data['implied_right_id'] == $data['right_id']
         ) {
@@ -191,6 +199,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        // Prepare the params for a check on the implied_right existing and already being implied
         $params = array(
             'fields' => array(
                 'right_id'
@@ -206,6 +215,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        // Check if the implied right is already implied
         if (!empty($result)) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -214,15 +224,17 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        // It all checks out, imply the right. It something goes wrong with the insert return false.
         $result = $this->_storage->insert('right_implied', $data);
         if ($result === false) {
             return false;
         }
 
+        // Update the implied status of this right, the has_implied column in the database should now report 1
         $filter = array('right_id' => $data['right_id']);
         $this->_updateImpliedStatus($filter);
 
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -241,28 +253,32 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function unimplyRight($filters, $update = true)
     {
+        // Generate the implied_filters. If an error occures, return it (being 0 or false).
         $implied_filters = $this->_makeRemoveFilter($filters, 'implied_right_id', 'getRights');
         if (!$implied_filters) {
             return $implied_filters;
         }
 
         if ($update) {
+            // Generate the rights_filter for updating the has_implied column in the rights table
             $right_filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
             if (!$right_filters) {
                 return $right_filters;
             }
         }
 
+        // Unimply the right (perform a delete on the right_implied table) based on the implied_filters
         $result = $this->_storage->delete('right_implied', $implied_filters);
         if ($result === false) {
             return false;
         }
 
         if ($update) {
+            // Update the has_implied status in the rights table, based on the right_filters
             $this->_updateImpliedStatus($right_filters);
         }
 
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -280,22 +296,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         // make sure when removing rights or updating them that if the user goes down
         // below perm_type 3 that a entry from area_admin_areas is removed
 
-        if (!is_numeric($data['area_id'])) {
-            $this->stack->push(
-                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'area_id')
-            );
-            return false;
-        }
-
-        if (!is_numeric($data['perm_user_id'])) {
-            $this->stack->push(
-                LIVEUSER_ADMIN_ERROR_DATA, 'exception',
-                array('key' => 'perm_user_id')
-            );
-            return false;
-        }
-
+        // Prepare the params for retrieving the userinfo (checking if the user actually exists).
         $params = array(
             'fields' => array(
                 'perm_type'
@@ -303,7 +304,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'filters' => array(
                 'perm_user_id' => $data['perm_user_id']
             ),
-            'select' => 'row',
+            'select' => 'one',
         );
 
         $result = parent::getUsers($params);
@@ -311,17 +312,19 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
-        if (!array_key_exists('perm_type', $result) || $result['perm_type'] < 3) {
+        // Check if the user has sufficient rights to become an area admin
+        if (!$result || $result < 3) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'The user doesn\'t have sufficient rights')
+                array('msg' => 'The user doesn\'t exist or does not have perm_type >= 3')
             );
             return false;
         }
 
+        // Make the user area admin for this area.
         $result = $this->_storage->insert('area_admin_areas', $data);
 
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -338,12 +341,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeAreaAdmin($filters)
     {
+        // Delete the user from the area_admin_areas table based on the filters provided.
         $result = $this->_storage->delete('area_admin_areas', $filters);
         if ($result === false) {
             return false;
         }
 
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -360,19 +364,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeArea($filters)
     {
+        // Generate the remove filters, return 0 or false immediatly
         $filters = $this->_makeRemoveFilter($filters, 'area_id', 'getAreas');
         if (!$filters) {
             return $filters;
         }
 
+        // Remove the area admin (leave no mess behind in the tables) using the filters (containing only the area_id).
         $result = $this->removeAreaAdmin($filters);
         if ($result === false) {
             return false;
         }
 
+        // Remove the area using the Perm:Simple container.
         $result = parent::removeArea($filters);
 
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -389,19 +396,22 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeRight($filters)
     {
+        // First take care of any mess which may possibly be left behind (the implied_rights table).
         $result = $this->unimplyRight($filters, false);
         if ($result === false) {
             return false;
         }
 
+        // Remove the right.
         $result = parent::removeRight($filters);
         if ($result === false) {
             return false;
         }
 
+         // Update the has_implied status (clean up the database so no invalid information is left behind).
         $this->_updateImpliedStatus($filters);
 
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -429,6 +439,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getSubGroups($params = array())
     {
+        // Define the tables which can be included the the query and define the root table.
         $selectable_tables = array('group_subgroups');
         $root_table = 'group_subgroups';
 
@@ -460,6 +471,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getImpliedRight($params = array())
     {
+        // Define the tables which can be included the the query and define the root table.
         $selectable_tables = array('right_implied');
         $root_table = 'right_implied';
 
@@ -480,6 +492,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function removeGroup($filters)
     {
+        // If recursive is set, prepare a params array, get the subgroups and if there are any
+        // do a recursive call (again providing the recursive param, in case there are more subgroups).
         if (array_key_exists('recursive', $filters)) {
             $param = array(
                 'fields' => array(
@@ -494,6 +508,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 return false;
             }
 
+            // Loop through the available subgroups and remove them.
             foreach ($result as $subGroupId) {
                 $filter = array('group_id' => $subGroupId['subgroup_id'], 'recursive' => true);
                 $result = $this->removeGroup($filter);
@@ -504,11 +519,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             unset($filters['recursive']);
         }
 
+        // Unassign any subgroups that may have been assigned to this group. (clean up the database)
         $result = $this->unassignSubGroup($filters);
         if ($result === false) {
             return false;
         }
 
+        // Remove the group using Perm:Medium.
         return parent::removeGroup($filters);
     }
 
@@ -525,32 +542,38 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _updateImpliedStatus($filters)
     {
+        // Prepare the params array for getting the rights which will be updated, based on the provided filters array.
         $params = array(
             'fields' => array('right_id'),
             'filters' => $filters,
             'select' => 'col',
         );
 
+        // Get the rights.
         $rights = $this->getRights($params);
         if ($rights === false) {
             return false;
         }
 
+        // Prepare the filters for fetching the amount of rights.
         $filters = array('right_id' => $rights);
 
+        // Count the rights which are included in the right_implied table.
         $count = $this->_storage->selectCount('right_implied', 'right_id', $filters);
         if ($count === false) {
             return false;
         }
 
+        // Update the has_implied with true of false (if count has a value true, otherwise false)
         $data = array('has_implied' => (bool)$count);
 
+        // Perform the update.
         $result = $this->updateRight($data, $filters);
         if ($result === false) {
             return false;
         }
 
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -564,15 +587,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getParentGroup($subGroupId)
     {
-        if (!is_numeric($subGroupId)) {
-            $this->stack->push(
-                LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Something wrong with your param, make sure its a
-                               numeric value and not empty')
-            );
-            return false;
-        }
-
+        // Prepare the params array for the _getSubGroups().
         $params = array(
             'fields' => array(
                 'group_id'
@@ -624,17 +639,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         if (!array_key_exists('subgroups', $params)
             && !array_key_exists('hierarchy', $params)
         ) {
+            // Don't have to deal with subgroups
             return parent::getGroups($params);
-        }
-
-        if (array_key_exists('select', $params)
-            && ($params['select'] == 'one' || $params['select'] == 'row')
-        ) {
-            $this->stack->push(
-                LIVEUSER_ADMIN_ERROR, 'exception',
-                array('msg' => 'Setting "subgroups" or "hierarchy" requires select to be set to "col" or "all"')
-            );
-            return false;
         }
 
         if (array_key_exists('hierarchy', $params)) {
@@ -673,8 +679,20 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getGroupsWithSubgroups($params)
     {
+        if (array_key_exists('select', $params)
+            && ($params['select'] == 'one' || $params['select'] == 'row')
+        ) {
+            // Don't allow 'subgroups' with 'select' if 'one' or 'row'
+            $this->stack->push(
+                LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Setting "subgroups" requires select to be set to "col" or "all"')
+            );
+            return false;
+        }
+
         $subgroups = is_array($params['subgroups']) ? $params['subgroups'] : array();
 
+        // Prepare the params for the getGroups call on Perm::Medium.
         $tmp_params = array(
             'fields' => array('group_id'),
             'select' => 'col',
@@ -688,7 +706,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $subgroup_ids = $result;
 
+        // Retrieve all the group_ids from all the subgroups in a do-while loop.
         do {
+            // Prepare the params for the getGroups call on Perm::Medium.
             $tmp_params = array(
                 'fields' => array(
                     'subgroup_id',
@@ -697,11 +717,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                 'select' => 'col',
             );
 
+            // Do not include groups that have already been fetched
             $tmp_params['filters']['subgroup_id'] = array(
                 'op' => 'NOT IN',
                 'value' => $result,
             );
 
+            // Merge 'group_id' filter if needed
             if (array_key_exists('group_id', $tmp_params['filters'])
                 && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
             ) {
@@ -716,8 +738,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             }
 
             $result = array_merge($result, (array)$subgroup_ids);
+        // If there were more subgroups, loop again and try to retrieve the subgroups under the current subgroup.
         } while(!empty($subgroup_ids));
 
+        // Merge 'group_id' filter if needed
         if (array_key_exists('filters', $params)
             && array_key_exists('group_id', $params['filters'])
             && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
@@ -758,6 +782,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getGroupsWithHierarchy($params)
     {
+        // Sanity checks on the provided params.
         if ((!array_key_exists('rekey', $params) || !$params['rekey'])
             || (array_key_exists('group', $params) && $params['group'])
             || (array_key_exists('select', $params) && $params['select'] != 'all')
@@ -771,11 +796,13 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return false;
         }
 
+        // Get the initial groups.
         $groups = parent::getGroups($params);
         if (!$groups) {
             return $groups;
         }
 
+        // Get the the subgroup id's for these initials groups.
         $tmp_params = array(
             'fields' => array(
                 'group_id',
@@ -793,8 +820,11 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         $hierarchy = is_array($params['hierarchy']) ? $params['hierarchy'] : array();
 
+        // Loop through the subgroups. In each loop, perform a recursive 
+        // call the the subgroup_ids that are assigned to the current group.
         foreach ($subgroups as $group_id => $subgroup_ids) {
             $params['filters'] = $hierarchy;
+            // Merge 'group_id' filter with 'hierachy' if needed
             if (array_key_exists('group_id', $params['filters'])
                 && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
             ) {
@@ -847,6 +877,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function getRights($params = array())
     {
+        // Determine of 'inherited', 'implied' or 'hierarchy' is set
+        // 'hierarchy' means that 'implied' also is set
         $inherited = array_key_exists('inherited', $params);
         if (array_key_exists('hierarchy', $params)) {
             $hierarchy = $implied = true;
@@ -856,6 +888,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $hierarchy = false;
         }
 
+        // Sanity check on the provided params if the inherited of implied param is set.
         if ($inherited || $implied) {
             if ((!array_key_exists('rekey', $params) || !$params['rekey'])
                 || (array_key_exists('group', $params) && $params['group'])
@@ -864,12 +897,15 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             ) {
                 $this->stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => "Setting 'implied' or 'inherited' is only allowed if 'rekey' is enabled, ".
-                        "'group' is disabled, 'select' is 'all' and the first field is 'right_id'")
+                    array('msg' => "Setting 'inherited', 'implied' or 'hierarchy'".
+                        " is only allowed if 'rekey' is enabled, 'group' is disabled".
+                        ", 'select' is 'all' and the first field is 'right_id'")
                 );
                 return false;
             }
 
+            // Extra sanity check on the provided params if the implied param is set
+            // (has_implied should be included in the fields.
             if ($implied
                 && array_key_exists('fields', $params)
                 && !in_array('has_implied', $params['fields'])
@@ -897,6 +933,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             }
 
             if (!empty($inherited_rights)) {
+                // Loop through the resulting inherited rights, check if they already exist in the current rights array
+                // If not: set the type to inherited and add it to the rights array.
                 foreach ($inherited_rights as $right_id => $right) {
                     if (isset($rights[$right_id])) {
                         continue;
@@ -917,11 +955,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $_rights = $rights;
             $rights = array();
 
+            // Loop through the current rights array (backupped in _rights) and
+            // set the type to granted if the type isn't set yet.
             foreach ($_rights as $right_id => $right) {
                 if (!array_key_exists('_type', $right)) {
                     $right['_type'] = 'granted';
                 }
                 $rights[$right_id] = $right;
+                // If has_implied isn't true, continue (no work to do).
                 if (!$right['has_implied']) {
                     continue;
                 }
@@ -934,6 +975,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     continue;
                 }
 
+                // Loop through the resulting rights, set the type and order the array based 
+                // on the params['implied'] value.
                 foreach ($implied_rights as $implied_right_id => $right) {
                     if (isset($rights[$implied_right_id])) {
                         continue;
@@ -941,6 +984,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
                     $right['_type'] = 'implied';
 
+                    // If hierarchy: add the resulting rights to the right they belong to (in implied_rights)
                     if ($hierarchy) {
                         $rights[$right_id]['implied_rights'][$implied_right_id] = $right;
                     } else {
@@ -948,6 +992,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     }
                 }
             }
+        // If the select is set to all (or not set at all) and more than one field is set, 
+        // set the type to granted if it isn't set.
         } elseif ((!array_key_exists('select', $params) || $params['select'] == 'all')
            && (!array_key_exists('fields', $params)
                 || count($params['fields']) > 1
@@ -995,6 +1041,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getImpliedRights($params, $right_id)
     {
+        // Define the selectable tables and define the root table.
         $selectable_tables = array('right_implied', 'rights');
         $root_table = 'right_implied';
 
@@ -1004,11 +1051,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'filters' => array('right_id' => $right_id),
         );
 
+        // Get the implied_right right_id's.
+        // If there are no implied rights (or an error occured), return.
         $result = $this->_makeGet($param, $root_table, $selectable_tables);
-        if ($result === false) {
-            return false;
+        if (!$result) {
+            return $result;
         }
 
+        // Merge 'right_id' filter with 'implied' if needed
         $params['filters'] = is_array($params['implied']) ? $params['implied'] : array();
         if (array_key_exists('right_id', $params['filters'])
             && (!is_array($params['filters']['right_id']) || !array_key_exists('value', $params['filters']['right_id']))
@@ -1052,6 +1102,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getInheritedRights($params)
     {
+        // Prepare the params with the provided fiters in the params array.
         $param = array(
             'fields' => array('group_id'),
             'select' => 'col',
@@ -1059,13 +1110,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             'subgroups' => is_array($params['inherited']) ? $params['inherited'] : array(),
         );
 
+        // Get the groups based on the params.
+        // If there are no subgroups (or an error occured), return.
         $result = $this->getGroups($param);
-        if ($result === false) {
-            return false;
-        } elseif (empty($result)) {
-            return array();
+        if (!$result) {
+            return $result;
         }
 
+        // Merge 'group_id' filter if needed
         if (array_key_exists('filters', $params)
             && array_key_exists('group_id', $params['filters'])
             && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
