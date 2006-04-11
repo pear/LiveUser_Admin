@@ -153,6 +153,29 @@ class LiveUser_Admin_Storage
     }
 
     /**
+     * Static method to set defaults into a select params array
+     *
+     * @param array params array
+     * @return array params array
+     *
+     * @access public
+     */
+    function setSelectDefaultParams($params)
+    {
+        $params['fields'] = array_key_exists('fields', $params) ? $params['fields'] : array('*');
+        $params['with'] = array_key_exists('with', $params) ? $params['with'] : array();
+        $params['filters'] = array_key_exists('filters', $params) ? $params['filters'] : array();
+        $params['orders'] = array_key_exists('orders', $params) ? $params['orders'] : array();
+        $params['rekey'] = array_key_exists('rekey', $params) ? $params['rekey'] : false;
+        $params['group'] = array_key_exists('group', $params) ? $params['group'] : false;
+        $params['limit'] = array_key_exists('limit', $params) ? $params['limit'] : null;
+        $params['offset'] = array_key_exists('offset', $params) ? $params['offset'] : null;
+        $params['select'] = array_key_exists('select', $params) ? $params['select'] : 'all';
+
+        return $params;
+    }
+
+    /**
      * properly disconnect from resources
      *
      * @access  public

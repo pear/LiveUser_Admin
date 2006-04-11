@@ -189,7 +189,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function implyRight($data)
     {
         // Check if the implied_right_id is the same as the right_id (you can't imply itself)
-        if (array_key_exists('right_id', $data) && array_key_exists('implied_right_id', $data)
+        if (array_key_exists('right_id', $data)
+            && array_key_exists('implied_right_id', $data)
             && $data['implied_right_id'] == $data['right_id']
         ) {
             $this->stack->push(
@@ -643,6 +644,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             return parent::getGroups($params);
         }
 
+        $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
+
         if (array_key_exists('hierarchy', $params)) {
             return $this->_getGroupsWithHierarchy($params);
         }
@@ -679,9 +682,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
      */
     function _getGroupsWithSubgroups($params)
     {
-        if (array_key_exists('select', $params)
-            && ($params['select'] == 'one' || $params['select'] == 'row')
-        ) {
+        if ($params['select'] == 'one' || $params['select'] == 'row') {
             // Don't allow 'subgroups' with 'select' if 'one' or 'row'
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -725,9 +726,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
             // Merge 'group_id' filter if needed
             if (array_key_exists('group_id', $tmp_params['filters'])
-                && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+                && (!is_array($params['filters']['group_id'])
+                    || !array_key_exists('value', $params['filters']['group_id'])
+                )
             ) {
-                $tmp_params['filters']['group_id'] = array_intersect($subgroup_ids, (array)$params['subgroups']['group_id']);
+                $tmp_params['filters']['group_id'] = array_intersect(
+                    $subgroup_ids,
+                    (array)$params['subgroups']['group_id']
+                );
             } else {
                 $tmp_params['filters']['group_id'] = $subgroup_ids;
             }
@@ -744,7 +750,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         // Merge 'group_id' filter if needed
         if (array_key_exists('filters', $params)
             && array_key_exists('group_id', $params['filters'])
-            && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+            && (!is_array($params['filters']['group_id'])
+                || !array_key_exists('value', $params['filters']['group_id'])
+            )
         ) {
             $params['filters']['group_id'] = array_intersect($result, (array)$params['filters']['group_id']);
         } else {
@@ -783,10 +791,8 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
     function _getGroupsWithHierarchy($params)
     {
         // Sanity checks on the provided params.
-        if ((!array_key_exists('rekey', $params) || !$params['rekey'])
-            || (array_key_exists('group', $params) && $params['group'])
-            || (array_key_exists('select', $params) && $params['select'] != 'all')
-            || (array_key_exists('fields', $params) && reset($params['fields']) !== 'group_id')
+        if (!$params['rekey'] || $params['group'] || $params['select'] != 'all'
+            || (reset($params['fields']) !== 'group_id' && reset($params['fields']) !== '*')
         ) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -826,9 +832,14 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             $params['filters'] = $hierarchy;
             // Merge 'group_id' filter with 'hierachy' if needed
             if (array_key_exists('group_id', $params['filters'])
-                && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+                && (!is_array($params['filters']['group_id'])
+                    || !array_key_exists('value', $params['filters']['group_id'])
+                )
             ) {
-                $params['filters']['group_id'] = array_intersect($subgroup_ids, (array)$params['filters']['group_id']);
+                $params['filters']['group_id'] = array_intersect(
+                    $subgroup_ids,
+                    (array)$params['filters']['group_id']
+                );
             } else {
                 $params['filters']['group_id'] = $subgroup_ids;
             }
@@ -890,10 +901,10 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
         // Sanity check on the provided params if the inherited of implied param is set.
         if ($inherited || $implied) {
-            if ((!array_key_exists('rekey', $params) || !$params['rekey'])
-                || (array_key_exists('group', $params) && $params['group'])
-                || (array_key_exists('select', $params) && $params['select'] != 'all')
-                || (array_key_exists('fields', $params) && reset($params['fields']) !== 'right_id')
+            $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
+
+            if (!$params['rekey'] || $params['group'] || $params['select'] !== 'all'
+                || (reset($params['fields']) !== 'right_id' && reset($params['fields']) !== '*')
             ) {
                 $this->stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
@@ -906,10 +917,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
 
             // Extra sanity check on the provided params if the implied param is set
             // (has_implied should be included in the fields.
-            if ($implied
-                && array_key_exists('fields', $params)
-                && !in_array('has_implied', $params['fields'])
-            ) {
+            if ($implied && !in_array('has_implied', $params['fields'])) {
                 $this->stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
                     array('msg' => "Setting 'implied' requires that 'has_implied' field needs to be in the select list")
@@ -992,13 +1000,16 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
                     }
                 }
             }
+
+            return $rights;
+        }
+
+        $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
+
         // If the select is set to all (or not set at all) and more than one field is set, 
         // set the type to granted if it isn't set.
-        } elseif ((!array_key_exists('select', $params) || $params['select'] == 'all')
-           && (!array_key_exists('fields', $params)
-                || count($params['fields']) > 1
-                || reset($params['fields']) === '*'
-            )
+        if ($params['select'] == 'all'
+           && (count($params['fields']) > 1 || reset($params['fields']) === '*')
         ) {
             foreach ($rights as $right_id => $right) {
                 if (!isset($rights[$right_id]['_type']) || !$rights[$right_id]['_type']) {
@@ -1061,7 +1072,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         // Merge 'right_id' filter with 'implied' if needed
         $params['filters'] = is_array($params['implied']) ? $params['implied'] : array();
         if (array_key_exists('right_id', $params['filters'])
-            && (!is_array($params['filters']['right_id']) || !array_key_exists('value', $params['filters']['right_id']))
+            && (!is_array($params['filters']['right_id'])
+                || !array_key_exists('value', $params['filters']['right_id'])
+            )
         ) {
             $params['filters']['right_id'] = array_intersect($result, (array)$params['filters']['right_id']);
         } else {
@@ -1120,7 +1133,9 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
         // Merge 'group_id' filter if needed
         if (array_key_exists('filters', $params)
             && array_key_exists('group_id', $params['filters'])
-            && (!is_array($params['filters']['group_id']) || !array_key_exists('value', $params['filters']['group_id']))
+            && (!is_array($params['filters']['group_id'])
+                || !array_key_exists('value', $params['filters']['group_id'])
+            )
         ) {
             $params['filters']['group_id'] = array_intersect($result, (array)$params['filters']['group_id']);
         } else {

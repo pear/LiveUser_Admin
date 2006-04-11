@@ -331,23 +331,30 @@ class LiveUser_Admin_Auth_Common
      *                 'select'  - determines what query method to use:
      *                             'one' -> queryOne, 'row' -> queryRow,
      *                             'col' -> queryCol, 'all' ->queryAll (default)
+     *                 'selectable_tables' - array list of tables that may be
+     *                             joined to in this query, the first element is
+     *                             the root table from which the joins are done
      * @return bool|array false on failure or array with selected data
      *
      * @access public
      */
     function getUsers($params = array())
     {
-        $fields = array_key_exists('fields', $params) ? $params['fields'] : array();
-        $filters = array_key_exists('filters', $params) ? $params['filters'] : array();
-        $orders = array_key_exists('orders', $params) ? $params['orders'] : array();
-        $rekey = array_key_exists('rekey', $params) ? $params['rekey'] : false;
-        $group = array_key_exists('group', $params) ? $params['group'] : false;
-        $limit = array_key_exists('limit', $params) ? $params['limit'] : null;
-        $offset = array_key_exists('offset', $params) ? $params['offset'] : null;
-        $select = array_key_exists('select', $params) ? $params['select'] : 'all';
+        if (array_key_exists('selectable_tables', $params)
+            && !empty($params['selectable_tables'])
+            && is_array($params['selectable_tables'])
+        ) {
+            $selectable_tables = $params['selectable_tables'];
+        } else {
+            $selectable_tables = array('users');
+        }
+        $root_table = reset($selectable_tables);
 
-        return $this->_storage->select($select, $fields, $filters, $orders,
-            $rekey, $group, $limit, $offset, 'users', array('users'));
+        $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
+
+        return $this->_storage->select($params['select'], $params['fields'],
+            $params['filters'], $params['orders'], $params['rekey'], $params['group'],
+            $params['limit'], $params['offset'], $root_table, $selectable_tables);
     }
 
     /**

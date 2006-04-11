@@ -674,23 +674,16 @@ class LiveUser_Admin_Perm_Simple
      */
     function _makeGet($params, $root_table, $selectable_tables)
     {
-        $fields = array_key_exists('fields', $params) ? $params['fields'] : array();
-        $with = array_key_exists('with', $params) ? $params['with'] : array();
-        $filters = array_key_exists('filters', $params) ? $params['filters'] : array();
-        $orders = array_key_exists('orders', $params) ? $params['orders'] : array();
-        $rekey = array_key_exists('rekey', $params) ? $params['rekey'] : false;
-        $group = array_key_exists('group', $params) ? $params['group'] : false;
-        $limit = array_key_exists('limit', $params) ? $params['limit'] : null;
-        $offset = array_key_exists('offset', $params) ? $params['offset'] : null;
-        $select = array_key_exists('select', $params) ? $params['select'] : 'all';
+        $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
 
         // ensure that all $with fields are fetched
-        $fields = array_merge($fields, array_keys($with));
+        $params['filters'] = array_merge($params['filters'], array_keys($params['with']));
 
-        $data = $this->_storage->select($select, $fields, $filters, $orders,
-            $rekey, $group, $limit, $offset, $root_table, $selectable_tables);
+        $data = $this->_storage->select($params['select'], $params['fields'],
+            $params['filters'], $params['orders'], $params['rekey'], $params['group'],
+            $params['limit'], $params['offset'], $root_table, $selectable_tables);
 
-        if (!empty($with) && is_array($data)) {
+        if (!empty($params['with']) && is_array($data)) {
             foreach ($data as $key => $row) {
                 foreach ($params['with'] as $field => $with_params) {
                     $with_params['filters'][$field] = $row[$field];
@@ -731,7 +724,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function getUsers($params = array())
     {
-        $selectable_tables = $this->_findSelectableTables('getUsers' , $params);
+        $selectable_tables = $this->_findSelectableTables('getUsers', $params);
         $root_table = reset($selectable_tables);
 
         return $this->_makeGet($params, $root_table, $selectable_tables);

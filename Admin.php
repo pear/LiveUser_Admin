@@ -62,6 +62,7 @@
  */
 
 require_once 'LiveUser.php';
+require_once 'LiveUser/Admin/Storage.php';
 
 /**#@+
  * Error related constants definition
@@ -536,24 +537,22 @@ class LiveUser_Admin
      *
      * @access public
      */
-    function getUsers($param = array())
+    function getUsers($params = array())
     {
-        if (array_key_exists('select', $param)) {
-            if ($param['select'] != 'row' && $param['select'] != 'all') {
-                $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => 'Select must be "row" or "all"'));
-                return false;
-            }
-        } else {
-            $param['select'] = 'all';
+        $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
+
+        if ($params['select'] != 'row' && $params['select'] != 'all') {
+            $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
+                array('msg' => 'Select must be "row" or "all"'));
+            return false;
         }
 
-        if (array_key_exists('container', $param)
-            && $param['container'] == 'auth'
+        if (array_key_exists('container', $params)
+            && $params['container'] == 'auth'
         ) {
-            return $this->_getUsersByAuth($param);
+            return $this->_getUsersByAuth($params);
         }
-        return $this->_getUsersByPerm($param);
+        return $this->_getUsersByPerm($params);
     }
 
     /**
@@ -564,7 +563,7 @@ class LiveUser_Admin
      *
      * @access private
      */
-    function _getUsersByPerm($permParam = array())
+    function _getUsersByPerm($permParams = array())
     {
         if (!is_object($this->perm)) {
             $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -572,8 +571,8 @@ class LiveUser_Admin
             return false;
         }
 
-        $first = ($permParam['select'] == 'row');
-        $permUsers = $this->perm->getUsers($permParam);
+        $first = ($permParams['select'] == 'row');
+        $permUsers = $this->perm->getUsers($permParams);
         if (!$permUsers) {
             return $permUsers;
         }
@@ -590,12 +589,14 @@ class LiveUser_Admin
                 return false;
             }
 
-            $authFilter = array('filters' => array('auth_user_id' => $permData['auth_user_id']));
-            $authData = $this->auth->getUsers($authFilter);
+            $authParams = array(
+                'filters' => array('auth_user_id' => $permData['auth_user_id']),
+                'select' => 'row',
+            );
+            $authData = $this->auth->getUsers($authParams);
             if (!$authData) {
                 continue;
             }
-            $authData = array_shift($authData);
 
             if ($first) {
                 return LiveUser::arrayMergeClobber($permData, $authData);
@@ -614,7 +615,7 @@ class LiveUser_Admin
      *
      * @access private
      */
-    function _getUsersByAuth($authParam = array(), $first = false)
+    function _getUsersByAuth($authParams = array())
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -622,8 +623,8 @@ class LiveUser_Admin
             return false;
         }
 
-        $first = ($authParam['select'] == 'row');
-        $authUsers = $this->auth->getUsers($authParam);
+        $first = ($authParams['select'] == 'row');
+        $authUsers = $this->auth->getUsers($authParams);
         if (!$authUsers) {
             return $authUsers;
         }
@@ -634,13 +635,14 @@ class LiveUser_Admin
 
         $users = array();
         foreach ($authUsers as $authData) {
-            $permData = $this->perm->getUsers(array(
+            $permParams = array(
                 'filters' => array(
                     'auth_user_id' => $authData['auth_user_id'],
                     'auth_container_name' => $this->authContainerName,
                 ),
                 'select' => 'row',
-            ));
+            );
+            $permData = $this->perm->getUsers($permParams);
             if (!$permData) {
                 continue;
             }
