@@ -117,7 +117,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function addGroup($data)
     {
         $result = $this->_storage->insert('groups', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -136,7 +136,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroup($data, $filters)
     {
         $result = $this->_storage->update('groups', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -169,7 +169,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->delete('groups', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -212,7 +212,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->insert('grouprights', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -231,7 +231,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function updateGroupRight($data, $filters)
     {
         $result = $this->_storage->update('grouprights', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -249,7 +249,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function revokeGroupRight($filters)
     {
         $result = $this->_storage->delete('grouprights', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -274,7 +274,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->insert('groupusers', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -292,7 +292,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     function removeUserFromGroup($filters)
     {
         $result = $this->_storage->delete('groupusers', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 

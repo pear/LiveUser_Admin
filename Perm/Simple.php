@@ -197,7 +197,7 @@ class LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->insert('perm_users', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -216,7 +216,7 @@ class LiveUser_Admin_Perm_Simple
     function updateUser($data, $filters)
     {
         $result = $this->_storage->update('perm_users', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -244,7 +244,7 @@ class LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->delete('perm_users', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -260,7 +260,7 @@ class LiveUser_Admin_Perm_Simple
     function addRight($data)
     {
         $result = $this->_storage->insert('rights', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -279,7 +279,7 @@ class LiveUser_Admin_Perm_Simple
     function updateRight($data, $filters)
     {
         $result = $this->_storage->update('rights', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -307,7 +307,7 @@ class LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->delete('rights', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -323,7 +323,7 @@ class LiveUser_Admin_Perm_Simple
     function addArea($data)
     {
         $result = $this->_storage->insert('areas', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -342,7 +342,7 @@ class LiveUser_Admin_Perm_Simple
     function updateArea($data, $filters)
     {
         $result = $this->_storage->update('areas', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -370,7 +370,7 @@ class LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->delete('areas', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -386,7 +386,7 @@ class LiveUser_Admin_Perm_Simple
     function addApplication($data)
     {
         $result = $this->_storage->insert('applications', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -405,7 +405,7 @@ class LiveUser_Admin_Perm_Simple
     function updateApplication($data, $filters)
     {
         $result = $this->_storage->update('applications', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -433,7 +433,7 @@ class LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->delete('applications', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -477,7 +477,7 @@ class LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->insert('userrights', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -496,7 +496,7 @@ class LiveUser_Admin_Perm_Simple
     function updateUserRight($data, $filters)
     {
         $result = $this->_storage->update('userrights', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -514,7 +514,7 @@ class LiveUser_Admin_Perm_Simple
     function revokeUserRight($filters)
     {
         $result = $this->_storage->delete('userrights', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -530,7 +530,7 @@ class LiveUser_Admin_Perm_Simple
     function addTranslation($data)
     {
         $result = $this->_storage->insert('translations', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -549,7 +549,7 @@ class LiveUser_Admin_Perm_Simple
     function updateTranslation($data, $filters)
     {
         $result = $this->_storage->update('translations', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -572,7 +572,7 @@ class LiveUser_Admin_Perm_Simple
         }
 
         $result = $this->_storage->delete('translations', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
