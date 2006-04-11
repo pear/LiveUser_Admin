@@ -269,7 +269,7 @@ class LiveUser_Admin_Auth_Common
             $data['passwd'] = $this->encryptPW($data['passwd']);
         }
         $result = $this->_storage->insert('users', $data);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -291,7 +291,7 @@ class LiveUser_Admin_Auth_Common
             $data['passwd'] = $this->encryptPW($data['passwd']);
         }
         $result = $this->_storage->update('users', $data, $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
@@ -309,7 +309,7 @@ class LiveUser_Admin_Auth_Common
     function removeUser($filters)
     {
         $result = $this->_storage->delete('users', $filters);
-        // notify observer
+        // todo: notify observer
         return $result;
     }
 
