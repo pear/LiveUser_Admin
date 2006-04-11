@@ -22,6 +22,18 @@ $notes = <<<EOT
 - remove artificial limitation that prevented groups to have multiple parents
 - fixed PDO storage layer queryAll() method (bug #7213)
 - expanded error handling in Log instance creation
+- fixed outdated API call to getRights() in _getInheritedRights() (bug #7236)
+- made translations columns wider for example1
+- replace isset() with array_key_exists() where applicable
+- added link to area admin area test to the menu in example1
+- reworked getRights() and getGroups() API for recursive reads
+  (related to bug #7241) *BC break*
+  Set the filter parameters for the recursion explicitly. For getGroups() in the
+  'subgroups', 'hierarchy' keys (note that hierarchy is now no longer specified
+  by setting 'subgroups' => 'hierarchy'). For getRights() 'inherited', 'implied'
+  and 'hierarchy' (note that hierarchy is now no longer specified by setting
+  'implied' => 'hierarchy';).
+- expanded outputRightsConstants() filtering
 EOT;
 
 $description = <<<EOT
