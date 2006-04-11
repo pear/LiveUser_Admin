@@ -391,18 +391,24 @@ class LiveUser_Admin
     /**
      * Add a user to both containers.
      *
-     * @param  array authentication user data
-     * @param int permission user type
+     * @param  array auth user data and perm type
      * @return int|bool perm user id or false
      *
      * @access public
      */
-    function addUser($data, $type = LIVEUSER_USER_TYPE_ID)
+    function addUser($data)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Perm and/or Auth container not set.'));
             return false;
+        }
+
+        if (array_key_exists('perm_type', $data)) {
+            $type = $data['perm_type'];
+            unset($data['perm_type']);
+        } else {
+            $type = LIVEUSER_USER_TYPE_ID;
         }
 
         $authUserId = $this->auth->addUser($data);
@@ -421,14 +427,13 @@ class LiveUser_Admin
     /**
      * Changes user data for both containers.
      *
+     * @param  array auth user data and perm type
      * @param int permission user id
-     * @param  array authentication user data
-     * @param int permission user type
      * @return int|bool affected rows on success or false otherwise
      *
      * @access public
      */
-    function updateUser($permUserId, $data, $type = null)
+    function updateUser($data, $permUserId)
     {
         if (!is_object($this->auth) || !is_object($this->perm)) {
             $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
@@ -450,6 +455,13 @@ class LiveUser_Admin
             return false;
         }
 
+        if (array_key_exists('perm_type', $data)) {
+            $type = $data['perm_type'];
+            unset($data['perm_type']);
+        } else {
+            $type = null;
+        }
+
         $this->setAdminAuthContainer($permData['auth_container_name']);
         $filters = array('auth_user_id' => $permData['auth_user_id']);
         $result = $this->auth->updateUser($data, $filters);
@@ -462,9 +474,7 @@ class LiveUser_Admin
             return true;
         }
 
-        $data = array(
-            'perm_type' => $type
-        );
+        $data = array('perm_type' => $type);
         $filters = array('perm_user_id' => $permUserId);
         return $this->perm->updateUser($data, $filters);
     }
@@ -513,15 +523,20 @@ class LiveUser_Admin
 
     /**
      * Finds and gets full userinfo by filtering inside the given container
+     * Note that this method is not particularily efficient, as it fetches
+     * the data in the primary container in a single call, but requires one call
+     * to the secondary container for every user returned from the primary container
      *
-     * @param  string either 'auth' or 'perm' to determine if users should first
-     *                be searched in the 'auth' or 'perm' container
      * @param  array params (as for getUsers()
+     *          with an additional optional key 'container' 'perm' (default) or
+                'auth' to determine the primary and secondary container.
+                data is first fetched from the primary container and then
+                combined with data from the secondary container if available
      * @return array|bool array with userinfo if found on success or false otherwise
      *
      * @access public
      */
-    function getUsers($container = 'perm', $param = array())
+    function getUsers($param = array())
     {
         if (array_key_exists('select', $param)) {
             if ($param['select'] != 'row' && $param['select'] != 'all') {
@@ -533,10 +548,12 @@ class LiveUser_Admin
             $param['select'] = 'all';
         }
 
-        if ($container == 'perm') {
-            return $this->_getUsersByPerm($param);
+        if (array_key_exists('container', $param)
+            && $param['container'] == 'auth'
+        ) {
+            return $this->_getUsersByAuth($param);
         }
-        return $this->_getUsersByAuth($param);
+        return $this->_getUsersByPerm($param);
     }
 
     /**
