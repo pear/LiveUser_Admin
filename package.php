@@ -34,6 +34,8 @@ $notes = <<<EOT
   and 'hierarchy' (note that hierarchy is now no longer specified by setting
   'implied' => 'hierarchy';).
 - expanded outputRightsConstants() filtering
+- changed the getUsers(), addUser() and updateUser() API to be more in line
+  with the container APIs *BC break* (req #7025)
 EOT;
 
 $description = <<<EOT
