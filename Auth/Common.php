@@ -91,6 +91,16 @@ class LiveUser_Admin_Auth_Common
     var $_storage = null;
 
     /**
+     * Key (method names), with array lists of selectable tables for the given method
+     *
+     * @var array
+     * @access public
+     */
+    var $selectable_tables = array(
+        'getUsers' => array('users'),
+    );
+
+    /**
      * Set posible encryption modes.
      *
      * @access private
@@ -340,13 +350,11 @@ class LiveUser_Admin_Auth_Common
      */
     function getUsers($params = array())
     {
-        if (array_key_exists('selectable_tables', $params)
-            && !empty($params['selectable_tables'])
-            && is_array($params['selectable_tables'])
-        ) {
+        $selectable_tables = array();
+        if (array_key_exists('selectable_tables', $params)) {
             $selectable_tables = $params['selectable_tables'];
-        } else {
-            $selectable_tables = array('users');
+        } elseif (array_key_exists('getUsers', $this->selectable_tables)) {
+            $selectable_tables = $this->selectable_tables[$method];
         }
         $root_table = reset($selectable_tables);
 

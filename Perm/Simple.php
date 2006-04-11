@@ -636,10 +636,7 @@ class LiveUser_Admin_Perm_Simple
     function _findSelectableTables($method, $params = array())
     {
         $selectable_tables = array();
-        if (array_key_exists('selectable_tables', $params)
-            && !empty($params['selectable_tables'])
-            && is_array($params['selectable_tables'])
-        ) {
+        if (array_key_exists('selectable_tables', $params)) {
             $selectable_tables = $params['selectable_tables'];
         } elseif (array_key_exists($method, $this->selectable_tables)) {
             $selectable_tables = $this->selectable_tables[$method];
