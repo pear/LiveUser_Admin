@@ -36,6 +36,8 @@ $notes = <<<EOT
 - expanded outputRightsConstants() filtering
 - changed the getUsers(), addUser() and updateUser() API to be more in line
   with the container APIs *BC break* (req #7025)
+- added LiveUser_Admin_Storage::setSelectDefaultParams() to centralize default setting
+- added selectable_tables property to auth backend
 EOT;
 
 $description = <<<EOT
