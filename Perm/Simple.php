@@ -723,7 +723,7 @@ class LiveUser_Admin_Perm_Simple
             if (!empty($missing)) {
                 $this->stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => 'The following "with" elements are not included in the result: '.implode($missing))
+                    array('msg' => 'The following "with" elements are not included in the result: '.implode(', ', $missing))
                 );
                 return false;
             }
