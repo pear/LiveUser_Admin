@@ -44,6 +44,7 @@ $params = array(
     'fields' => array(
         'right_id',
         'right_define_name',
+        'group_id'
     ),
     'with' => array(
         'group_id' => array(
@@ -55,6 +56,7 @@ $params = array(
     'filters' => array(
         'group_id' => $groups[$group]['group_id']
     ),
+    'by_group' => true,
     'limit' => 10,
     'offset' => 0,
 );
@@ -93,7 +95,8 @@ $params = array(
     ),
     'filters' => array(
         'group_id' => $groups[$group]['group_id']
-    )
+    ),
+    'by_group' => true,
 );
 $rights_group = $admin->perm->getRights($params);
 if ($rights_group === false) {
@@ -122,7 +125,8 @@ if ($rights_group === false) {
             'filters' => array(
                 'right_id' => $rights_group[$right]['right_id'],
                 'group_id' => $groups[$group]['group_id']
-            )
+            ),
+            'by_group' => true,
         );
         $result = $admin->perm->getRights($params);
 
@@ -141,6 +145,7 @@ if ($rights_group === false) {
 $params = array(
     'fields' => array(
         'right_id',
+        'group_id',
     ),
     'with' => array(
         'group_id' => array(
@@ -150,6 +155,7 @@ $params = array(
             )
         ),
     ),
+    'by_group' => true,
 );
 
 $allGroups = $admin->perm->getRights($params);
