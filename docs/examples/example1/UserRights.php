@@ -134,7 +134,8 @@ if ($singleRight === false) {
 $params = array(
     'fields' => array(
         'right_id',
-        'right_level'
+        'right_level',
+        'perm_user_id',
     ),
     'with' => array(
         'perm_user_id' => array(
