@@ -99,6 +99,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function LiveUser_Admin_Perm_Medium()
     {
+        // Define the required tables for the Medium container. Used by the query builder
         $this->LiveUser_Admin_Perm_Simple();
         $this->selectable_tables['getUsers'][] = 'groupusers';
         $this->selectable_tables['getGroups'] = array('groups', 'groupusers', 'grouprights', 'rights', 'translations');
@@ -153,16 +154,22 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function removeGroup($filters)
     {
+        // Prepare the filters. Based on the provided filters a new array will be
+        // created with the corresponding group_id's. If the filters are empty,
+        // cause an error or just have no result 0 or false will be returned
         $filters = $this->_makeRemoveFilter($filters, 'group_id', 'getGroups');
         if (!$filters) {
             return $filters;
         }
 
+        // Clean up the database so no unnessacary information is left behind (members, granted rights)
+        // Remove all the users that are members of this group.
         $result = $this->removeUserFromGroup($filters);
         if ($result === false) {
             return false;
         }
 
+        // Remove the group.
         $result = $this->revokeGroupRight($filters);
         if ($result === false) {
             return false;
@@ -192,6 +199,7 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function grantGroupRight($data)
     {
+        // Sanity check on the right level, if not set, use the default
         if (!array_key_exists('right_level', $data)) {
             $data['right_level'] = LIVEUSER_MAX_LEVEL;
         }
@@ -201,7 +209,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             'group_id' => $data['group_id'],
             'right_id' => $data['right_id'],
         );
+
         $count = $this->_storage->selectCount('grouprights', 'right_id', $filters);
+
+        // It did already.. Add an error to the stack.
         if ($count > 0) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -268,7 +279,10 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             'perm_user_id' => $data['perm_user_id'],
             'group_id'     => $data['group_id'],
         );
+
         $count = $this->_storage->selectCount('groupusers', 'group_id', $filters);
+
+        // It already had been added. Return true.
         if ($count > 0) {
             return true;
         }
@@ -328,6 +342,8 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
     {
         $selectable_tables = $this->_findSelectableTables('getRights' , $params);
         $root_table = reset($selectable_tables);
+
+        // If the by_group is present, and the grouprights table is not in the selectable_tables:
         if (array_key_exists('by_group', $params)
             && $params['by_group']
             && !in_array('grouprights', $selectable_tables)
@@ -335,10 +351,13 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
             unset($params['by_group']);
             $key = array_search('userrights', $selectable_tables);
             if ($key) {
+                // add the groupusers, replace the userrights with 
+                // the grouprights and prepend the root table
                 $selectable_tables[0] = 'groupusers';
                 $selectable_tables[$key] = 'grouprights';
                 array_unshift($selectable_tables, $root_table);
             } else {
+                // add the groupusers, prepend the grouprights and the root table
                 $selectable_tables[0] = 'groupusers';
                 array_unshift($selectable_tables, 'grouprights');
                 array_unshift($selectable_tables, $root_table);
@@ -387,16 +406,22 @@ class LiveUser_Admin_Perm_Medium extends LiveUser_Admin_Perm_Simple
      */
     function removeUser($filters)
     {
+        // Prepare the filters. Based on the provided filters a new array will be
+        // created with the corresponding perm_user_id's. If the filters are empty,
+        // cause an error or just have no result 0 or false will be returned
         $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getUsers');
         if (!$filters) {
             return $filters;
         }
 
+        // Remove the users from any group it might be a member of.
+        // If an error occures, return false.
         $result = $this->removeUserFromGroup($filters);
         if ($result === false) {
             return false;
         }
 
+        // remove the user using Perm Simple.
         return parent::removeUser($filters);
     }
 

@@ -141,6 +141,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function LiveUser_Admin_Perm_Simple()
     {
+        // Create the error stack, retrieve the errors using LiveUser_Admin->getErrors().
         $this->stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
     }
 
@@ -154,12 +155,14 @@ class LiveUser_Admin_Perm_Simple
      */
     function init(&$conf)
     {
+        // Sanity check, is there a storage container defined in the configuration.
         if (!array_key_exists('storage', $conf)) {
             $this->stack->push(LIVEUSER_ADMIN_ERROR, 'exception',
                 array('msg' => 'Missing storage configuration array'));
             return false;
         }
 
+        // Set the config to class vars.
         if (is_array($conf)) {
             $keys = array_keys($conf);
             foreach ($keys as $key) {
@@ -169,6 +172,7 @@ class LiveUser_Admin_Perm_Simple
             }
         }
 
+        // Create the storage class, if and error occures, add it to the stack and return false.
         $this->_storage =& LiveUser::storageFactory($conf['storage'], 'LiveUser_Admin_Perm_');
         if ($this->_storage === false) {
             end($conf['storage']);
@@ -192,6 +196,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function addUser($data)
     {
+        // Sanity check. If not present, set the perm_type to the default value.
         if (!array_key_exists('perm_type', $data)) {
             $data['perm_type'] = LIVEUSER_USER_TYPE_ID;
         }
@@ -233,11 +238,15 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeUser($filters)
     {
+        // Prepare the filters. Based on the provided filters a new array will be
+        // created with the corresponding perm_user_id's. If the filters are empty,
+        // cause an error or just have no result 0 or false will be returned
         $filters = $this->_makeRemoveFilter($filters, 'perm_user_id', 'getUsers');
         if (!$filters) {
             return $filters;
         }
 
+        // Revoke all the rights this user might have (clean up the database).
         $result = $this->revokeUserRight($filters);
         if ($result === false) {
             return false;
@@ -296,11 +305,15 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeRight($filters)
     {
+        // Prepare the filters. Based on the provided filters a new array will be
+        // created with the corresponding right_id's. If the filters are empty,
+        // cause an error or just have no result 0 or false will be returned
         $filters = $this->_makeRemoveFilter($filters, 'right_id', 'getRights');
         if (!$filters) {
             return $filters;
         }
 
+        // Revoke this right from any user it might have been assigned to (clean up database)
         $result = $this->revokeUserRight($filters);
         if ($result === false) {
             return false;
@@ -359,11 +372,15 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeArea($filters)
     {
+        // Prepare the filters. Based on the provided filters a new array will be
+        // created with the corresponding area_id's. If the filters are empty,
+        // cause an error or just have no result 0 or false will be returned
         $filters = $this->_makeRemoveFilter($filters, 'area_id', 'getAreas');
         if (!$filters) {
             return $filters;
         }
 
+        // Remove all the rights that are part of this area.
         $result = $this->removeRight($filters);
         if ($result === false) {
             return false;
@@ -422,11 +439,15 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeApplication($filters)
     {
+        // Prepare the filters. Based on the provided filters a new array will be
+        // created with the corresponding application_id's. If the filters are empty,
+        // cause an error or just have no result 0 or false will be returned
         $filters = $this->_makeRemoveFilter($filters, 'application_id', 'getApplications');
         if (!$filters) {
             return $filters;
         }
 
+        // Remove all the area's that are part of this application
         $result = $this->removeArea($filters);
         if ($result === false) {
             return false;
@@ -456,6 +477,7 @@ class LiveUser_Admin_Perm_Simple
      */
     function grantUserRight($data)
     {
+        // Sanity check. Set the right_level to it's default value if it's not set.
         if (!array_key_exists('right_level', $data)) {
             $data['right_level'] = LIVEUSER_MAX_LEVEL;
         }
@@ -467,6 +489,8 @@ class LiveUser_Admin_Perm_Simple
         );
 
         $count = $this->_storage->selectCount('userrights', 'right_id', $filters);
+
+        // The user already has this right, adding an error to the stack and return false.
         if ($count > 0) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR, 'exception',
@@ -566,6 +590,9 @@ class LiveUser_Admin_Perm_Simple
      */
     function removeTranslation($filters)
     {
+        // Prepare the filters. Based on the provided filters a new array will be
+        // created with the corresponding translation_id's. If the filters are empty,
+        // cause an error or just have no result 0 or false will be returned
         $filters = $this->_makeRemoveFilter($filters, 'translation_id', 'getTranslations');
         if (!$filters) {
             return $filters;
@@ -593,17 +620,18 @@ class LiveUser_Admin_Perm_Simple
      */
     function _makeRemoveFilter($filters, $key, $method)
     {
-        // notes:
-        // if all filters apply to the given table only then we can probably
-        // skip running the select ..
-        // also do we not want to allow people to delete the entire contents of
-        // a given table?
-
+        // Do not allow people to delete the entire contents of a given table
         if (empty($filters) || !is_array($filters)) {
             return 0;
         }
 
+        // todo: if all filters apply to the given table only then we can probably skip running the select ..
+
+        // Rewrite filter to only include the provided key, since we cannot
+        // rely on joins in delete for all backends
         if (!isset($filters[$key]) || count($filters) > 1) {
+            // Prepare the params for fetching the column provided. It should 
+            // return an array with only the keys.
             $params = array(
                 'fields' => array($key),
                 'filters' => $filters,
@@ -618,6 +646,7 @@ class LiveUser_Admin_Perm_Simple
                 return 0;
             }
 
+            // Rebuild the filters array.
             $filters = array($key => $result);
         }
         return $filters;
@@ -636,6 +665,8 @@ class LiveUser_Admin_Perm_Simple
     function _findSelectableTables($method, $params = array())
     {
         $selectable_tables = array();
+        // Check if the provided params might already have the selectable tables.
+        // If so, return them, else fetch them through this->selectable_tables.
         if (array_key_exists('selectable_tables', $params)) {
             $selectable_tables = $params['selectable_tables'];
         } elseif (array_key_exists($method, $this->selectable_tables)) {
@@ -671,13 +702,23 @@ class LiveUser_Admin_Perm_Simple
      */
     function _makeGet($params, $root_table, $selectable_tables)
     {
+        // Ensure that default params are set
         $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
 
         $data = $this->_storage->select($params['select'], $params['fields'],
             $params['filters'], $params['orders'], $params['rekey'], $params['group'],
             $params['limit'], $params['offset'], $root_table, $selectable_tables);
 
-        if (!empty($params['with']) && !empty($data) && !is_array($data)) {
+        // If 'with' is set and the result data is not empty
+        if (!empty($params['with']) && !empty($data)) {
+            if ($params['select'] != 'all') {
+                $this->stack->push(
+                    LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => 'Using "with" requires "select" to be set to "all"')
+                );
+                return false;
+            }
+            // Check if all with keys were fetched
             $missing = array_diff(array_keys($params['with']), array_keys(reset($data)));
             if (!empty($missing)) {
                 $this->stack->push(
@@ -690,6 +731,7 @@ class LiveUser_Admin_Perm_Simple
                 foreach ($params['with'] as $field => $with_params) {
                     $with_params['filters'][$field] = $row[$field];
                     $method = $this->withFieldMethodMap[$field];
+                    // remove "_id" from the field name (group_id => group)
                     $data_key = preg_replace('/(.+)_id/', '\\1s', $field);
                     $data[$key][$data_key] = $this->$method($with_params);
                 }
@@ -906,6 +948,7 @@ class LiveUser_Admin_Perm_Simple
     {
         $params = array();
 
+        // Prepare the fields to fetch.
         $params['fields'] = array('right_id', 'right_define_name');
 
         $naming = LIVEUSER_SECTION_RIGHT;
@@ -922,6 +965,7 @@ class LiveUser_Admin_Perm_Simple
             }
         }
 
+        // Prepare the filters.
         if (array_key_exists('by_group', $options)) {
             $params['by_group'] = $options['by_group'];
         }
@@ -964,6 +1008,8 @@ class LiveUser_Admin_Perm_Simple
 
         $generate = array();
 
+        // Prepare an array containing all the rights to be defined. The stucture of 
+        // this array is dependent on the value of naming and if the rekey is set.
         switch ($naming) {
         case LIVEUSER_SECTION_APPLICATION:
             if ($rekey) {
@@ -1001,65 +1047,70 @@ class LiveUser_Admin_Perm_Simple
             break;
         }
 
-        $strDef = "<?php\n";
+        if ($type == 'array' && $mode != 'file') {
+            return $generate;
+        }
+
+        // Define the rights, either as an array or defines.
+        // Add an error to the stack if the provided variable name is not valid.
         if ($type == 'array') {
-            if ($mode == 'file') {
-                if (!array_key_exists('varname', $options)
-                    || !preg_match('/^[a-zA-Z_0-9]+$/', $options['varname'])
-                ) {
-                    $this->stack->push(
-                        LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                        array('msg' => 'varname is not a valid variable name in PHP: '.$options['varname'])
-                    );
-                    return false;
-                }
-                $strDef .= sprintf("\$%s = %s;\n", $options['varname'], var_export($generate, true));
-            } else {
-                return $generate;
+           if (!array_key_exists('varname', $options)
+                || !preg_match('/^[a-zA-Z_0-9]+$/', $options['varname'])
+            ) {
+                $this->stack->push(
+                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                    array('msg' => 'varname is not a valid variable name in PHP: '.$options['varname'])
+                );
+                return false;
             }
+            $strDef = sprintf("\$%s = %s;\n", $options['varname'], var_export($generate, true));
         } else {
+            if ($mode == 'file') {
+                $strDef = '';
+            }
             foreach ($generate as $v => $k) {
                 if (!preg_match('/^[a-zA-Z_0-9]+$/', $v)) {
                     $this->stack->push(
                         LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                        array('msg' => 'varname is not a valid variable name in PHP: '.$v)
+                        array('msg' => 'definename is not a valid define name in PHP: '.$v)
                     );
                     return false;
                 }
                 $v = strtoupper($v);
                 if ($mode == 'file') {
                     $strDef .= sprintf("define('%s', %s);\n", $v, $k);
-                } else {
-                    if (!defined($v)) {
-                        define($v, $k);
-                    }
+                } elseif (!defined($v)) {
+                    define($v, $k);
                 }
             }
         }
-        $strDef .= '?>';
 
-        if ($mode == 'file') {
-            if (!array_key_exists('filename', $options) || !$options['filename']) {
-                $this->stack->push(
-                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                    array('msg' => 'no filename is set for output mode file')
-                );
-                return false;
-            }
-
-            $fp = @fopen($options['filename'], 'wb');
-
-            if (!$fp) {
-                $this->stack->push(
-                    LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
-                    array('msg' => 'file could not be opened: '.$options['filename'])
-                );
-                return false;
-            }
-
-            fputs($fp, $strDef);
-            fclose($fp);
+        if ($mode != 'file') {
+            return true;
         }
+
+        // The results should be written to a file.
+        // If the filename doesn't exist or the file cannot be opened, add an error to the stack.
+        if (!array_key_exists('filename', $options) || !$options['filename']) {
+            $this->stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('msg' => 'no filename is set for output mode file')
+            );
+            return false;
+        }
+
+        $fp = @fopen($options['filename'], 'wb');
+
+        if (!$fp) {
+            $this->stack->push(
+                LIVEUSER_ADMIN_ERROR_FILTER, 'exception',
+                array('msg' => 'file could not be opened: '.$options['filename'])
+            );
+            return false;
+        }
+
+        @fputs($fp, "<?php\n".$strDef.'?>');
+        @fclose($fp);
 
         return true;
     }
