@@ -673,14 +673,19 @@ class LiveUser_Admin_Perm_Simple
     {
         $params = LiveUser_Admin_Storage::setSelectDefaultParams($params);
 
-        // ensure that all $with fields are fetched
-        $params['filters'] = array_merge($params['filters'], array_keys($params['with']));
-
         $data = $this->_storage->select($params['select'], $params['fields'],
             $params['filters'], $params['orders'], $params['rekey'], $params['group'],
             $params['limit'], $params['offset'], $root_table, $selectable_tables);
 
-        if (!empty($params['with']) && is_array($data)) {
+        if (!empty($params['with']) && !empty($data) && !is_array($data)) {
+            $missing = array_diff(array_keys($params['with']), array_keys(reset($data)));
+            if (!empty($missing)) {
+                $this->stack->push(
+                    LIVEUSER_ADMIN_ERROR, 'exception',
+                    array('msg' => 'The following "with" elements are not included in the result: '.implode($missing))
+                );
+                return false;
+            }
             foreach ($data as $key => $row) {
                 foreach ($params['with'] as $field => $with_params) {
                     $with_params['filters'][$field] = $row[$field];
