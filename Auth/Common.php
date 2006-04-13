@@ -354,7 +354,7 @@ class LiveUser_Admin_Auth_Common
         if (array_key_exists('selectable_tables', $params)) {
             $selectable_tables = $params['selectable_tables'];
         } elseif (array_key_exists('getUsers', $this->selectable_tables)) {
-            $selectable_tables = $this->selectable_tables[$method];
+            $selectable_tables = $this->selectable_tables['getUsers'];
         }
         $root_table = reset($selectable_tables);
 
