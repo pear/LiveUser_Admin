@@ -623,7 +623,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             $orders[$this->prefix.$this->alias[$match[1]].'.'.$match[2]] = $value;
         }
 
-        $fields_not_yet_linked = array_merge($fields_tmp, array_keys($filters_tmp), array_keys($orders_tmp));
+        $fields_not_yet_linked = array_unique(array_merge($fields_tmp, array_keys($filters_tmp), array_keys($orders_tmp)));
         if (empty($fields_not_yet_linked)) {
             return $tables;
         }
