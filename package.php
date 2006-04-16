@@ -38,6 +38,8 @@ $notes = <<<EOT
   with the container APIs *BC break* (req #7025)
 - added LiveUser_Admin_Storage::setSelectDefaultParams() to centralize default setting
 - added selectable_tables property to auth backend
+- fixed typos in 'with' handling in the perm container
+- prevent duplictate entries in the fields not yet linked array
 EOT;
 
 $description = <<<EOT
