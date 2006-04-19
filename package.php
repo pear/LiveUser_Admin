@@ -9,37 +9,9 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.8';
+$version = 'XXX';
 
 $notes = <<<EOT
-- wrong parameter used in getUsers('auth', ..) (report by gregory)
-- fixed usage of outdated getUsers() API in init()
-- phpdoc fix in outputRightsConstants() (bug #7037)
-- removed bogus parameter from phpdoc in getRights() in medium/complex container
-- added support for selectable_tables in the param array in get*() methods
-- fixed updating of implied right field in umimplyRight() (bug #7050)
-- made stack property public
-- remove artificial limitation that prevented groups to have multiple parents
-- fixed PDO storage layer queryAll() method (bug #7213)
-- expanded error handling in Log instance creation
-- fixed outdated API call to getRights() in _getInheritedRights() (bug #7236)
-- made translations columns wider for example1
-- replace isset() with array_key_exists() where applicable
-- added link to area admin area test to the menu in example1
-- reworked getRights() and getGroups() API for recursive reads
-  (related to bug #7241) *BC break*
-  Set the filter parameters for the recursion explicitly. For getGroups() in the
-  'subgroups', 'hierarchy' keys (note that hierarchy is now no longer specified
-  by setting 'subgroups' => 'hierarchy'). For getRights() 'inherited', 'implied'
-  and 'hierarchy' (note that hierarchy is now no longer specified by setting
-  'implied' => 'hierarchy';).
-- expanded outputRightsConstants() filtering
-- changed the getUsers(), addUser() and updateUser() API to be more in line
-  with the container APIs *BC break* (req #7025)
-- added LiveUser_Admin_Storage::setSelectDefaultParams() to centralize default setting
-- added selectable_tables property to auth backend
-- fixed typos in 'with' handling in the perm container
-- prevent duplictate entries in the fields not yet linked array
 EOT;
 
 $description = <<<EOT
