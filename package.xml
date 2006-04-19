@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
-<package version="1.0" packagerversion="1.4.6">
+<package version="1.0" packagerversion="1.4.9">
  <name>LiveUser_Admin</name>
  <summary>User authentication and permission management framework</summary>
  <description>LiveUser_Admin is meant to be used with the LiveUser package.
@@ -54,43 +54,47 @@
   </maintainer>
   </maintainers>
  <release>
-  <version>0.3.7</version>
-  <date>2006-02-21</date>
+  <version>0.3.8</version>
+  <date>2006-04-19</date>
   <license>LGPL</license>
   <state>beta</state>
-  <notes>- fix &quot;No rights for a user if the user only has inherited rights&quot; (bug #6374)
-- do not overwrite all filters in _get*() helper methods
-- minor issue with &apos;alias&apos; position in the config array in example1
-- make sure that tables required as intermediate join steps are listed in the from
-- add depth parameter to createJoinFilter (may be used to determine shortest join path eventually)
-- fixed detection if list of tables has been reduced or not
-- do not push an error on the stack for a possible recursion because it may just
-  be one possible path we are evaluating
-- added &quot;by_group&quot; optional parameter to params getRights() which determines if
-  the userrights table should be used or rather the grouprights and groupupsers tables
-- incorrect handling of filters inside unimplyRights() (bug #6592)
-- renamed &quot;connection&quot; config option to &quot;dbc&quot; *BC BREAK*
-- cleaned up and unified init() in the storage classes
-- added support for &apos;*&apos; in fields list as an alias to fetch all fields in the root table
-- made LiveUser_Admin::getUsers() API as flexible as in the containers *BC BREAK*
-- fixed serious issue in join filter handling that caused join filters to be ignored
-- removed allowDuplicateHandles and allowEmptyPasswords options, they are now
-  handled through the table definition in the given Globals.php (overwriteable
-  via the config array) *BC BREAK*
-- typo fix in extended module loading in the MDB2 storage container
-- fixed inherited and implied handling in getRights() when fetching only 2 columns
-- added initial version of a PDO storage container (needs more testing)
-- removed setCurrentApplication()/getCurrentApplication() methods since they are
-  no longer relevant *BC BREAK*
+  <notes>- wrong parameter used in getUsers(&apos;auth&apos;, ..) (report by gregory)
+- fixed usage of outdated getUsers() API in init()
+- phpdoc fix in outputRightsConstants() (bug #7037)
+- removed bogus parameter from phpdoc in getRights() in medium/complex container
+- added support for selectable_tables in the param array in get*() methods
+- fixed updating of implied right field in umimplyRight() (bug #7050)
+- made stack property public
+- remove artificial limitation that prevented groups to have multiple parents
+- fixed PDO storage layer queryAll() method (bug #7213)
+- expanded error handling in Log instance creation
+- fixed outdated API call to getRights() in _getInheritedRights() (bug #7236)
+- made translations columns wider for example1
+- replace isset() with array_key_exists() where applicable
+- added link to area admin area test to the menu in example1
+- reworked getRights() and getGroups() API for recursive reads
+  (related to bug #7241) *BC break*
+  Set the filter parameters for the recursion explicitly. For getGroups() in the
+  &apos;subgroups&apos;, &apos;hierarchy&apos; keys (note that hierarchy is now no longer specified
+  by setting &apos;subgroups&apos; =&gt; &apos;hierarchy&apos;). For getRights() &apos;inherited&apos;, &apos;implied&apos;
+  and &apos;hierarchy&apos; (note that hierarchy is now no longer specified by setting
+  &apos;implied&apos; =&gt; &apos;hierarchy&apos;;).
+- expanded outputRightsConstants() filtering
+- changed the getUsers(), addUser() and updateUser() API to be more in line
+  with the container APIs *BC break* (req #7025)
+- added LiveUser_Admin_Storage::setSelectDefaultParams() to centralize default setting
+- added selectable_tables property to auth backend
+- fixed typos in &apos;with&apos; handling in the perm container
+- prevent duplictate entries in the fields not yet linked array
   </notes>
   <deps>
    <dep type="php" rel="ge" version="4.2.0" optional="no"/>
    <dep type="pkg" rel="ge" version="1.3.1" optional="no">PEAR</dep>
-   <dep type="pkg" rel="ge" version="0.16.0" optional="no">LiveUser</dep>
+   <dep type="pkg" rel="ge" version="0.16.11" optional="no">LiveUser</dep>
    <dep type="pkg" rel="ge" version="1.7.0" optional="yes">Log</dep>
    <dep type="pkg" rel="ge" version="1.6.0" optional="yes">DB</dep>
    <dep type="pkg" rel="ge" version="1.1.4" optional="yes">MDB</dep>
-   <dep type="pkg" rel="ge" version="2.0.0RC1" optional="yes">MDB2</dep>
+   <dep type="pkg" rel="ge" version="2.0.0" optional="yes">MDB2</dep>
    <dep type="pkg" rel="has" optional="yes">XML_Tree</dep>
    <dep type="pkg" rel="has" optional="yes">Crypt_RC4</dep>
   </deps>
@@ -170,6 +174,41 @@
   </filelist>
  </release>
  <changelog>
+   <release>
+    <version>0.3.8</version>
+    <date>2006-04-19</date>
+    <license>LGPL</license>
+    <state>beta</state>
+    <notes>- wrong parameter used in getUsers(&apos;auth&apos;, ..) (report by gregory)
+- fixed usage of outdated getUsers() API in init()
+- phpdoc fix in outputRightsConstants() (bug #7037)
+- removed bogus parameter from phpdoc in getRights() in medium/complex container
+- added support for selectable_tables in the param array in get*() methods
+- fixed updating of implied right field in umimplyRight() (bug #7050)
+- made stack property public
+- remove artificial limitation that prevented groups to have multiple parents
+- fixed PDO storage layer queryAll() method (bug #7213)
+- expanded error handling in Log instance creation
+- fixed outdated API call to getRights() in _getInheritedRights() (bug #7236)
+- made translations columns wider for example1
+- replace isset() with array_key_exists() where applicable
+- added link to area admin area test to the menu in example1
+- reworked getRights() and getGroups() API for recursive reads
+  (related to bug #7241) *BC break*
+  Set the filter parameters for the recursion explicitly. For getGroups() in the
+  &apos;subgroups&apos;, &apos;hierarchy&apos; keys (note that hierarchy is now no longer specified
+  by setting &apos;subgroups&apos; =&gt; &apos;hierarchy&apos;). For getRights() &apos;inherited&apos;, &apos;implied&apos;
+  and &apos;hierarchy&apos; (note that hierarchy is now no longer specified by setting
+  &apos;implied&apos; =&gt; &apos;hierarchy&apos;;).
+- expanded outputRightsConstants() filtering
+- changed the getUsers(), addUser() and updateUser() API to be more in line
+  with the container APIs *BC break* (req #7025)
+- added LiveUser_Admin_Storage::setSelectDefaultParams() to centralize default setting
+- added selectable_tables property to auth backend
+- fixed typos in &apos;with&apos; handling in the perm container
+- prevent duplictate entries in the fields not yet linked array
+    </notes>
+   </release>
    <release>
     <version>0.3.7</version>
     <date>2006-02-21</date>
