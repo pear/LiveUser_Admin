@@ -920,7 +920,7 @@ class LiveUser_Admin_Perm_Complex extends LiveUser_Admin_Perm_Medium
             if ($implied && !in_array('has_implied', $params['fields'])) {
                 $this->stack->push(
                     LIVEUSER_ADMIN_ERROR, 'exception',
-                    array('msg' => "Setting 'implied' requires that 'has_implied' field needs to be in the select list")
+                    array('msg' => "Setting 'implied' or 'hierarchy' requires that 'has_implied' field needs to be in the select list")
                 );
                 return false;
             }
