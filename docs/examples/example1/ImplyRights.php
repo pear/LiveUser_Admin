@@ -8,7 +8,7 @@ if  (empty($rights)) {
     exit;
 }
 echo '<hr />';
-/*
+
 // add
 for ($i = 0; $i < 5; $i++) {
     $right = array_rand($rights);
@@ -33,7 +33,8 @@ echo 'All the rights with hierarchy:<br />';
 $rights = $admin->perm->getRights(array(
     'hierarchy' => true,
     'rekey' => true,
-    'filters' => array('right_id' => $right_id)
+    'fields' => array('*', 'has_implied'),
+    'filters' => array('right_id' => $right_id),
 ));
 if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
@@ -48,7 +49,8 @@ echo 'All the rights with implied and without hierarchy:<br />';
 $rights = $admin->perm->getRights(array(
     'implied' => true,
     'rekey' => true,
-    'filters' => array('right_id' => $right_id)
+    'fields' => array('*', 'has_implied'),
+    'filters' => array('right_id' => $right_id),
 ));
 if ($rights === false) {
     echo '<strong>Error on line: '.__LINE__.'</strong><br />';
@@ -57,29 +59,7 @@ if ($rights === false) {
     Var_Dump::display($rights);
     echo '<br />';
 }
-*/
-// view all with implied/inherited and without hierarchy
-echo 'All the rights with implied/inherited and without hierarchy:<br />';
-$rights = $admin->perm->getRights(array(
-    'implied' => array('perm_user_id' => 9),
-    'inherited' => array('perm_user_id' => 9),
-    'rekey' => true,
-    'filters' => array('perm_user_id' => 9),
-    'fields' => array(
-        'right_id',
-        'area_id',
-        'right_define_name',
-        'has_implied',
-    ),
-));
-if ($rights === false) {
-    echo '<strong>Error on line: '.__LINE__.'</strong><br />';
-    print_r($admin->getErrors());
-} else {
-    Var_Dump::display($rights);
-    echo '<br />';
-}
-die();
+
 // view all
 echo 'All the rights:<br />';
 $rights = $admin->perm->getRights();
