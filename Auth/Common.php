@@ -217,7 +217,8 @@ class LiveUser_Admin_Auth_Common
             $decryptedPW = LiveUser::cryptRC4($decryptedPW, $this->secret, false);
             break;
         case 'SHA1':
-            // SHA1 can't be decoded, so return the string unmodified
+        default:
+            // The password can't be decoded, so return the string unmodified
             $decryptedPW = $encryptedPW;
             break;
         }
@@ -259,6 +260,15 @@ class LiveUser_Admin_Auth_Common
             }
             $encryptedPW = sha1($plainPW);
             break;
+        default:
+            // The hash extension is enabled by default as PHP 5.1.2
+            // so we try to use it
+            if (extension_loaded('hash')) {
+                $enc_method = strtolower($this->passwordEncryptionMode);
+                if (in_array($enc_method, hash_algos())) {
+                    $encryptedPW = hash($enc_method, $plainPW);
+                }
+            }
         }
 
         return $encryptedPW;
