@@ -180,7 +180,7 @@ class LiveUser_Admin
      * @access public
      * @see init
      */
-    function LiveUser_Admin($debug)
+    function LiveUser_Admin(&$debug)
     {
         $this->stack = &PEAR_ErrorStack::singleton('LiveUser_Admin');
 
