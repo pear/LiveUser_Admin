@@ -89,7 +89,7 @@ $package->addMaintainer(
 
 $package->addDependency('php',       '4.2.0', 'ge',  'php', false);
 $package->addDependency('PEAR',      '1.3.1', 'ge',  'pkg', false);
-$package->addDependency('LiveUser','0.16.11', 'ge',  'pkg', false);
+$package->addDependency('LiveUser','0.16.12', 'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0', 'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0', 'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4', 'ge',  'pkg', true);
