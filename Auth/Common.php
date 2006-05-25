@@ -200,7 +200,7 @@ class LiveUser_Admin_Auth_Common
      */
     function decryptPW($encryptedPW)
     {
-        return LiveUser::decryptPW($encryptedPW, $this->passwordEncryptionMode);
+        return LiveUser::decryptPW($encryptedPW, $this->passwordEncryptionMode, $this->secret);
     }
 
     /**
@@ -214,7 +214,7 @@ class LiveUser_Admin_Auth_Common
      */
     function encryptPW($plainPW)
     {
-        return LiveUser::encryptPW($plainPW, $this->passwordEncryptionMode);
+        return LiveUser::encryptPW($plainPW, $this->passwordEncryptionMode, $this->secret);
     }
 
     /**
