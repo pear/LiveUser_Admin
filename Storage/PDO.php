@@ -407,13 +407,14 @@ class LiveUser_Admin_Storage_PDO extends LiveUser_Admin_Storage_SQL
      * the call is redirected to nextID()
      *
      * @param string name of the table into which a new row was inserted
-     * @param bool when true the seqence is
-     *                          automatic created, if it not exists
+     * @param string name of the field into which a new row was inserted
+     * @param bool when true the seqence is automatic created, if it not exists
      * @return bool|int
      *
      * @access public
+     * @uses MDB2::nextId MDB2_Extended::getBeforeId
      */
-    function getBeforeId($table, $ondemand = true)
+    function getBeforeId($table, $field, $ondemand = true)
     {
         // todo: need to figure out what to do here
         return null;

@@ -351,15 +351,17 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      * the call is redirected to nextID()
      *
      * @param string name of the table into which a new row was inserted
-     * @param bool when true the seqence is
-     *                          automatic created, if it not exists
+     * @param string name of the field into which a new row was inserted
+     * @param bool when true the seqence is automatic created, if it not exists
      * @return bool|int
      *
      * @access public
+     * @uses MDB2::nextId MDB2_Extended::getBeforeId
      */
-    function getBeforeId($table, $ondemand = true)
+    function getBeforeId($table, $field, $ondemand = true)
     {
-        return $this->nextId($table, $ondemand);
+        $seq = $table.(empty($field) ? '' : '_'.$field);
+        return $this->nextId($seq, $ondemand);
     }
 
     /**
@@ -368,11 +370,13 @@ class LiveUser_Admin_Storage_DB extends LiveUser_Admin_Storage_SQL
      *
      * @param string value as returned by getBeforeId()
      * @param string name of the table into which a new row was inserted
-     * @return int returns the id that the users passed via params
+     * @param string name of the field into which a new row was inserted
+     * @return  bool|int returns the id that the users passed via params
      *
      * @access public
+     * @uses MDB2_Extended::getAfterId
      */
-    function getAfterId($id, $table)
+    function getAfterId($id, $table, $field)
     {
         return $id;
     }

@@ -366,20 +366,20 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      * does not support auto increment
      *
      * @param string name of the table into which a new row was inserted
-     * @param bool when true the seqence is
-     *                          automatic created, if it not exists
+     * @param string name of the field into which a new row was inserted
+     * @param bool when true the seqence is automatic created, if it not exists
      * @return bool|int
      *
      * @access public
      * @uses MDB2::nextId MDB2_Extended::getBeforeId
      */
-    function getBeforeId($table, $ondemand = true)
+    function getBeforeId($table, $field, $ondemand = true)
     {
         if ($this->force_seq) {
             $result = $this->dbc->nextId($table, $ondemand);
         } else {
             $this->dbc->loadModule('Extended');
-            $result = $this->dbc->extended->getBeforeId($table);
+            $result = $this->dbc->extended->getBeforeId($table, $field, $ondemand, false);
         }
 
         if (PEAR::isError($result)) {
@@ -397,19 +397,20 @@ class LiveUser_Admin_Storage_MDB2 extends LiveUser_Admin_Storage_SQL
      *
      * @param string value as returned by getBeforeId()
      * @param string name of the table into which a new row was inserted
+     * @param string name of the field into which a new row was inserted
      * @return  bool|int returns the id that the users passed via params
      *
      * @access public
      * @uses MDB2_Extended::getAfterId
      */
-    function getAfterId($id, $table)
+    function getAfterId($id, $table, $field)
     {
         if ($this->force_seq) {
             return $id;
         }
 
         $this->dbc->loadModule('Extended');
-        $result = $this->dbc->extended->getAfterId($id, $table);
+        $result = $this->dbc->extended->getAfterId($id, $table, $field);
         if (PEAR::isError($result)) {
             $this->stack->push(
                 LIVEUSER_ADMIN_ERROR_QUERY_BUILDER, 'exception',

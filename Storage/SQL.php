@@ -138,11 +138,12 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             if ($required) {
                 if ($required === 'seq') {
                     if (!array_key_exists($field, $data) || empty($data[$field])) {
-                        $result = $this->getBeforeId($this->prefix . $this->alias[$table], true);
+                        $result = $this->getBeforeId($this->prefix . $this->alias[$table], $field, true);
                         if ($result === false) {
                             return false;
                         }
-                        $data[$field] = $sequence_id = $result;
+                        $data[$field] = $result;
+                        $sequence_id = is_numeric($result) ? $result : $field;
                     } else {
                         $sequence_id = $data[$field];
                     }
@@ -186,7 +187,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             if (is_numeric($sequence_id)) {
                 return $sequence_id;
             }
-            return $this->getAfterId($sequence_id, $this->prefix . $this->alias[$table]);
+            return $this->getAfterId($sequence_id, $this->prefix . $this->alias[$table], $sequence_id);
         }
         return $result;
     }
