@@ -12,10 +12,9 @@ require_once 'Console/Getopt.php';
 $version = 'XXX';
 
 $notes = <<<EOT
-- use the hash extension when available to provide a wider range of encryption methods
-- push an error on the stack when the encryption method cannot be found
 - pass debug parameter by ref to the constructor since it can be an object instance
 - updated API calls of getBeforeId() and getAfterId() in the storage classes
+- refactored decryptPW() and encryptPW() into static methods in the LiveUser class
 EOT;
 
 $description = <<<EOT
