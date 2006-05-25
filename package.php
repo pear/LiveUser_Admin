@@ -12,6 +12,10 @@ require_once 'Console/Getopt.php';
 $version = 'XXX';
 
 $notes = <<<EOT
+- use the hash extension when available to provide a wider range of encryption methods
+- push an error on the stack when the encryption method cannot be found
+- pass debug parameter by ref to the constructor since it can be an object instance
+- updated API calls of getBeforeId() and getAfterId() in the storage classes
 EOT;
 
 $description = <<<EOT
@@ -90,7 +94,7 @@ $package->addDependency('LiveUser','0.16.11', 'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0', 'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0', 'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4', 'ge',  'pkg', true);
-$package->addDependency('MDB2',      '2.0.0', 'ge',  'pkg', true);
+$package->addDependency('MDB2',      '2.0.4', 'ge',  'pkg', true);
 
 if (array_key_exists('make', $_GET)
     || (isset($_SERVER['argv'][1])
