@@ -282,6 +282,9 @@ class LiveUser_Admin_Storage_PDO extends LiveUser_Admin_Storage_SQL
         try {
             $stmt = $this->dbc->query($query);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result === false && $this->dbc->errorCode() === '00000') {
+                $result = null;
+            }
         } catch (PDOException $e) {
             $this->stack->push(LIVEUSER_ERROR_INIT_ERROR, 'error',
                 array(
