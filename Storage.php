@@ -162,15 +162,20 @@ class LiveUser_Admin_Storage
      */
     function setSelectDefaultParams($params)
     {
-        $params['fields'] = array_key_exists('fields', $params) ? $params['fields'] : array('*');
-        $params['with'] = array_key_exists('with', $params) ? $params['with'] : array();
-        $params['filters'] = array_key_exists('filters', $params) ? $params['filters'] : array();
-        $params['orders'] = array_key_exists('orders', $params) ? $params['orders'] : array();
-        $params['rekey'] = array_key_exists('rekey', $params) ? $params['rekey'] : false;
-        $params['group'] = array_key_exists('group', $params) ? $params['group'] : false;
-        $params['limit'] = array_key_exists('limit', $params) ? $params['limit'] : null;
-        $params['offset'] = array_key_exists('offset', $params) ? $params['offset'] : null;
-        $params['select'] = array_key_exists('select', $params) ? $params['select'] : 'all';
+        if (!is_array($params)) {
+            PEAR_ErrorStack::staticPush('LiveUser_Admin', LIVEUSER_ADMIN_ERROR,
+                'exception', array(), 'Parameters must be an array but is of type: '.gettype($params));
+        }
+
+        $params['fields'] = empty($params['fields']) ? array('*') : $params['fields'];
+        $params['with'] = empty($params['with']) ? array() : $params['with'];
+        $params['filters'] = empty($params['filters']) ? array() : $params['filters'];
+        $params['orders'] = empty($params['orders']) ? array() : $params['orders'];
+        $params['rekey'] = empty($params['rekey']) ? false : $params['rekey'];
+        $params['group'] = empty($params['group']) ? false : $params['group'];
+        $params['limit'] = empty($params['limit']) ? null : $params['limit'];
+        $params['offset'] = empty($params['offset']) ? null : $params['offset'];
+        $params['select'] = empty($params['select']) ? 'all' : $params['select'];
 
         return $params;
     }
