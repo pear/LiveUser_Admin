@@ -15,6 +15,9 @@ $notes = <<<EOT
 - pass debug parameter by ref to the constructor since it can be an object instance
 - updated API calls of getBeforeId() and getAfterId() in the storage classes
 - refactored decryptPW() and encryptPW() into static methods in the LiveUser class
+- force null instead of false for PDO fetch() calls that return empty sets
+- added static error push when a non array is passed to setSelectDefaultParams() (Request #7779)
+- use empty() instead of array_key_exists() in setSelectDefaultParams()
 EOT;
 
 $description = <<<EOT
@@ -93,11 +96,10 @@ $package->addDependency('LiveUser','0.16.12', 'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0', 'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0', 'ge',  'pkg', true);
 $package->addDependency('MDB',       '1.1.4', 'ge',  'pkg', true);
-$package->addDependency('MDB2',      '2.0.4', 'ge',  'pkg', true);
+$package->addDependency('MDB2',      '2.1.0', 'ge',  'pkg', true);
 
-if (array_key_exists('make', $_GET)
-    || (isset($_SERVER['argv'][1])
-        && $_SERVER['argv'][1] == 'make')) {
+if (array_key_exists('make', $_GET) || (isset($_SERVER['argv'][1]) && $_SERVER['argv'][1] == 'make')) {
+    echo "package.xml generated\n";
     $result = $package->writePackageFile();
 } else {
     $result = $package->debugPackageFile();
