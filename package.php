@@ -37,9 +37,10 @@ $description = <<<EOT
   And all other entities within LiveUser.
 
   At the moment we support the following storage containers:
-  * DB
-  * MDB
-  * MDB2
+  * PEAR::DB
+  * PEAR::MDB
+  * PEAR::MDB2
+  * PECL::PDO
 
   But it takes no time to write up your own storage container,
   so if you like to use native mysql functions straight, then it's possible
