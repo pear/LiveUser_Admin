@@ -487,6 +487,14 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
 
         $where = array();
 
+        foreach ($joinfilters as $key => $value) {
+            if (is_string($key)) {
+                $where[] = $key.' = '.$value;
+            } else {
+                $where[] = $value;
+            }
+        }
+
         foreach ($filters as $field => $value) {
             if (array_key_exists($field, $this->fields)) {
                 $type = $this->fields[$field];
@@ -528,7 +536,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
                 $where[] = $tmp_field.$op.$value_quoted;
             }
         }
-        $where = array_merge($joinfilters, $where);
+
         return "\n".' WHERE '.implode("\n".'     AND ', $where);
     }
 
