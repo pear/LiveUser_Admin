@@ -456,11 +456,10 @@ class LiveUser_Admin
             return false;
         }
 
+        $updateData = array();
         if (array_key_exists('perm_type', $data)) {
-            $type = $data['perm_type'];
+            $updateData['perm_type'] = $data['perm_type'];
             unset($data['perm_type']);
-        } else {
-            $type = null;
         }
 
         $this->setAdminAuthContainer($permData['auth_container_name']);
@@ -471,13 +470,17 @@ class LiveUser_Admin
             return false;
         }
 
-        if (is_null($type)) {
-            return true;
+        if (array_key_exists('auth_user_id', $data)
+            && $permData['auth_user_id'] != $data['auth_user_id']
+        ) {
+            $updateData['auth_user_id'] = $data['auth_user_id'];
+        }
+        if (empty($updateData)) {
+            return $result;
         }
 
-        $data = array('perm_type' => $type);
         $filters = array('perm_user_id' => $permUserId);
-        return $this->perm->updateUser($data, $filters);
+        return $this->perm->updateUser($updateData, $filters);
     }
 
     /**
