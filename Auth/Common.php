@@ -228,6 +228,7 @@ class LiveUser_Admin_Auth_Common
      */
     function addUser($data)
     {
+        // todo: does this work?
         if (array_key_exists('passwd', $data)) {
             $data['passwd'] = $this->encryptPW($data['passwd']);
         }
