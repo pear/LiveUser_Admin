@@ -779,7 +779,7 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
             // handle single column join
             } else {
                 $filters[] = $this->prefix.$this->alias[$root_table].'.'.$this->tables[$root_table]['joins'][$table].' = '.
-                    $this->prefix.$this->alias[$table].'.'.$this->tables[$root_table]['joins'][$table];
+                    $this->prefix.$this->alias[$table].'.'.$this->tables[$table]['joins'][$root_table];
             }
             unset($tables[$table]);
         }
