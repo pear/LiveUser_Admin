@@ -91,6 +91,9 @@ $package->addMaintainer(
 $package->addMaintainer(
     'dufuz', 'lead', 'Helgi Þormar', 'dufuz@php.net'
 );
+$package->addMaintainer(
+    'mahono', 'developer', 'Matthias Nothhaft', 'mahono@php.net'
+);
 
 $package->addDependency('php',       '4.2.0', 'ge',  'php', false);
 $package->addDependency('PEAR',      '1.3.1', 'ge',  'pkg', false);
