@@ -378,7 +378,6 @@ class LiveUser_Admin_Storage_SQL extends LiveUser_Admin_Storage
         if (!is_array($fields) || empty($fields)) {
             $fields = array_keys($this->tables[$root_table]['fields']);
         } elseif (($pos = array_search('*', $fields)) !== false) {
-var_dump($fields);
             $fields_tmp = array();
             foreach ($fields as $key => $field) {
                 if ($pos == $key) {
@@ -395,8 +394,6 @@ var_dump($fields);
                 }
             }
             $fields = array_unique($fields_tmp);
-var_dump($fields);
-die();
         }
 
         $types = array();
