@@ -19,6 +19,7 @@ $notes = <<<EOT
 - added static error push when a non array is passed to setSelectDefaultParams() (Request #7779)
 - use empty() instead of array_key_exists() in setSelectDefaultParams()
 - update of auth_user_id not possible via LiveUser_Admin::updateUser() (Bug #7975; thx to Matthias)
+- fixed incorrect handling of single column joins (Bug #8424)
 EOT;
 
 $description = <<<EOT
