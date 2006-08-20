@@ -20,6 +20,7 @@ $notes = <<<EOT
 - use empty() instead of array_key_exists() in setSelectDefaultParams()
 - update of auth_user_id not possible via LiveUser_Admin::updateUser() (Bug #7975; thx to Matthias)
 - fixed incorrect handling of single column joins (Bug #8424)
+- better handling of '*' inside the field list together with explicit fields (Bug #7955)
 EOT;
 
 $description = <<<EOT
