@@ -9,18 +9,10 @@
 require_once 'PEAR/PackageFileManager.php';
 require_once 'Console/Getopt.php';
 
-$version = '0.3.9';
+$version = '0.3.10';
 
 $notes = <<<EOT
-- pass debug parameter by ref to the constructor since it can be an object instance
-- updated API calls of getBeforeId() and getAfterId() in the storage classes
-- refactored decryptPW() and encryptPW() into static methods in the LiveUser class
-- force null instead of false for PDO fetch() calls that return empty sets
-- added static error push when a non array is passed to setSelectDefaultParams() (Request #7779)
-- use empty() instead of array_key_exists() in setSelectDefaultParams()
-- update of auth_user_id not possible via LiveUser_Admin::updateUser() (Bug #7975; thx to Matthias)
-- fixed incorrect handling of single column joins (Bug #8424)
-- better handling of '*' inside the field list together with explicit fields (Bug #7955)
+ - Fix Bug #11051 Seems class variable is not declared
 EOT;
 
 $description = <<<EOT
@@ -97,8 +89,8 @@ $package->addMaintainer(
     'mahono', 'developer', 'Matthias Nothhaft', 'mahono@php.net'
 );
 
-$package->addDependency('php',       '4.2.0', 'ge',  'php', false);
-$package->addDependency('PEAR',      '1.3.1', 'ge',  'pkg', false);
+$package->addDependency('php',       '4.3.0', 'ge',  'php', false);
+$package->addDependency('PEAR',      '1.5.4', 'ge',  'pkg', false);
 $package->addDependency('LiveUser','0.16.12', 'ge',  'pkg', false);
 $package->addDependency('Log',       '1.7.0', 'ge',  'pkg', true);
 $package->addDependency('DB',        '1.6.0', 'ge',  'pkg', true);
