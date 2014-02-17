@@ -1,0 +1,48 @@
+{
+    "authors": [
+        {
+            "email": "mw21st@php.net",
+            "name": "Markus Wolff",
+            "role": "Lead"
+        },
+        {
+            "email": "arnaud@php.net",
+            "name": "Arnaud Limbourg",
+            "role": "Lead"
+        },
+        {
+            "email": "smith@pooteeweet.org",
+            "name": "Lukas Kahwe Smith",
+            "role": "Lead"
+        },
+        {
+            "email": "dufuz@php.net",
+            "name": "Helgi &#222;ormar",
+            "role": "Lead"
+        },
+        {
+            "email": "mahono@php.net",
+            "name": "Matthias Nothhaft",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "./"
+        ]
+    },
+    "description": "More info available on: http://pear.php.net/package/LiveUser_Admin",
+    "license": "LGPL",
+    "name": "pear/liveuser_admin",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=LiveUser_Admin",
+        "source": "https://github.com/pear/LiveUser_Admin"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    }
+}
